@@ -8,6 +8,13 @@ Automatically update and manage your conan exiles dedicated server by wrapping t
  * Host a web UI to see who is online
  * Download and manage steamcmd
 
+### Installation
+* Install python 2.7.15
+* Run install.bat
+
+### Launching server
+Just run runserver.bat and it'll install and update your server into the directory of the server manager.
+
 ### Example Log
 ```sh
 $ python runserver.py
