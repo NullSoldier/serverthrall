@@ -3,14 +3,15 @@ import time
 import psutil
 from steamcmd import SteamCmd
 from config import load_config, save_config
+import os
 
 
 DEFAULT_CONFIG = {
     'build_id': 0,
     'app_id': 443030,
-    'steamcmd_path': 'steamcmd.exe',
-    'conan_dir': '.\\conanserver\\',
-    'conan_path': '.\\conanserver\\ConanSandboxServer.exe',
+    'steamcmd_path': os.path.join(os.getcwd(), 'steamcmd\\steamcmd.exe'),
+    'conan_dir': os.path.join(os.getcwd(), 'conanserver\\'),
+    'conan_path': os.path.join(os.getcwd(), 'conanserver\\ConanSandboxServer.exe'),
 }
 
 
