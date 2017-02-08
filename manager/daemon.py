@@ -74,13 +74,13 @@ class Daemon(object):
         while True:
             is_available, current, target = self.is_update_available()
 
-            if self.server is None:
-                self.start_server()
-
             if is_available:
                 print 'An update is available from build %s to %s' % (current, target)
                 self.close_server()
                 self.update_server()
+                self.start_server()
+
+            if self.server is None:
                 self.start_server()
 
             time.sleep(5)
