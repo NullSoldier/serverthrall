@@ -1,9 +1,10 @@
-from .steamcmd import get_app_info, update_app
-
-import subprocess
 import json
-import psutil
+import subprocess
 import time
+
+import psutil
+
+from .steamcmd import get_app_info, update_app
 
 STEAM_CMD_PATH = "G:\\steamcmd\\steamcmd.exe"
 CONAN_PATH = "G:\\conanserver\\"
