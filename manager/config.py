@@ -1,7 +1,5 @@
 import json
 
-DEFAULT_CONFIG = {'build_id': 0}
-
 
 def save_config(config):
     print 'Saving config', config
@@ -10,14 +8,9 @@ def save_config(config):
 
 
 def load_config():
-    config = None
-
     with open('config.json', 'a+') as config_file:
         config_file.seek(0)
         try:
-            config = json.load(config_file)
+            return json.load(config_file)
         except ValueError:
-            print 'No config found, creating new config'
-            return (DEFAULT_CONFIG, True)
-
-    return (config, False)
+            return None

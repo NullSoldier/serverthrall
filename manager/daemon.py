@@ -1,31 +1,39 @@
 import subprocess
 import time
 import psutil
-import steamcmd
+from steamcmd import SteamCmd
 from config import load_config, save_config
 
 
-STEAM_CMD_PATH = "steamcmd.exe"
-CONAN_PATH = "G:\\conanserver\\"
-CONAN_SERVER_PATH = "G:\\conanserver\\ConanSandboxServer.exe"
-CONAN_EXILES_APP_ID = 443030
+DEFAULT_CONFIG = {
+    'build_id': 0,
+    'app_id': 443030,
+    'steamcmd_path': 'steamcmd.exe',
+    'conan_dir': '.\\conanserver\\',
+    'conan_path': '.\\conanserver\\ConanSandboxServer.exe',
+}
 
 
 class Daemon(object):
 
     def __init__(self):
+        super(Daemon, self).__init__()
         self.config = None
         self.server = None
+        self.steamcmd = None
 
     def is_update_available(self):
-        app_info = steamcmd.get_app_info(CONAN_EXILES_APP_ID)
+        app_info = self.steamcmd.get_app_info(self.config['app_id'])
         current = int(self.config['build_id'])
         latest = int(app_info['443030']['extended']['depots']['branches']['public']['buildid'])
         return latest > current, current, latest
 
     def update_server(self):
-        steamcmd.update_app(CONAN_EXILES_APP_ID, CONAN_PATH)
-        app_info = steamcmd.get_app_info(CONAN_EXILES_APP_ID)
+        self.steamcmd.update_app(
+            self.config['app_id'],
+            self.config['conan_dir'])
+
+        app_info = self.steamcmd.get_app_info(self.config['app_id'])
         self.config['build_id'] = app_info['443030']['extended']['depots']['branches']['public']['buildid']
         save_config(self.config)
 
@@ -34,7 +42,7 @@ class Daemon(object):
             raise Exception('Server already running call close_server first')
 
         print 'Launching server and waiting for child processes'
-        process = subprocess.Popen([CONAN_SERVER_PATH, '-log'])
+        process = subprocess.Popen([self.config['conan_path'], '-log'])
         process = psutil.Process(process.pid)
 
         # TODO: remove this hack
@@ -54,11 +62,14 @@ class Daemon(object):
         self.close_server()
 
     def run(self):
-        config, was_created = load_config()
-        self.config = config
+        self.config = load_config()
 
-        if was_created:
+        if self.config is None:
+            print 'No config found, creating new config'
+            self.config = DEFAULT_CONFIG
             save_config(self.config)
+
+        self.steamcmd = SteamCmd(self.config['steamcmd_path'])
 
         while True:
             is_available, current, target = self.is_update_available()
