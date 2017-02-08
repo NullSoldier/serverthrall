@@ -1,5 +1,4 @@
 import subprocess
-import json
 from steamfiles import acf
 
 STEAM_CMD_PATH = "G:\\steamcmd\\steamcmd.exe"
@@ -8,12 +7,12 @@ CONAN_PATH = "G:\\conanserver\\"
 
 def _get_steam_output(*args):
     commands = [STEAM_CMD_PATH] + ["+%s" % c for c in args]
-    return subprocess.check_output(commands, stderr=subprocess.PIPE);
+    return subprocess.check_output(commands, stderr=subprocess.PIPE)
 
 
 def _execute_steam_commands(*args):
     commands = [STEAM_CMD_PATH] + ["+%s" % c for c in args]
-    return subprocess.check_output(commands, stderr=subprocess.PIPE);
+    return subprocess.check_output(commands, stderr=subprocess.PIPE)
 
 
 def get_app_info(app_id):

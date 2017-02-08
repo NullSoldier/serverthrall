@@ -1,18 +1,16 @@
+from .steamcmd import get_app_info, update_app
+
 import subprocess
 import json
-from steamfiles import acf
-from .steamcmd import get_app_info, update_app
-import signal
 import psutil
+import time
 
 STEAM_CMD_PATH = "G:\\steamcmd\\steamcmd.exe"
 CONAN_PATH = "G:\\conanserver\\"
 CONAN_SERVER_PATH = "G:\\conanserver\\ConanSandboxServer.exe"
 CONAN_EXILES_APP_ID = 443030
 
-DEFAULT_CONFIG = {
-    'build_id': 0
-}
+DEFAULT_CONFIG = {'build_id': 0}
 
 config = None
 
@@ -34,15 +32,15 @@ def update_server():
 
 def open_server():
     print 'Launching server and waiting for child processes'
-    process = subprocess.Popen([CONAN_SERVER_PATH, '-log'], creationflags=subprocess.CREATE_NEW_PROCESS_GROUP);
+    process = subprocess.Popen([CONAN_SERVER_PATH, '-log'])
     process = psutil.Process(process.pid)
 
     # TODO: remove this hack
     while len(process.children()) == 0:
-        import time; time.sleep(5)
+        time.sleep(5)
 
     print 'Server running successfully'
-    return process.children()[0];
+    return process.children()[0]
 
 
 def close_server():
@@ -61,7 +59,7 @@ def load_config():
     with open('config.json', 'w+') as config_file:
         try:
             config = json.load(config_file)
-        except ValueError as ex:
+        except ValueError:
             print 'No config found, creating new config'
             return (DEFAULT_CONFIG, True)
 
@@ -87,4 +85,4 @@ while True:
         update_server()
         server_process = open_server()
 
-    import time; time.sleep(5)
+    time.sleep(5)
