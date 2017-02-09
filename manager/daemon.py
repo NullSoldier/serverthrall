@@ -3,12 +3,17 @@ import time
 import psutil
 from steamcmd import SteamCmd
 from config import load_config, save_config
+from datetime import datetime
+import ConfigParser
 import os
 
 
 DEFAULT_CONFIG = {
     'build_id': 0,
     'app_id': 443030,
+    'raid_timer_enabled': 'True',
+    'raid_start_hour': 17,
+    'raid_length_hours': 5,
     'steamcmd_path': os.path.join(os.getcwd(), 'steamcmd\\steamcmd.exe'),
     'conan_dir': os.path.join(os.getcwd(), 'conanserver\\'),
     'conan_path': os.path.join(os.getcwd(), 'conanserver\\ConanSandboxServer.exe'),
@@ -72,6 +77,35 @@ class Daemon(object):
         print 'Tearing down daemon'
         self.close_server()
 
+    def load_raid_enabled(self):
+        path = os.path.join(self.config['conan_dir'],
+            'ConanSandbox\\Saved\\Config\\WindowsServer\\ServerSettings.ini')
+
+        config = ConfigParser.ConfigParser()
+        config.read(path)
+
+        try:
+            return config.get('ServerSettings', 'CanDamagePlayerOwnedStructures') == 'True'
+        except ConfigParser.NoOptionError:
+            return False
+
+    def save_raid_enabled(self, raid_enabled):
+        path = os.path.join(self.config['conan_dir'],
+            'ConanSandbox\\Saved\\Config\\WindowsServer\\ServerSettings.ini')
+
+        config = ConfigParser.ConfigParser()
+        config.read(path)
+        config.set('ServerSettings', 'CanDamagePlayerOwnedStructures', raid_enabled)
+
+        with open(path, 'w') as settings_file:
+            config.write(settings_file)
+
+    def is_raid_time(self):
+        _, _, _, hour, _, _, _, _, _ = datetime.now().timetuple()
+        start = int(self.config['raid_start_hour'])
+        end = start + int(self.config['raid_length_hours'])
+        return start <= hour and hour <= end
+
     def run(self):
         self.config = load_config()
 
@@ -80,10 +114,12 @@ class Daemon(object):
             self.config = DEFAULT_CONFIG
             save_config(self.config)
 
+        self.raid_enabled = self.load_raid_enabled()
         self.steamcmd = SteamCmd(self.config['steamcmd_path'])
 
         while True:
             is_available, current, target = self.is_update_available()
+            is_raid_time = self.is_raid_time()
 
             if is_available:
                 print 'An update is available from build %s to %s' % (current, target)
@@ -97,6 +133,13 @@ class Daemon(object):
                 self.start_server()
 
             if self.server is None:
+                self.start_server()
+
+            if self.config['raid_timer_enabled'] == 'True' and self.raid_enabled != is_raid_time:
+                print 'Changing raid status from %s to %s' % (self.raid_enabled, is_raid_time)
+                self.close_server()
+                self.save_raid_enabled(is_raid_time)
+                self.raid_enabled = is_raid_time
                 self.start_server()
 
             time.sleep(5)
