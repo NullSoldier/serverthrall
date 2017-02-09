@@ -79,21 +79,23 @@ class Daemon(object):
 
     def load_raid_enabled(self):
         path = os.path.join(self.config['conan_dir'],
-            'ConanSandbox\\Saved\\Config\\WindowsServer\\ServerSettings.ini')
+            'ConanSandbox\\Config\\DefaultServerSettings.ini')
 
         config = ConfigParser.ConfigParser()
+        config.optionxform=str
         config.read(path)
 
         try:
             return config.get('ServerSettings', 'CanDamagePlayerOwnedStructures') == 'True'
         except ConfigParser.NoOptionError:
-            return False
+            return None
 
     def save_raid_enabled(self, enabled):
         path = os.path.join(self.config['conan_dir'],
-            'ConanSandbox\\Saved\\Config\\WindowsServer\\ServerSettings.ini')
+            'ConanSandbox\\Config\\DefaultServerSettings.ini')
 
         config = ConfigParser.ConfigParser()
+        config.optionxform=str
         config.read(path)
         config.set('ServerSettings', 'CanDamagePlayerOwnedStructures', enabled)
 
@@ -108,13 +110,16 @@ class Daemon(object):
 
     def run(self):
         self.config = load_config()
-
         if self.config is None:
             print 'No config found, creating new config'
             self.config = DEFAULT_CONFIG
             save_config(self.config)
 
         self.raid_enabled = self.load_raid_enabled()
+        if self.raid_enabled is None:
+            self.raid_enabled = False
+            self.save_raid_enabled(self.raid_enabled)
+            
         self.steamcmd = SteamCmd(self.config['steamcmd_path'])
 
         print 'Raid mode is currently %s' % ('enabled' if self.raid_enabled else 'disabled')
