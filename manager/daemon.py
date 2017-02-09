@@ -89,13 +89,13 @@ class Daemon(object):
         except ConfigParser.NoOptionError:
             return False
 
-    def save_raid_enabled(self, raid_enabled):
+    def save_raid_enabled(self, enabled):
         path = os.path.join(self.config['conan_dir'],
             'ConanSandbox\\Saved\\Config\\WindowsServer\\ServerSettings.ini')
 
         config = ConfigParser.ConfigParser()
         config.read(path)
-        config.set('ServerSettings', 'CanDamagePlayerOwnedStructures', raid_enabled)
+        config.set('ServerSettings', 'CanDamagePlayerOwnedStructures', enabled)
 
         with open(path, 'w') as settings_file:
             config.write(settings_file)
@@ -132,21 +132,18 @@ class Daemon(object):
                 print 'An update is available from build %s to %s' % (current, target)
                 self.close_server()
                 self.update_server()
-                self.start_server()
-
-            if self.server and not self.server.is_running():
-                print 'Server down... rebooting'
-                self.close_server()
-                self.start_server()
-
-            if self.server is None:
-                self.start_server()
 
             if self.config['raid_timer_enabled'] == 'True' and self.raid_enabled != is_raid_time:
                 print 'Changing raid status from %s to %s' % (self.raid_enabled, is_raid_time)
                 self.close_server()
                 self.save_raid_enabled(is_raid_time)
                 self.raid_enabled = is_raid_time
+
+            if self.server and not self.server.is_running():
+                print 'Server down... rebooting'
+                self.close_server()
+
+            if self.server is None:
                 self.start_server()
 
             time.sleep(5)
