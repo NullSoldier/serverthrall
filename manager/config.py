@@ -1,8 +1,10 @@
 import json
+import pprint
 
 
 def save_config(config):
-    print 'Saving config', config
+    print 'Saving config'
+    pprint.PrettyPrinter().pprint(config)
     with open('config.json', 'w') as config_file:
         json.dump(config, config_file, indent=4)
 
