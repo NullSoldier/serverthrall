@@ -9,21 +9,19 @@ Just run runserver.bat and it will download the conan dedicated server for you. 
 
 ### Features
  * Detect updates and update the server
+ * Automatically reboot the server when it goes down for any reason
 
 ### Coming Soon
  * Turn off / on building damage during defined hours
  * Host a web UI to see who is online
- * Download and manage steamcmd
 
 ### Example Log
 ```sh
-$ python runserver.py
-No config found, creating new config
-Saving config {'build_id': 0}
+>runserver.bat
+An update is available from build 0 to 1613510
 Launching server and waiting for child processes
 Server running successfully
-An update is available from build 0 to 1613510
-Saving config {'build_id': '1613510'}
+Server down... rebooting
 Launching server and waiting for child processes
 Server running successfully
 ```
