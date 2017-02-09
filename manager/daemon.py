@@ -24,7 +24,12 @@ class Daemon(object):
         self.steamcmd = None
 
     def is_update_available(self):
-        app_info = self.steamcmd.get_app_info(self.config['app_id'])
+        try:
+            app_info = self.steamcmd.get_app_info(self.config['app_id'])
+        except subprocess.CalledProcessError as ex:
+            print 'Failed to check for update %s' % ex
+            return False, None, None
+
         current = int(self.config['build_id'])
         latest = int(app_info['443030']['extended']['depots']['branches']['public']['buildid'])
         return latest > current, current, latest
