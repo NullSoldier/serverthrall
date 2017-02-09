@@ -11,7 +11,7 @@ import os
 DEFAULT_CONFIG = {
     'build_id': 0,
     'app_id': 443030,
-    'raid_timer_enabled': 'True',
+    'raid_timer_enabled': 'False',
     'raid_start_hour': 17,
     'raid_length_hours': 5,
     'steamcmd_path': os.path.join(os.getcwd(), 'steamcmd\\steamcmd.exe'),
