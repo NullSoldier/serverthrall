@@ -43,8 +43,12 @@ class Daemon(object):
             raise Exception('Server already running call close_server first')
 
         print 'Launching server and waiting for child processes'
-        process = subprocess.Popen([self.config['conan_path'], '-log'])
-        process = psutil.Process(process.pid)
+        try:
+            process = subprocess.Popen([self.config['conan_path'], '-log'])
+            process = psutil.Process(process.pid)
+        except subprocess.CalledProcessError as ex:
+            print 'Server failed to start... %s' % ex
+            return False
 
         # TODO: remove this hack
         while len(process.children()) == 0:
@@ -52,11 +56,12 @@ class Daemon(object):
 
         print 'Server running successfully'
         self.server = process.children()[0]
+        return True
 
     def close_server(self):
-        if self.server is not None:
+        if self.server is not None and self.server.is_running():
             self.server.terminate()
-            self.server = None
+        self.server = None
 
     def teardown(self):
         print 'Tearing down daemon'
@@ -79,6 +84,11 @@ class Daemon(object):
                 print 'An update is available from build %s to %s' % (current, target)
                 self.close_server()
                 self.update_server()
+                self.start_server()
+
+            if self.server and not self.server.is_running():
+                print 'Server down... rebooting'
+                self.close_server()
                 self.start_server()
 
             if self.server is None:
