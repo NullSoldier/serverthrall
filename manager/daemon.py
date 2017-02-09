@@ -117,6 +117,13 @@ class Daemon(object):
         self.raid_enabled = self.load_raid_enabled()
         self.steamcmd = SteamCmd(self.config['steamcmd_path'])
 
+        print 'Raid mode is currently %s' % ('enabled' if self.raid_enabled else 'disabled')
+
+        if self.config['raid_timer_enabled'] == 'True':
+            print 'Raid timer is enabled and raid mode is from %s to %s' % (
+                int(self.config['raid_start_hour']),
+                int(self.config['raid_start_hour']) + int(self.config['raid_length_hours']))
+
         while True:
             is_available, current, target = self.is_update_available()
             is_raid_time = self.is_raid_time()
