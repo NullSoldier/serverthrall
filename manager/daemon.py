@@ -115,12 +115,17 @@ class Daemon(object):
             self.config = DEFAULT_CONFIG
             save_config(self.config)
 
+        self.steamcmd = SteamCmd(self.config['steamcmd_path'])
+
+        is_available, current, target = self.is_update_available()
+        if is_available:
+            print 'An update is available from build %s to %s' % (current, target)
+            self.update_server()
+
         self.raid_enabled = self.load_raid_enabled()
         if self.raid_enabled is None:
             self.raid_enabled = False
             self.save_raid_enabled(self.raid_enabled)
-            
-        self.steamcmd = SteamCmd(self.config['steamcmd_path'])
 
         print 'Raid mode is currently %s' % ('enabled' if self.raid_enabled else 'disabled')
 
