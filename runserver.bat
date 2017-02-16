@@ -1,2 +1,2 @@
 @echo off
-python -B -u main.py
+python -B -u -m serverthrall
