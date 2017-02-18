@@ -1,0 +1,2 @@
+class ConfigDoesNotExistError(Exception):
+    pass

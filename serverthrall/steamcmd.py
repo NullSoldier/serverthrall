@@ -1,4 +1,5 @@
 import subprocess
+import logging
 
 from steamfiles import acf
 
@@ -8,13 +9,20 @@ class SteamCmd(object):
     def __init__(self, path):
         super(SteamCmd, self).__init__()
         self.steamcmd_path = path
+        self.logger = logging.getLogger('serverthrall.steamcmd')
+        self.logger.setLevel(logging.ERROR)
+
+    def _log_steam_cmd(self, command_list):
+        self.logger.debug(' '.join(command_list))
 
     def _get_steam_output(self, *args):
         commands = [self.steamcmd_path] + ["+%s" % c for c in args]
+        self._log_steam_cmd(commands)
         return subprocess.check_output(commands, stderr=subprocess.PIPE)
 
     def _execute_steam_commands(self, *args):
         commands = [self.steamcmd_path] + ["+%s" % c for c in args]
+        self._log_steam_cmd(commands)
         return subprocess.call(commands, stderr=subprocess.STDOUT)
 
     def get_app_info(self, app_id):
@@ -47,5 +55,5 @@ class SteamCmd(object):
         self._execute_steam_commands(
             'login anonymous',
             'force_install_dir "%s"' % app_dir,
-            'app_update %s' % app_id,
+            'app_update %s validate' % app_id,
             'quit')
