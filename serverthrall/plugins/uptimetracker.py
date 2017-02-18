@@ -19,10 +19,14 @@ class UptimeTracker(ServerThrallPlugin):
     def get_current_timestamp(self):
         return time.mktime(datetime.now().timetuple())
 
+    def get_total_lifespan(self):
+        return self.get_current_timestamp() - self.initial
+
     def get_uptime(self):
-        total_seconds = self.get_current_timestamp() - self.initial
-        uptime_seconds = self.seconds_up
-        return (uptime_seconds / total_seconds) * 100
+        total_lifespan_seconds = self.get_total_lifespan()
+        if total_lifespan_seconds == 0:
+            return 0
+        return (self.seconds_up / total_lifespan_seconds) * 100
 
     def tick(self):
         if self.server.is_running():
@@ -33,5 +37,10 @@ class UptimeTracker(ServerThrallPlugin):
             elapsed = current - self.last_check
             self.seconds_up += elapsed
             self.last_check = current
-            print 'Uptime at %s percent' % round(self.get_uptime(), 2)
+            self.config.set('seconds_up', self.seconds_up)
+
             # self.logger.debug('Uptime at %s%' % self.get_uptime())
+            print 'Uptime at %s percent (%s / %s)' % (
+                round(self.get_uptime(), 2),
+                self.seconds_up,
+                self.get_total_lifespan())
