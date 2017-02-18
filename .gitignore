@@ -1,2 +1,4 @@
 *.pyc
+serverthrall.config
+serverthrall.log
 vendor/
