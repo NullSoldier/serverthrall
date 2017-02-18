@@ -13,6 +13,7 @@ class ServerUpdater(ServerThrallPlugin):
     def ready(self, steamcmd, server):
         super(ServerUpdater, self).ready(steamcmd, server)
         self.installed_version = self.config.get('installed_version')
+        self.logger.info('Autoupdater running, currently known buildid is %s', self.installed_version)
 
     def get_available_build_id(self):
         app_info = None
