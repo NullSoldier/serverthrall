@@ -13,10 +13,10 @@ Conan Server Manager (now known as Server Thrall) is a python based dedicated se
 ### Included Plugins
 | Plugin | Description | Config |
 | --- | --- | --- |
-| **DownRecovery** | Restarts the server if the server is offline. | None |
-| **ServerUpdater** | Checks for updates and updates the server automatically | **installed_version**: the currently known server version. delete this key to force an update |
-| **UptimeTracker** | Records the percentage of time the server has been online. If the server thrall is closed, this counts against the uptime percentage. | **seconds_up**: The total amount of seconds the server has been up<br>**initial**:  unix timestamp of when the server uptime started to be recorded. Delete this to restart your uptime counter |
-| **RaidPlugin** | Allows you to set a period of time under which "Raiding" is enabled. This means that building damage will only be enabled during this time. Works by changing the games configuration and rebooting the server at the boundries of raiding times. | None |
+| **DownRecovery** | Restarts the server if the server is offline. | **enabled**: Set to true or false to prevent this plugin from running<br> |
+| **ServerUpdater** | Checks for updates and updates the server automatically | **enabled**: Set to true or false to prevent this plugin from running<br>**installed_version**: the currently known server version. delete this key to force an update |
+| **UptimeTracker** | Records the percentage of time the server has been online. If the server thrall is closed, this counts against the uptime percentage. | **enabled**: Set to true or false to prevent this plugin from running<br>**seconds_up**: The total amount of seconds the server has been up<br>**initial**:  unix timestamp of when the server uptime started to be recorded. Delete this to restart your uptime counter |
+| **RaidPlugin** | Allows you to set a period of time under which "Raiding" is enabled. This means that building damage will only be enabled during this time. Works by changing the games configuration and rebooting the server at the boundries of raiding times. | **enabled**: Set to true or false to prevent this plugin from running<br>Coming soon... |
 
 ###Example Config
 ```ini
