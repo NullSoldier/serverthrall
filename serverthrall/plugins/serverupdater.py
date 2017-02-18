@@ -1,6 +1,7 @@
 from .serverthrallplugin import ServerThrallPlugin
 import subprocess
 from serverthrall import settings
+import logging
 
 
 class ServerUpdater(ServerThrallPlugin):
@@ -34,7 +35,7 @@ class ServerUpdater(ServerThrallPlugin):
         available_build_id, exc = self.get_available_build_id()
 
         if available_build_id is None:
-            print 'Failed to check for update: %s' % exc
+            self.logger.error('Failed to check for update: %s' % exc)
             return False, None, None
 
         if len(self.installed_version.strip()) == 0:
@@ -53,7 +54,7 @@ class ServerUpdater(ServerThrallPlugin):
         is_available, current, target = self.is_update_available()
 
         if is_available:
-            print 'An update is available from build %s to %s' % (current, target)
+            self.logger.info('An update is available from build %s to %s' % (current, target))
             self.server.close()
             self.update_server(target)
             self.server.start()
