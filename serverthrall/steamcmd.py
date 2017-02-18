@@ -52,5 +52,5 @@ class SteamCmd(object):
         self._execute_steam_commands(
             'login anonymous',
             'force_install_dir "%s"' % app_dir,
-            'app_update %s' % app_id,
+            'app_update %s validate' % app_id,
             'quit')

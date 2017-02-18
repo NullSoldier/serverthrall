@@ -26,7 +26,6 @@ class Thrall(object):
         self.close_server()
 
     def start(self):
-        print 'started thrall', self.server.is_running(), self.server.process
         if not self.server.is_running():
             self.server.start()
 
@@ -34,7 +33,6 @@ class Thrall(object):
             plugin.ready(self.server, self.steamcmd)
 
         while True:
-            print 'Tick'
             for plugin in self.plugins:
                 plugin.tick()
             self.config.save()
