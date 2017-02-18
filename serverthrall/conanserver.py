@@ -17,8 +17,7 @@ class ConanServer():
         return self.process.is_running()
 
     def is_installed(self):
-        # TODO: implement this
-        return False
+        return os.path.exists(self.path)
 
     def start(self):
         if self.process or self.is_running():
