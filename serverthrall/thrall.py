@@ -37,6 +37,9 @@ class Thrall(object):
 
         while True:
             for plugin in self.plugins:
+                if not plugin.enabled:
+                    continue
+
                 try:
                     plugin.tick()
                 except Exception:
