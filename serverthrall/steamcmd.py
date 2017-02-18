@@ -9,12 +9,17 @@ class SteamCmd(object):
         super(SteamCmd, self).__init__()
         self.steamcmd_path = path
 
+    def _log_steam_cmd(self, command_list):
+        print 'STEAMCMD > ', ' '.join(command_list)
+
     def _get_steam_output(self, *args):
         commands = [self.steamcmd_path] + ["+%s" % c for c in args]
+        self._log_steam_cmd(commands)
         return subprocess.check_output(commands, stderr=subprocess.PIPE)
 
     def _execute_steam_commands(self, *args):
         commands = [self.steamcmd_path] + ["+%s" % c for c in args]
+        self._log_steam_cmd(commands)
         return subprocess.call(commands, stderr=subprocess.STDOUT)
 
     def get_app_info(self, app_id):
