@@ -23,10 +23,13 @@ Conan Server Manager (now known as Server Thrall) is a python based dedicated se
 [ServerThrall]
 conan_server_directory = c:\Users\Developer\Desktop\Projects\conan\vendor\server
 [UptimeTracker]
+enabled=false
 initial = 1487425465.0
 seconds_up = 383.0
 [DownRecovery]
+enabled=true
 [ServerUpdater]
+enabled=true
 installed_version = 1639449
 ```
 
