@@ -37,6 +37,11 @@ class Thrall(object):
 
         while True:
             for plugin in self.plugins:
-                plugin.tick()
+                try:
+                    plugin.tick()
+                except Exception:
+                    self.logger.exception('Unloading %s plugin after error ' % plugin.name)
+                    self.plugins.remove(plugin)
+
             self.config.save()
             time.sleep(5)
