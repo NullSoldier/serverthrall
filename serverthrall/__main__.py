@@ -1,7 +1,7 @@
 # flake8: noqa
 from .appconfig import config_load, ThrallConfig, PluginConfig
 from .conanserver import ConanServer
-from .plugins import UptimeTracker
+from .plugins import UptimeTracker, DownRecovery
 from .thrall import Thrall
 from .steamcmd import SteamCmd
 import settings
@@ -32,7 +32,7 @@ if not server.is_installed():
 
 # Initialize and configure plugins
 plugins = []
-for plugin_class in (UptimeTracker,):
+for plugin_class in (UptimeTracker, DownRecovery):
     print 'Initializing with plugin %s' % plugin_class.__name__
     plugin_config = PluginConfig(plugin_class, config)
     plugin = plugin_class(plugin_config)
