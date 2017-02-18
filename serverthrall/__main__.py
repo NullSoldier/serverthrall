@@ -28,7 +28,7 @@ if server is None:
 # Install the server if it's not installed
 if not server.is_installed():
     print 'Conan server not installed, installing.'
-    steamcmd.update_app(settings.CONAN_APP_ID, thrall_config.get('conan_server_directory'))
+    server.install_or_update()
 
 # Initialize and configure plugins
 plugins = []

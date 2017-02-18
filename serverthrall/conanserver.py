@@ -19,6 +19,10 @@ class ConanServer():
     def is_installed(self):
         return os.path.exists(self.path)
 
+    def install_or_update(self):
+        directory = os.path.dirname(self.path)
+        self.steamcmd.update_app(settings.CONAN_APP_ID, directory)
+
     def start(self):
         if self.process or self.is_running():
             raise Exception('Server already running call close_server first')
