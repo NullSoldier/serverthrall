@@ -27,11 +27,14 @@ class ConanServer():
         try:
             process = subprocess.Popen([self.path, '-log'])
             process = psutil.Process(process.pid)
+            self.attach(process)
         except subprocess.CalledProcessError as ex:
             print 'Server failed to start... %s' % ex
             return False
+        except psutil.NoSuchProcess as ex:
+            print 'Server started but crashed shortly after... %s' % ex
+            return False
 
-        self.attach(process)
         print 'Server running successfully'
         return True
 
