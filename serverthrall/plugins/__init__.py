@@ -1,3 +1,4 @@
 #flake8: noqa
-from .uptimetracker import UptimeTracker
 from .downrecovery import DownRecovery
+from .serverupdater import ServerUpdater
+from .uptimetracker import UptimeTracker
