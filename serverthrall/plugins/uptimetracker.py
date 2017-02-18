@@ -1,9 +1,9 @@
-from .serverthrallplugin import ServerThrallPlugin
+from .thrallplugin import ThrallPlugin
 from datetime import datetime
 import time
 
 
-class UptimeTracker(ServerThrallPlugin):
+class UptimeTracker(ThrallPlugin):
 
     def __init__(self, config):
         super(UptimeTracker, self).__init__(config)

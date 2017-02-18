@@ -1,7 +1,7 @@
 import logging
 
 
-class ServerThrallPlugin(object):
+class ThrallPlugin(object):
 
     def __init__(self, config):
         self.config = config

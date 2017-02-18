@@ -1,4 +1,4 @@
-# class RaidTimeManager(ServerThrallPlugin):
+# class RaidTimeManager(ThrallPlugin):
 
 #     def get_raid_setting(self):
 #         path = os.path.join(self.config['conan_dir'],

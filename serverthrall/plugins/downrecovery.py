@@ -1,7 +1,7 @@
-from .serverthrallplugin import ServerThrallPlugin
+from .thrallplugin import ThrallPlugin
 
 
-class DownRecovery(ServerThrallPlugin):
+class DownRecovery(ThrallPlugin):
 
     def tick(self):
         if not self.server.is_running():

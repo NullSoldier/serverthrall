@@ -1,10 +1,10 @@
-from .serverthrallplugin import ServerThrallPlugin
+from .thrallplugin import ThrallPlugin
 import subprocess
 from serverthrall import settings
 import logging
 
 
-class ServerUpdater(ServerThrallPlugin):
+class ServerUpdater(ThrallPlugin):
 
     def __init__(self, config):
         super(ServerUpdater, self).__init__(config)
