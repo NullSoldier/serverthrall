@@ -1,4 +1,5 @@
 import subprocess
+import logging
 
 from steamfiles import acf
 
@@ -8,9 +9,11 @@ class SteamCmd(object):
     def __init__(self, path):
         super(SteamCmd, self).__init__()
         self.steamcmd_path = path
+        self.logger = logging.getLogger('serverthrall.steamcmd')
+        self.logger.setLevel(logging.ERROR)
 
     def _log_steam_cmd(self, command_list):
-        print 'STEAMCMD > ', ' '.join(command_list)
+        self.logger.debug(' '.join(command_list))
 
     def _get_steam_output(self, *args):
         commands = [self.steamcmd_path] + ["+%s" % c for c in args]

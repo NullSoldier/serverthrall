@@ -7,11 +7,14 @@ from .steamcmd import SteamCmd
 import settings
 import ConfigParser
 import os
+import logging
+import atexit
 
+logger = logging.getLogger('serverthrall')
 
 config = config_load()
 if config is None:
-    print 'No config found, creating for the first time'
+    logger.info('No config found, creating for the first time')
     config = ConfigParser.RawConfigParser()
 
 steamcmd = SteamCmd(settings.STEAMCMD_PATH)
@@ -27,16 +30,20 @@ if server is None:
 
 # Install the server if it's not installed
 if not server.is_installed():
-    print 'Conan server not installed, installing.'
+    logger.info('Conan server not installed, installing.')
     server.install_or_update()
 
 # Initialize and configure plugins
 plugins = []
 for plugin_class in (UptimeTracker, DownRecovery, ServerUpdater):
-    print 'Initializing with plugin %s' % plugin_class.__name__
+    logger.info('Initializing with plugin %s' % plugin_class.__name__)
     plugin_config = PluginConfig(plugin_class, config)
     plugin = plugin_class(plugin_config)
     plugins.append(plugin)
 
 thrall = Thrall(steamcmd, thrall_config, plugins, server)
+def onExit():
+    logger.info('Safely shutting down server thrall....')
+    thrall.stop()
+atexit.register(onExit)
 thrall.start()

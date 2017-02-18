@@ -1,4 +1,5 @@
 import time
+import logging
 
 
 class Thrall(object):
@@ -8,6 +9,7 @@ class Thrall(object):
         self.config = config
         self.plugins = plugins
         self.server = server
+        self.logger = logging.getLogger('serverthrall')
 
     def validate(self):
         # load configuration
@@ -23,7 +25,8 @@ class Thrall(object):
 
     def stop(self):
         print 'Tearing down daemon'
-        self.close_server()
+        self.config.save()
+        self.server.close()
 
     def start(self):
         if not self.server.is_running():

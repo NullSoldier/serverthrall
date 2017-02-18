@@ -3,6 +3,8 @@ import psutil
 import time
 import settings
 import os
+import logging
+
 
 class ConanServer():
 
@@ -10,6 +12,7 @@ class ConanServer():
         self.path = path
         self.steamcmd = steamcmd
         self.process = None
+        self.logger = logging.getLogger('serverthrall')
 
     def is_running(self):
         if self.process is None:
@@ -27,19 +30,19 @@ class ConanServer():
         if self.process or self.is_running():
             raise Exception('Server already running call close_server first')
 
-        print 'Launching server and waiting for child processes'
+        self.logger.info('Launching server and waiting for child processes')
         try:
             process = subprocess.Popen([self.path, '-log'])
             process = psutil.Process(process.pid)
             self.attach(process)
         except subprocess.CalledProcessError as ex:
-            print 'Server failed to start... %s' % ex
+            self.logger.exception('Server failed to start... %s' % ex)
             return False
         except psutil.NoSuchProcess as ex:
-            print 'Server started but crashed shortly after... %s' % ex
+            self.logger.exception('Server started but crashed shortly after... %s' % ex)
             return False
 
-        print 'Server running successfully'
+        self.logger.info('Server running successfully')
         return True
 
     def close(self):
@@ -55,6 +58,8 @@ class ConanServer():
 
     @staticmethod
     def create_from_running(config, steamcmd):
+        logger = logging.getLogger('serverthrall')
+
         for p in psutil.process_iter():
             if p.name() == settings.CONAN_EXE_NAME:
                 executable_path = p.exe()
@@ -63,9 +68,9 @@ class ConanServer():
 
                 # TODO: the to_lower hack does not work on linux
                 if running_path.lower() != expected_path.lower():
-                    print 'Found running server that is different than config'
+                    logger.info('Found running server that is different than config')
                 else:
-                    print 'Found running server, attaching'
+                    logger.info('Found running server, attaching')
                     server = ConanServer(executable_path, steamcmd)
                     server.attach(p)
                     return server

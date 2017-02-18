@@ -39,8 +39,8 @@ class UptimeTracker(ServerThrallPlugin):
             self.last_check = current
             self.config.set('seconds_up', self.seconds_up)
 
-            # self.logger.debug('Uptime at %s%' % self.get_uptime())
-            print 'Uptime at %s percent (%s / %s)' % (
+            self.logger.info(
+                'Uptime at %s percent (%s / %s)' % (
                 round(self.get_uptime(), 2),
                 self.seconds_up,
-                self.get_total_lifespan())
+                self.get_total_lifespan()))
