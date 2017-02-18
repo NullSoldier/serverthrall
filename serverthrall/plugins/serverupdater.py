@@ -7,7 +7,7 @@ class ServerUpdater(ServerThrallPlugin):
 
     def __init__(self, config):
         super(ServerUpdater, self).__init__(config)
-        self.config.set_default('installed_version', None)
+        self.config.set_default('installed_version', '')
 
     def ready(self, steamcmd, server):
         super(ServerUpdater, self).ready(steamcmd, server)
@@ -37,7 +37,7 @@ class ServerUpdater(ServerThrallPlugin):
             print 'Failed to check for update: %s' % exc
             return False, None, None
 
-        if self.installed_version is None:
+        if len(self.installed_version.strip()) == 0:
             return True, None, available_build_id
 
         current = int(self.installed_version)
