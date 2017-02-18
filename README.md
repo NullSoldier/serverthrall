@@ -39,10 +39,16 @@ installed_version = 1639449
 ### Example Log
 ```sh
 > runserver.bat
-An update is available from build 0 to 1613510
-Launching server and waiting for child processes
-Server running successfully
-Server down... rebooting
-Launching server and waiting for child processes
-Server running successfully
+[serverthrall] Found running server, attaching
+[serverthrall] Initializing with plugin UptimeTracker
+[serverthrall] Initializing with plugin DownRecovery
+[serverthrall] Initializing with plugin ServerUpdater
+[serverthrall.UptimeTracker] Uptime at 98.1 percent (672.0 / 685.0)
+[serverthrall.UptimeTracker] Uptime at 98.12 percent (679.0 / 692.0)
+[serverthrall.UptimeTracker] Uptime at 98.14 percent (686.0 / 699.0)
+[serverthrall.DownRecovery] Server currently down. Rebooting
+[serverthrall] Launching server and waiting for child processes
+[serverthrall] Server running successfully
+[serverthrall.UptimeTracker] Uptime at 98.26 percent (732.0 / 745.0)
+[serverthrall.UptimeTracker] Uptime at 98.27 percent (739.0 / 752.0)
 ```
