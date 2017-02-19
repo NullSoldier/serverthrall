@@ -11,8 +11,8 @@ class UptimeTracker(ThrallPlugin):
         self.config.set_default('seconds_up', 0)
         self.last_check = None
 
-    def ready(self, steamcmd, server):
-        super(UptimeTracker, self).ready(steamcmd, server)
+    def ready(self, steamcmd, server, thrall):
+        super(UptimeTracker, self).ready(steamcmd, server, thrall)
         self.initial = self.config.getfloat('initial')
         self.seconds_up = self.config.getfloat('seconds_up')
 
