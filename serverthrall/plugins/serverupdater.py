@@ -1,7 +1,6 @@
 from .thrallplugin import ThrallPlugin
-import subprocess
 from serverthrall import settings
-import logging
+import subprocess
 
 
 class ServerUpdater(ThrallPlugin):
@@ -24,10 +23,9 @@ class ServerUpdater(ThrallPlugin):
 
         build_id = (app_info
             [settings.CONAN_APP_ID]
-            ['extended']
             ['depots']
             ['branches']
-            ['public']
+            [settings.RELEASE_BRANCH]
             ['buildid'])
 
         return build_id, None

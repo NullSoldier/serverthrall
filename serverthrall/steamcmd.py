@@ -1,7 +1,6 @@
 import subprocess
 import logging
-
-from steamfiles import acf
+import acf
 
 
 class SteamCmd(object):
