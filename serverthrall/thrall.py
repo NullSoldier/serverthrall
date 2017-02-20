@@ -33,7 +33,8 @@ class Thrall(object):
             self.server.start()
 
         for plugin in self.plugins:
-            plugin.ready(self.server, self.steamcmd, self)
+            if plugin.enabled:
+                plugin.ready(self.server, self.steamcmd, self)
 
         while True:
             for plugin in self.plugins:
