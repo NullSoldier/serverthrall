@@ -44,19 +44,30 @@ class ServerUpdater(ThrallPlugin):
 
         return data['AppState']['buildid']
 
-    def get_available_build_id(self):
+    def get_available_build_id(self, branch=None):
         app_info = None
         try:
             app_info = self.steamcmd.get_app_info(settings.CONAN_APP_ID)
         except subprocess.CalledProcessError as ex:
             return None, ex
 
-        build_id = (app_info
-            [settings.CONAN_APP_ID]
-            ['depots']
-            ['branches']
-            [settings.RELEASE_BRANCH]
-            ['buildid'])
+        build_id = None
+
+        if branch is None:
+            # latest build id of any branch
+            build_id = max(int(b['buildid']) for b in app_info
+                [settings.CONAN_APP_ID]
+                ['depots']
+                ['branches']
+                .values())
+        else:
+            # build id of specific branch
+            build_id = (app_info
+                [settings.CONAN_APP_ID]
+                ['depots']
+                ['branches']
+                [branch]
+                ['buildid'])
 
         return build_id, None
 
