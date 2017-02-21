@@ -22,16 +22,21 @@ Conan Server Manager (now known as Server Thrall) is a python based dedicated se
 ###Example Config
 ```ini
 [ServerThrall]
-conan_server_directory = c:\Users\Developer\Desktop\Projects\conan\vendor\server
+force_update_on_launch = false
+conan_server_directory = c:\..\conan\vendor\server
 [UptimeTracker]
-enabled=false
 initial = 1487425465.0
-seconds_up = 383.0
+seconds_up = 1261.0
+enabled = false
 [DownRecovery]
-enabled=true
+enabled = true
 [ServerUpdater]
-enabled=true
-installed_version = 1639449
+enabled = true
+installed_version = 1643774
+[RaidManager]
+enabled = true
+start_hour = 17
+length_in_hours = 5
 ```
 
 ### Coming Soon
@@ -47,12 +52,13 @@ installed_version = 1639449
 [serverthrall] Initializing with plugin UptimeTracker
 [serverthrall] Initializing with plugin DownRecovery
 [serverthrall] Initializing with plugin ServerUpdater
-[serverthrall.UptimeTracker] Uptime at 98.1 percent (672.0 / 685.0)
+[serverthrall] Initializing with plugin RaidManager
+[serverthrall] Found running server, attaching
 [serverthrall.UptimeTracker] Uptime at 98.12 percent (679.0 / 692.0)
-[serverthrall.UptimeTracker] Uptime at 98.14 percent (686.0 / 699.0)
-[serverthrall.DownRecovery] Server currently down. Rebooting
+[serverthrall.ServerUpdater] Autoupdater running, currently known buildid is 1643774
+[serverthrall.RaidManager] Raiding is currently OFF in the server.
+[serverthrall.RaidManager] Raiding is enabled from 05:00 PM to 01:00 AM
+[serverthrall.RaidManager] Preparing to turn ON raiding.
 [serverthrall] Launching server and waiting for child processes
 [serverthrall] Server running successfully
-[serverthrall.UptimeTracker] Uptime at 98.26 percent (732.0 / 745.0)
-[serverthrall.UptimeTracker] Uptime at 98.27 percent (739.0 / 752.0)
 ```
