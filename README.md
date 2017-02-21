@@ -10,10 +10,11 @@ Conan Server Manager (now known as Server Thrall) is a python based dedicated se
 ### How to run
 **Click on runserver.bat** If this is your first time running it you will see a new **serverthrall.config** file appear in the same directory. See more information below on what the configuration contains.
 
-### Included Plugins
+### Configuration for Plugins
 | Plugin | Description | Config |
 | --- | --- | --- |
-| **DownRecovery** | Restarts the server if the server is offline. | **enabled**: Set to true or false to prevent this plugin from running<br> |
+| --- | These are configuration options for the "ServerThrall" section and are app wide. | **conan_server_directory**: A directory where ServerThrall should be able to find "ConanSandboxServer.exe"<br>**force_update_on_launch**: When ServerThrall is launched, it should force itself to update and validate the server files. Useful if you've accidently deleted or removed any files and your server won't launch. |
+| **DownRecovery** | Restarts the server if the server is offline. | **enabled**: Set to true or false to prevent this plugin from running |
 | **ServerUpdater** | Checks for updates and updates the server automatically | **enabled**: Set to true or false to prevent this plugin from running<br>**installed_version**: the currently known server version. delete this key to force an update |
 | **UptimeTracker** | Records the percentage of time the server has been online. If the server thrall is closed, this counts against the uptime percentage. | **enabled**: Set to true or false to prevent this plugin from running<br>**seconds_up**: The total amount of seconds the server has been up<br>**initial**:  unix timestamp of when the server uptime started to be recorded. Delete this to restart your uptime counter |
 | **RaidPlugin** | Allows you to set a period of time under which "Raiding" is enabled. This means that building damage will only be enabled during this time. Works by changing the games configuration and rebooting the server at the boundries of raiding times. This plugin modifies the CanDamagePlayerOwnedStructures option in ServerSettings. | **enabled**: Set to true or false to prevent this plugin from running<br>**start_hour**: The hour of the day that raiding should be enabled. This should be in 24 hour time. So 17 would be 5pm in the servers computers timezone.<br>**length_in_hours**: The number of hours after start_hour that raiding should be enabled. |
