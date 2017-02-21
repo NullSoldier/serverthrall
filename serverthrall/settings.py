@@ -21,3 +21,9 @@ logger = logging.getLogger('serverthrall')
 logger.setLevel(logging.DEBUG)
 logger.addHandler(fileHandler)
 logger.addHandler(consoleHandler)
+
+steamcmd_logger = logging.getLogger('serverthrall.steamcmd')
+steamcmd_logger.setLevel(logging.ERROR)
+
+conan_config_logger = logging.getLogger('serverthrall.conan_config')
+conan_config_logger.setLevel(logging.ERROR)

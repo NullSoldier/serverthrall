@@ -9,7 +9,6 @@ class SteamCmd(object):
         super(SteamCmd, self).__init__()
         self.steamcmd_path = path
         self.logger = logging.getLogger('serverthrall.steamcmd')
-        self.logger.setLevel(logging.ERROR)
 
     def _log_steam_cmd(self, command_list):
         self.logger.debug(' '.join(command_list))

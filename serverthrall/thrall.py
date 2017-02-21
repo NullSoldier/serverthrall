@@ -4,9 +4,10 @@ import logging
 
 class Thrall(object):
 
-    def __init__(self, steamcmd, config, plugins, server):
+    def __init__(self, steamcmd, config, conan_config, plugins, server):
         self.steamcmd = steamcmd
         self.config = config
+        self.conan_config = conan_config
         self.plugins = plugins
         self.server = server
         self.logger = logging.getLogger('serverthrall')
@@ -34,7 +35,11 @@ class Thrall(object):
 
         for plugin in self.plugins:
             if plugin.enabled:
-                plugin.ready(self.server, self.steamcmd, self)
+                try:
+                    plugin.ready(self.server, self.steamcmd, self)
+                except Exception:
+                    self.logger.exception('Unloading %s plugin after error ' % plugin.name)
+                    self.plugins.remove(plugin)
 
         while True:
             for plugin in self.plugins:

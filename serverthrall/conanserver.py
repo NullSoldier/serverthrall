@@ -1,3 +1,4 @@
+from .conanconfig import ConanConfig
 import subprocess
 import psutil
 import time
@@ -74,4 +75,5 @@ class ConanServer():
                     server = ConanServer(executable_path, steamcmd)
                     server.attach(p)
                     return server
+
         return None

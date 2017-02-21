@@ -1,7 +1,8 @@
 # flake8: noqa
 from .appconfig import config_load, ThrallConfig, PluginConfig
+from .conanconfig import ConanConfig
 from .conanserver import ConanServer
-from .plugins import UptimeTracker, DownRecovery, ServerUpdater
+from .plugins import UptimeTracker, DownRecovery, ServerUpdater, RaidManager
 from .thrall import Thrall
 from .steamcmd import SteamCmd
 import settings
@@ -28,20 +29,27 @@ if server is None:
     server_path = os.path.join(thrall_config.get('conan_server_directory'), settings.CONAN_EXE_NAME)
     server = ConanServer(server_path, steamcmd)
 
-# Install the server if it's not installed
 if not server.is_installed():
+    # Install the server if it's not installed
     logger.info('Conan server not installed, installing.')
     server.install_or_update()
+elif thrall_config.getboolean('force_update_on_launch'):
+    # user can force an update on launch if files are missing
+    logger.info('Forcing update because you told me to do so in your configuration.')
+    server.install_or_update()
+
+# Load the unreal engine configs for the server
+conan_config = ConanConfig(thrall_config.get('conan_server_directory'))
 
 # Initialize and configure plugins
 plugins = []
-for plugin_class in (UptimeTracker, DownRecovery, ServerUpdater):
+for plugin_class in (UptimeTracker, DownRecovery, ServerUpdater, RaidManager):
     logger.info('Initializing with plugin %s' % plugin_class.__name__)
     plugin_config = PluginConfig(plugin_class, config)
     plugin = plugin_class(plugin_config)
     plugins.append(plugin)
 
-thrall = Thrall(steamcmd, thrall_config, plugins, server)
+thrall = Thrall(steamcmd, thrall_config, conan_config, plugins, server)
 def onExit():
     logger.info('Safely shutting down server thrall....')
     thrall.stop()
