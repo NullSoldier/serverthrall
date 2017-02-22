@@ -30,9 +30,13 @@ class ConanServer():
 
     def start(self):
         if self.process or self.is_running():
-            raise Exception('Server already running call close_server first')
+            self.logger.error('Server already running call close_server first')
+            return
 
-        self.logger.info('Launching server and waiting for child processes')
+        if len(self.arguments) == 0:
+            self.logger.info('Launching server and waiting for child processes')
+        else:
+            self.logger.info('Launching server and waiting for child processes with extra arguments, %s' % self.arguments)
 
         try:
             process = subprocess.Popen([self.path, '-log', self.arguments])
