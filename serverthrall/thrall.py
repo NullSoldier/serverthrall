@@ -25,9 +25,8 @@ class Thrall(object):
         pass
 
     def stop(self):
-        print 'Tearing down daemon'
+        self.logger.info('Stopping ServerThrall')
         self.config.save()
-        self.server.close()
 
     def start(self):
         if not self.server.is_running():

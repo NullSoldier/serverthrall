@@ -73,10 +73,11 @@ class ConanServer():
                 # TODO: the to_lower hack does not work on linux
                 if running_path.lower() != expected_path.lower():
                     logger.info('Found running server that is different than config')
-                else:
-                    logger.info('Found running server, attaching')
-                    server = ConanServer(executable_path, steamcmd)
-                    server.attach(p)
-                    return server
+                    continue
+                
+                logger.info('Found running server, attaching')
+                server = ConanServer(executable_path, steamcmd, additional_arguments)
+                server.attach(p)
+                return server
 
         return None
