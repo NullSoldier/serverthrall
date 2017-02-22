@@ -9,10 +9,11 @@ import logging
 
 class ConanServer():
 
-    def __init__(self, path, steamcmd):
+    def __init__(self, path, steamcmd, arguments):
         self.path = path
         self.steamcmd = steamcmd
         self.process = None
+        self.arguments = arguments
         self.logger = logging.getLogger('serverthrall')
 
     def is_running(self):
@@ -32,8 +33,9 @@ class ConanServer():
             raise Exception('Server already running call close_server first')
 
         self.logger.info('Launching server and waiting for child processes')
+
         try:
-            process = subprocess.Popen([self.path, '-log'])
+            process = subprocess.Popen([self.path, '-log', self.arguments])
             process = psutil.Process(process.pid)
             self.attach(process)
         except subprocess.CalledProcessError as ex:
@@ -66,6 +68,7 @@ class ConanServer():
                 executable_path = p.exe()
                 running_path = os.path.dirname(executable_path)
                 expected_path = config.get('conan_server_directory')
+                additional_arguments = config.get('additional_arguments')
 
                 # TODO: the to_lower hack does not work on linux
                 if running_path.lower() != expected_path.lower():

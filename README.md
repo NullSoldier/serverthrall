@@ -13,7 +13,7 @@ Conan Server Manager (now known as Server Thrall) is a python based dedicated se
 ### Configuration for Plugins
 | Plugin | Description | Config |
 | --- | --- | --- |
-| | These are configuration options for the "ServerThrall" section and are app wide. | **conan_server_directory**: A directory where ServerThrall should be able to find "ConanSandboxServer.exe"<br>**force_update_on_launch**: Set to true or false to force ServerThrall to update and validate the conan exiles server files. Useful if you've accidently deleted or removed any files and your server won't launch. |
+| | These are configuration options for the "ServerThrall" section and are app wide. | **conan_server_directory**: A directory where ServerThrall should be able to find "ConanSandboxServer.exe"<br>**force_update_on_launch**: Set to true or false to force ServerThrall to update and validate the conan exiles server files. Useful if you've accidently deleted or removed any files and your server won't launch.<br>**additional_arguments**: Passes additional arguments to ConanSandboxServer. This allows you to pass arguments like MULTIHOME if you want to play on the same computer as your server. By default the only parameter passed to the server is **-log** which is required for ServerThrall to work properly for now. |
 | **DownRecovery** | Restarts the server if the server is offline. | **enabled**: Set to true or false to prevent this plugin from running |
 | **ServerUpdater** | Checks for updates and updates the server automatically | **enabled**: Set to true or false to prevent this plugin from running<br>**installed_version**: the currently known server version. delete this key to force an update |
 | **UptimeTracker** | Records the percentage of time the server has been online. If the server thrall is closed, this counts against the uptime percentage. | **enabled**: Set to true or false to prevent this plugin from running<br>**seconds_up**: The total amount of seconds the server has been up<br>**initial**:  unix timestamp of when the server uptime started to be recorded. Delete this to restart your uptime counter |
@@ -24,6 +24,7 @@ Conan Server Manager (now known as Server Thrall) is a python based dedicated se
 [ServerThrall]
 force_update_on_launch = false
 conan_server_directory = c:\..\conan\vendor\server
+additional_arguments = -MULTIHOME=192.168.2.4 -QueryPort=27019 -GameServerQueryPort=27020 -ServerName=FooServer -MaxPlayers=20
 [UptimeTracker]
 initial = 1487425465.0
 seconds_up = 1261.0

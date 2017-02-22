@@ -27,7 +27,8 @@ server = ConanServer.create_from_running(thrall_config, steamcmd)
 # Create the server if we could not attach to a running process
 if server is None:
     server_path = os.path.join(thrall_config.get('conan_server_directory'), settings.CONAN_EXE_NAME)
-    server = ConanServer(server_path, steamcmd)
+    additional_arguments = thrall_config.get('additional_arguments')
+    server = ConanServer(server_path, steamcmd, additional_arguments)
 
 if not server.is_installed():
     # Install the server if it's not installed
