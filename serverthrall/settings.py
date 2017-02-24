@@ -2,7 +2,8 @@ import os.path
 import logging
 
 STEAMCMD_PATH = os.path.join(os.getcwd(), 'vendor\\steamcmd\\steamcmd.exe')
-CONAN_APP_ID = '443030'
+CONAN_SERVER_APP_ID = '443030'
+CONAN_CLIENT_APP_ID = '440900'
 CONFIG_NAME = 'serverthrall.config'
 CONAN_EXE_NAME = 'ConanSandboxServer.exe'
 

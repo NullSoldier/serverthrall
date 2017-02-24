@@ -34,7 +34,7 @@ class ServerUpdater(ThrallPlugin):
     def get_installed_build_id(self):
         appmanifest_path = os.path.join(
             self.thrall.config.get('conan_server_directory'),
-            'steamapps/appmanifest_%s.acf' % settings.CONAN_APP_ID)
+            'steamapps/appmanifest_%s.acf' % settings.CONAN_SERVER_APP_ID)
 
         if not os.path.exists(appmanifest_path):
             return self.NO_INSTALLED_VERSION
@@ -47,7 +47,7 @@ class ServerUpdater(ThrallPlugin):
     def get_available_build_id(self, branch=None):
         app_info = None
         try:
-            app_info = self.steamcmd.get_app_info(settings.CONAN_APP_ID)
+            app_info = self.steamcmd.get_app_info(settings.CONAN_SERVER_APP_ID)
         except subprocess.CalledProcessError as ex:
             return None, ex
 
@@ -56,14 +56,14 @@ class ServerUpdater(ThrallPlugin):
         if branch is None:
             # latest build id of any branch
             build_id = max(int(b['buildid']) for b in app_info
-                [settings.CONAN_APP_ID]
+                [settings.CONAN_SERVER_APP_ID]
                 ['depots']
                 ['branches']
                 .values())
         else:
             # build id of specific branch
             build_id = (app_info
-                [settings.CONAN_APP_ID]
+                [settings.CONAN_SERVER_APP_ID]
                 ['depots']
                 ['branches']
                 [branch]

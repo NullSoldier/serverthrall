@@ -26,7 +26,7 @@ class ConanServer():
 
     def install_or_update(self):
         directory = os.path.dirname(self.path)
-        self.steamcmd.update_app(settings.CONAN_APP_ID, directory)
+        self.steamcmd.update_app(settings.CONAN_SERVER_APP_ID, directory)
 
     def start(self):
         if self.process or self.is_running():
