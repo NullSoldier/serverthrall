@@ -1,6 +1,8 @@
 import subprocess
 import logging
 import acf
+import os
+import shutil
 
 
 class SteamCmd(object):
@@ -8,6 +10,7 @@ class SteamCmd(object):
     def __init__(self, path):
         super(SteamCmd, self).__init__()
         self.steamcmd_path = path
+        self.steamcmd_dir = os.path.dirname(path)
         self.logger = logging.getLogger('serverthrall.steamcmd')
 
     def _log_steam_cmd(self, command_list):
@@ -23,7 +26,20 @@ class SteamCmd(object):
         self._log_steam_cmd(commands)
         return subprocess.call(commands, stderr=subprocess.STDOUT)
 
+    def try_delete_cache(self):
+        appcache_path = os.path.join(self.steamcmd_dir, 'appcache')
+        if os.path.exists(appcache_path):
+            shutil.rmtree(appcache_path, True)
+
+        is_success = not os.path.exists(appcache_path)
+        if not is_success:
+            self.logger.warning('Failed to delete appcache at %s' % appcache_path)
+
+        return is_success
+
     def get_app_info(self, app_id):
+        self.try_delete_cache()
+
         output = self._get_steam_output(
             'login anonymous',
             'app_info_update 1',
@@ -50,6 +66,8 @@ class SteamCmd(object):
         return acf.loads('\n'.join(acf_output))
 
     def update_app(self, app_id, app_dir):
+        self.try_delete_cache()
+
         self._execute_steam_commands(
             'login anonymous',
             'force_install_dir "%s"' % app_dir,
