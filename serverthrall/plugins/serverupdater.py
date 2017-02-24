@@ -75,7 +75,12 @@ class ServerUpdater(ThrallPlugin):
         available_build_id, exc = self.get_available_build_id()
 
         if available_build_id is None:
-            self.logger.error('Failed to check for update: %s' % exc)
+            error_message = 'Failed to check for update: %s' % exc
+            if exc.output:
+                error_message += '\n===========\n'
+                error_message += exc.output
+                error_message += '\n==========='
+            self.logger.error(error_message)
             return False, None, None
 
         if self.installed_version == self.NO_INSTALLED_VERSION:
