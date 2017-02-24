@@ -1,6 +1,8 @@
 from .thrallplugin import ThrallPlugin
 from serverthrall import settings
 from serverthrall import acf
+from datetime import datetime
+import time
 import subprocess
 import os
 
@@ -12,15 +14,22 @@ class ServerUpdater(ThrallPlugin):
     def __init__(self, config):
         super(ServerUpdater, self).__init__(config)
         self.config.set_default('installed_version', self.NO_INSTALLED_VERSION)
+        self.config.set_default('last_checked_seconds', 0)
+        self.config.set_default('check_cooldown_seconds', 15 * 60)
 
     def ready(self, steamcmd, server, thrall):
         super(ServerUpdater, self).ready(steamcmd, server, thrall)
         self.installed_version = self.config.get('installed_version')
+        self.last_checked_seconds = self.config.getfloat('last_checked_seconds')
+        self.check_cooldown_seconds = self.config.getfloat('check_cooldown_seconds')
 
         if self.installed_version == self.NO_INSTALLED_VERSION:
             self.detect_existing_version()
 
         self.logger.info('Autoupdater running, currently known buildid is %s', self.installed_version)
+
+    def get_current_timestamp(self):
+        return time.mktime(datetime.now().timetuple())
 
     def detect_existing_version(self):
         buildid = self.get_installed_build_id()
@@ -95,7 +104,7 @@ class ServerUpdater(ThrallPlugin):
         self.installed_version = target_build_id
         self.config.set('installed_version', target_build_id)
 
-    def tick(self):
+    def check_for_update(self):
         is_available, current, target = self.is_update_available()
 
         if is_available:
@@ -103,3 +112,15 @@ class ServerUpdater(ThrallPlugin):
             self.server.close()
             self.update_server(target)
             self.server.start()
+
+    def tick(self):
+        current_time = self.get_current_timestamp()
+        seconds_since_last_update = current_time - self.last_checked_seconds
+
+        if seconds_since_last_update >= self.check_cooldown_seconds:
+            self.last_checked_seconds = current_time
+            self.config.set('last_checked_seconds', current_time)
+            self.logger.debug('Checking for updates')
+            self.check_for_update()
+
+        
