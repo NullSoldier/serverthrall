@@ -2,7 +2,7 @@
 from .appconfig import config_load, ThrallConfig, PluginConfig
 from .conanconfig import ConanConfig
 from .conanserver import ConanServer
-from .plugins import UptimeTracker, DownRecovery, ServerUpdater, RaidManager
+from .plugins import UptimeTracker, DownRecovery, ServerUpdater, RaidManager, ModUpdater
 from .thrall import Thrall
 from .steamcmd import SteamCmd
 import settings
@@ -10,6 +10,14 @@ import ConfigParser
 import os
 import logging
 import atexit
+
+INSTALLED_PLUGINS = (
+    # UptimeTracker,
+    # DownRecovery,
+    ServerUpdater,
+    # RaidManager,
+    # ModUpdater,
+)
 
 logger = logging.getLogger('serverthrall')
 
@@ -44,7 +52,7 @@ conan_config = ConanConfig(thrall_config.get('conan_server_directory'))
 
 # Initialize and configure plugins
 plugins = []
-for plugin_class in (UptimeTracker, DownRecovery, ServerUpdater, RaidManager):
+for plugin_class in INSTALLED_PLUGINS:
     logger.info('Initializing with plugin %s' % plugin_class.__name__)
     plugin_config = PluginConfig(plugin_class, config)
     plugin = plugin_class(plugin_config)

@@ -73,3 +73,11 @@ class SteamCmd(object):
             'force_install_dir "%s"' % app_dir,
             'app_update %s validate' % app_id,
             'quit')
+
+    def update_workshop_item(self, app_id, item_id):
+        self.try_delete_cache()
+
+        output = self._execute_steam_commands(
+            'login anonymous',
+            'workshop_download_item %s %s' % (app_id, item_id),
+            'quit')
