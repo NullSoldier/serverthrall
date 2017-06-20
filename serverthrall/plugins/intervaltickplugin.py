@@ -18,6 +18,9 @@ class IntervalTickPlugin(ThrallPlugin):
             self.config.getfloat('interval.last_checked_seconds'),
             self.config.getfloat('interval.interval_seconds'))
 
+    def tick_early(self):
+        self.trigger.trigger()
+
     def tick(self):
         if self.trigger.is_ready():
             self.config.set('interval.last_checked_seconds', self.trigger.last_checked)

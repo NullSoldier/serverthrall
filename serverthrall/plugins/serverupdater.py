@@ -23,7 +23,7 @@ class ServerUpdater(IntervalTickPlugin):
         if self.installed_version == self.NO_INSTALLED_VERSION:
             self.detect_existing_version()
 
-        self.logger.info('Autoupdater running, currently known buildid is %s', self.installed_version)
+        self.logger.info('Auto updater ready, currently known buildid is %s', self.installed_version)
 
     def get_current_timestamp(self):
         return time.mktime(datetime.now().timetuple())
@@ -87,6 +87,7 @@ class ServerUpdater(IntervalTickPlugin):
                 error_message += exc.output
                 error_message += '\n==========='
             self.logger.error(error_message)
+            self.tick_early() # if there is an error, try again
             return False, None, None
 
         if self.installed_version == self.NO_INSTALLED_VERSION:
