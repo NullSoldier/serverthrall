@@ -2,3 +2,6 @@
 serverthrall.config
 serverthrall.log
 vendor/
+
+# for jason only, remove later
+notes/
