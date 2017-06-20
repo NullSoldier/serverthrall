@@ -11,6 +11,13 @@ import os
 import logging
 import atexit
 
+INSTALLED_PLUGINS = (
+    UptimeTracker,
+    DownRecovery,
+    ServerUpdater,
+    RaidManager,
+)
+
 logger = logging.getLogger('serverthrall')
 
 config = config_load()
@@ -44,7 +51,7 @@ conan_config = ConanConfig(thrall_config.get('conan_server_directory'))
 
 # Initialize and configure plugins
 plugins = []
-for plugin_class in (UptimeTracker, DownRecovery, ServerUpdater, RaidManager):
+for plugin_class in INSTALLED_PLUGINS:
     logger.info('Initializing with plugin %s' % plugin_class.__name__)
     plugin_config = PluginConfig(plugin_class, config)
     plugin = plugin_class(plugin_config)
@@ -52,7 +59,7 @@ for plugin_class in (UptimeTracker, DownRecovery, ServerUpdater, RaidManager):
 
 thrall = Thrall(steamcmd, thrall_config, conan_config, plugins, server)
 def onExit():
-    logger.info('Safely shutting down server thrall....')
+    logger.info('Safely shutting down server thrall...')
     thrall.stop()
 atexit.register(onExit)
 thrall.start()
