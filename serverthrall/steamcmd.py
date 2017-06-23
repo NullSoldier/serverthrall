@@ -19,12 +19,12 @@ class SteamCmd(object):
     def _get_steam_output(self, *args):
         commands = [self.steamcmd_path] + ["+%s" % c for c in args]
         self._log_steam_cmd(commands)
-        return subprocess.check_output(commands, stderr=subprocess.PIPE)
+        return subprocess.check_output(commands, shell=True, stderr=subprocess.PIPE)
 
     def _execute_steam_commands(self, *args):
         commands = [self.steamcmd_path] + ["+%s" % c for c in args]
         self._log_steam_cmd(commands)
-        return subprocess.call(commands, stderr=subprocess.STDOUT)
+        return subprocess.call(commands, shell=True, stderr=subprocess.STDOUT)
 
     def try_delete_cache(self):
         appcache_path = os.path.join(self.steamcmd_dir, 'appcache')
@@ -41,6 +41,7 @@ class SteamCmd(object):
         self.try_delete_cache()
 
         output = self._get_steam_output(
+            '@sSteamCmdForcePlatformType windows',
             'login anonymous',
             'app_info_update 1',
             'app_info_print %s' % app_id,
@@ -69,6 +70,7 @@ class SteamCmd(object):
         self.try_delete_cache()
 
         self._execute_steam_commands(
+            '@sSteamCmdForcePlatformType windows',
             'login anonymous',
             'force_install_dir "%s"' % app_dir,
             'app_update %s validate' % app_id,

@@ -10,6 +10,8 @@ import ConfigParser
 import os
 import logging
 import atexit
+import sys
+
 
 logger = logging.getLogger('serverthrall')
 
