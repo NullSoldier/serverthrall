@@ -15,13 +15,13 @@ class IntervalTrigger(object):
     def trigger():
         self.triggered_manually = True
 
-    def is_ready(self):
+    def is_ready(self, extra_seconds=0):
         if self.triggered_manually:
             return True
-            
+
         current = self.get_current_timestamp()
         delta = current - self.last_checked
-        return delta >= self.interval
+        return delta >= (self.interval + extra_seconds)
 
     def reset(self):
         self.last_checked = self.get_current_timestamp()
