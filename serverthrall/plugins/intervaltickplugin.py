@@ -1,5 +1,5 @@
-from .thrallplugin import ThrallPlugin
 from .intervaltrigger import IntervalTrigger
+from .thrallplugin import ThrallPlugin
 
 
 class IntervalTickPlugin(ThrallPlugin):
