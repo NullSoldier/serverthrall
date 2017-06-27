@@ -18,8 +18,10 @@ Conan Server Manager (now known as Server Thrall) is a python based dedicated se
 | **ServerUpdater** | Checks for updates and updates the server automatically | **enabled**: Set to true or false to prevent this plugin from running<br>**installed_version**: the currently known server version. delete this key to force an update<br>**check_cooldown_seconds**: How long in seconds between checking for updates.<br>**last_checked_seconds**: The unix time stamp since this plugin has last checked for updates. |
 | **UptimeTracker** | Records the percentage of time the server has been online. If the server thrall is closed, this counts against the uptime percentage. | **enabled**: Set to true or false to prevent this plugin from running<br>**seconds_up**: The total amount of seconds the server has been up<br>**initial**:  unix timestamp of when the server uptime started to be recorded. Delete this to restart your uptime counter |
 | **RaidPlugin** | Allows you to set a period of time under which "Raiding" is enabled. This means that building damage will only be enabled during this time. Works by changing the games configuration and rebooting the server at the boundries of raiding times. This plugin modifies the CanDamagePlayerOwnedStructures option in ServerSettings. | **enabled**: Set to true or false to prevent this plugin from running<br>**start_hour**: The hour of the day that raiding should be enabled. This should be in 24 hour time. So 17 would be 5pm in the servers computers timezone.<br>**length_in_hours**: The number of hours after start_hour that raiding should be enabled. |
+| **ApiUploader** | Uploads your server data to serverthrallapi so you can see your data online. If your **server_id** was `2`, and your **private_secret** was `200cd768-5b1d-11e7-9e82-d60626067254` you would access your servers characters at this URL: https://serverthrallapi.herokuapp.com/api/2/characters?private_secret=200cd768-5b1d-11e7-9e82-d60626067254  | **enabled**: Set to true or false to prevent this plugin from running<br>**server_id**: The registered server id with serverthrallapi, used to access your data.<br>**public_secret**: A public code you can give to your players to access a "public" view of your servers data. This is unused but will be used later.<br>**private_secret** A secret code that is used to make modifications to your server and synchronize data. Do NOT give this out to your players |
 
-###Example Config
+
+### Example Config
 ```ini
 [ServerThrall]
 force_update_on_launch = false
@@ -45,7 +47,7 @@ length_in_hours = 5
  * Server event stream
    * Players logging in / out
    * Player deaths
-   
+
 ### Example Log
 ```sh
 > runserver.bat
