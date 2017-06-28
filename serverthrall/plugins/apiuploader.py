@@ -21,8 +21,8 @@ from requests.exceptions import ConnectionError
 class ApiUploader(IntervalTickPlugin):
 
     NO_SECRET = ''
-    SERVER_THRALL_API_URL = 'http://serverthrallapi.herokuapp.com'
-    # SERVER_THRALL_API_URL = 'http://localhost:8000'
+    # SERVER_THRALL_API_URL = 'http://serverthrallapi.herokuapp.com'
+    SERVER_THRALL_API_URL = 'http://192.168.1.145:8000/'
 
     def __init__(self, config):
         config.set_default('interval.interval_seconds', 60)
@@ -43,6 +43,10 @@ class ApiUploader(IntervalTickPlugin):
             raise Exception('Server DB not found at path %s' % db_path)
 
         self.client = ConanDbClient(db_path)
+        # TODO: Load Group UID from Config and gracefully ignore, if UID is not set in the config
+        self.ginfo_group_uid = '-Knj7Mt-7frt_Wtpvq_9'
+
+        self.client = ConanDbClient(self.DB_PATH)
 
     def is_registered(self):
         return self.config.get('private_secret') != self.NO_SECRET
@@ -76,7 +80,7 @@ class ApiUploader(IntervalTickPlugin):
         try:
             requests.post(
                 url=(self.SERVER_THRALL_API_URL + '/api/%s/sync/characters') % self.server_id,
-                params={'private_secret': self.private_secret},
+                params={'private_secret': self.private_secret, 'ginfo_group_uid': self.ginfo_group_uid},
                 json={'characters': characters})
         except ConnectionError:
             self.logger.error('Cant sync server to serverthrallapi')
