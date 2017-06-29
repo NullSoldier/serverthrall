@@ -46,6 +46,8 @@ class ApiUploader(IntervalTickPlugin):
         # TODO: Load Group UID from Config and gracefully ignore, if UID is not set in the config
         self.ginfo_group_uid = '-Knj7Mt-7frt_Wtpvq_9'
 
+        self.logger.info('Connecting to Database '+ self.DB_PATH)
+
         self.client = ConanDbClient(self.DB_PATH)
 
     def is_registered(self):
