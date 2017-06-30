@@ -25,10 +25,11 @@ class ApiUploader(IntervalTickPlugin):
     SERVER_THRALL_API_URL = 'http://192.168.1.145:8000/'
 
     def __init__(self, config):
-        config.set_default('interval.interval_seconds', 60)
+        config.set_default('interval.interval_seconds', 5)
         config.set_default('private_secret', self.NO_SECRET)
         config.set_default('server_id', '')
         config.set_default('last_sync_time', '')
+        config.set_default('ginfo_group_uid', '')
         super(ApiUploader, self).__init__(config)
 
     def ready(self, steamcmd, server, thrall):
@@ -43,8 +44,7 @@ class ApiUploader(IntervalTickPlugin):
             raise Exception('Server DB not found at path %s' % db_path)
 
         self.client = ConanDbClient(db_path)
-        # TODO: Load Group UID from Config and gracefully ignore, if UID is not set in the config
-        self.ginfo_group_uid = '-Knj7Mt-7frt_Wtpvq_9'
+        self.ginfo_group_uid = self.config.get('ginfo_group_uid')
 
         self.logger.info('Connecting to Database '+ self.DB_PATH)
 
@@ -80,9 +80,12 @@ class ApiUploader(IntervalTickPlugin):
         characters = self.client.get_characters()
 
         try:
+            params ={'private_secret': self.private_secret}
+            if self.ginfo_group_uid and self.ginfo_group_uid != "":
+                params['ginfo_group_uid'] = self.ginfo_group_uid
             requests.post(
                 url=(self.SERVER_THRALL_API_URL + '/api/%s/sync/characters') % self.server_id,
-                params={'private_secret': self.private_secret, 'ginfo_group_uid': self.ginfo_group_uid},
+                params=params,
                 json={'characters': characters})
         except ConnectionError:
             self.logger.error('Cant sync server to serverthrallapi')
