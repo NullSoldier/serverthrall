@@ -30,6 +30,7 @@ class ApiUploader(IntervalTickPlugin):
         config.set_default('server_id', '')
         config.set_default('last_sync_time', '')
         config.set_default('ginfo_group_uid', '')
+        config.set_default('ginfo_access_token', '')
         super(ApiUploader, self).__init__(config)
 
     def ready(self, steamcmd, server, thrall):
@@ -45,6 +46,7 @@ class ApiUploader(IntervalTickPlugin):
 
         self.client = ConanDbClient(db_path)
         self.ginfo_group_uid = self.config.get('ginfo_group_uid')
+        self.ginfo_access_token = self.config.get('ginfo_access_token')
 
         self.logger.info('Connecting to Database '+ self.DB_PATH)
 
@@ -81,8 +83,9 @@ class ApiUploader(IntervalTickPlugin):
 
         try:
             params ={'private_secret': self.private_secret}
-            if self.ginfo_group_uid and self.ginfo_group_uid != "":
+            if self.ginfo_group_uid and self.ginfo_group_uid != "" and self.ginfo_access_token and self.ginfo_access_token != "":
                 params['ginfo_group_uid'] = self.ginfo_group_uid
+                params['ginfo_access_token'] = self.ginfo_access_token
             requests.post(
                 url=(self.SERVER_THRALL_API_URL + '/api/%s/sync/characters') % self.server_id,
                 params=params,
