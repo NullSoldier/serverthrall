@@ -25,7 +25,7 @@ class ApiUploader(IntervalTickPlugin):
     SERVER_THRALL_API_URL = 'http://192.168.1.145:8000'
 
     def __init__(self, config):
-        config.set_default('interval.interval_seconds', 5)
+        config.set_default('interval.interval_seconds', 60)
         config.set_default('private_secret', self.NO_SECRET)
         config.set_default('server_id', '')
         config.set_default('last_sync_time', '')
@@ -44,7 +44,6 @@ class ApiUploader(IntervalTickPlugin):
         if not os.path.exists(db_path):
             raise Exception('Server DB not found at path %s' % db_path)
 
-        self.logger.info('Connecting to Database '+ db_path)
         self.client = ConanDbClient(db_path)
         self.ginfo_group_uid = self.config.get('ginfo_group_uid')
         self.ginfo_access_token = self.config.get('ginfo_access_token')

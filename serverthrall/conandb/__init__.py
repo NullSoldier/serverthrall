@@ -33,7 +33,7 @@ class ConanDbClient(object):
 
         characters = []
 
-        with sqlite3.connect('D:\\Documents\\GitHub\\serverthrall\\vendor\\server\\ConanSandbox\\Saved\\game.db') as connection:
+        with sqlite3.connect(self.db_path) as connection:
             for row in connection.cursor().execute(SQL):
                 characters.append({
                     'name': row[2],
@@ -46,6 +46,7 @@ class ConanDbClient(object):
                     'x': row[7],
                     'y': row[8],
                     'z': row[9]})
+
         return characters
 
 
