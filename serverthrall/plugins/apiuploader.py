@@ -20,21 +20,24 @@ from requests.exceptions import ConnectionError
 
 class ApiUploader(IntervalTickPlugin):
 
-    NO_SECRET = ''
+    NO_VALUE = ''
     SERVER_THRALL_API_URL = 'http://serverthrallapi.herokuapp.com'
-    # SERVER_THRALL_API_URL = 'http://localhost:8000'
 
     def __init__(self, config):
         config.set_default('interval.interval_seconds', 60)
-        config.set_default('private_secret', self.NO_SECRET)
-        config.set_default('server_id', '')
-        config.set_default('last_sync_time', '')
+        config.set_default('private_secret', self.NO_VALUE)
+        config.set_default('server_id', self.NO_VALUE)
+        config.set_default('last_sync_time', self.NO_VALUE)
+        config.set_default('ginfo_group_uid', self.NO_VALUE)
+        config.set_default('ginfo_access_token', self.NO_VALUE)
         super(ApiUploader, self).__init__(config)
 
     def ready(self, steamcmd, server, thrall):
         super(ApiUploader, self).ready(steamcmd, server, thrall)
         self.server_id = self.config.get('server_id')
         self.private_secret = self.config.get('private_secret')
+        self.ginfo_group_uid = self.config.get('ginfo_group_uid')
+        self.ginfo_access_token = self.config.get('ginfo_access_token')
 
         db_path = os.path.join(self.thrall.config.get('conan_server_directory'),
             'ConanSandbox\\Saved\\game.db')
@@ -45,7 +48,7 @@ class ApiUploader(IntervalTickPlugin):
         self.client = ConanDbClient(db_path)
 
     def is_registered(self):
-        return self.config.get('private_secret') != self.NO_SECRET
+        return self.config.get('private_secret') != self.NO_VALUE
 
     def register(self):
         self.logger.info('Registering server with serverthrallapi.')
@@ -73,10 +76,18 @@ class ApiUploader(IntervalTickPlugin):
 
         characters = self.client.get_characters()
 
+        url = (self.SERVER_THRALL_API_URL + '/api/%s/sync/characters') % self.server_id
+
+        params = {'private_secret': self.private_secret}
+
+        if self.ginfo_group_uid != self.NO_VALUE and self.ginfo_access_token != "":
+            params['ginfo_group_uid'] = self.ginfo_group_uid
+            params['ginfo_access_token'] = self.ginfo_access_token
+
         try:
             requests.post(
-                url=(self.SERVER_THRALL_API_URL + '/api/%s/sync/characters') % self.server_id,
-                params={'private_secret': self.private_secret},
+                url=url,
+                params=params,
                 json={'characters': characters})
         except ConnectionError:
             self.logger.error('Cant sync server to serverthrallapi')
