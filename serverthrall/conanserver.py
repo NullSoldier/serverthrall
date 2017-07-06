@@ -9,12 +9,13 @@ import logging
 
 class ConanServer():
 
-    def __init__(self, path, steamcmd, arguments):
+    def __init__(self, path, steamcmd, arguments, high_priority):
         self.path = path
         self.steamcmd = steamcmd
-        self.process = None
         self.arguments = arguments
+        self.high_priority = high_priority;
         self.logger = logging.getLogger('serverthrall')
+        self.process = None
 
     def is_running(self):
         if self.process is None:
@@ -57,11 +58,16 @@ class ConanServer():
             self.process.terminate()
         self.process = None
 
-    def attach(self, process):
+    def attach(self, root_process):
         # TODO: remove this hack
-        while len(process.children()) == 0:
+        while len(root_process.children()) == 0:
             time.sleep(5)
-        self.process = process.children()[0]
+        self.process = root_process.children()[0]
+
+        if self.high_priority:
+            self.logger.info('Setting server process to high priority')
+            self.process.nice(psutil.HIGH_PRIORITY_CLASS)
+            root_process.nice(psutil.HIGH_PRIORITY_CLASS)
 
     @staticmethod
     def create_from_running(config, steamcmd):
@@ -73,14 +79,15 @@ class ConanServer():
                 running_path = os.path.dirname(executable_path)
                 expected_path = config.get('conan_server_directory')
                 additional_arguments = config.get('additional_arguments')
+                high_priority = config.getboolean('set_high_priority')
 
                 # TODO: the to_lower hack does not work on linux
                 if running_path.lower() != expected_path.lower():
                     logger.info('Found running server that is different than config')
                     continue
-                
+
                 logger.info('Found running server, attaching')
-                server = ConanServer(executable_path, steamcmd, additional_arguments)
+                server = ConanServer(executable_path, steamcmd, additional_arguments, high_priority)
                 server.attach(p)
                 return server
 
