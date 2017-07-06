@@ -14,6 +14,8 @@ def config_save(config):
 
 def config_load():
     config = ConfigParser.RawConfigParser()
+    config.optionxform = str
+
     try:
         with open(settings.CONFIG_NAME) as f:
             config.readfp(f)

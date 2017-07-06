@@ -1,6 +1,5 @@
 from .thrallplugin import ThrallPlugin
 from datetime import datetime, timedelta
-import ConfigParser
 import os
 
 

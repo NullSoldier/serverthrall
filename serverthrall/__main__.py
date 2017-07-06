@@ -2,7 +2,7 @@
 from .appconfig import config_load, ThrallConfig, PluginConfig
 from .conanconfig import ConanConfig
 from .conanserver import ConanServer
-from .plugins import UptimeTracker, DownRecovery, ServerUpdater, RaidManager, ApiUploader
+from .plugins import UptimeTracker, DownRecovery, ServerUpdater, RaidManager, ApiUploader, ServerConfig
 from .thrall import Thrall
 from .steamcmd import SteamCmd
 import settings
@@ -12,6 +12,7 @@ import logging
 import atexit
 
 INSTALLED_PLUGINS = (
+    ServerConfig,
     UptimeTracker,
     DownRecovery,
     ServerUpdater,

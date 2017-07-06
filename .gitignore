@@ -2,6 +2,7 @@
 serverthrall.config
 serverthrall.log
 vendor/
+virtualenv/
 
 # for jason only, remove later
 notes/
