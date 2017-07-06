@@ -1,3 +1,4 @@
+from contextlib import contextmanager
 from collections import defaultdict
 import ConfigParser
 import os
@@ -13,6 +14,14 @@ class ConanConfig(object):
             'ServerSettings': [
                 os.path.join(conan_server_directory, 'ConanSandbox\\Config\\DefaultServerSettings.ini'),
                 os.path.join(conan_server_directory, 'ConanSandbox\\Saved\\Config\\\WindowsServer\\ServerSettings.ini')
+            ],
+            'Engine': [
+                os.path.join(conan_server_directory, 'ConanSandbox\\Config\\DefaultEngine.ini'),
+                os.path.join(conan_server_directory, 'ConanSandbox\\Saved\\Config\\\WindowsServer\\Engine.ini')
+            ],
+            'Game': [
+                os.path.join(conan_server_directory, 'ConanSandbox\\Config\\DefaultGame.ini'),
+                os.path.join(conan_server_directory, 'ConanSandbox\\Saved\\Config\\\WindowsServer\\Game.ini')
             ]
         }
 
@@ -23,51 +32,90 @@ class ConanConfig(object):
         groups = {}
 
         for key, paths in self.group_paths.iteritems():
-            config = ConfigParser.RawConfigParser()
-            config.optionxform = str
-            files_read = config.read(paths)
-            groups[key] = config
+            groups[key] = []
 
-            if len(files_read) < len(paths):
-                self.logger.warning('WARNING: did not load some settings files for %s' % key)
+            for path in paths:
+                config = ConfigParser.RawConfigParser()
+                config.optionxform = str
+                files_read = config.read(path)
+                groups[key].append(config)
 
-            if len(files_read) == 0:
-                raise Exception('Failed to load group %s, no config files loade')
+                if len(files_read) == 0:
+                    raise Exception('Failed to load config %s' % path)
 
         self.groups = groups
 
+    def _query_get(self, group, section, option, getter):
+        if group not in self.groups:
+            raise Exception('no settings group %s' % group)
+
+        for group_config in reversed(self.groups[group]):
+            if not group_config.has_section(section):
+                continue
+            if not group_config.has_option(section, option):
+                continue
+            return getattr(group_config, getter)(section, option)
+
+        return None
+
     def get(self, group, section, option):
-        return self.groups[group].get(section, option)
+        return self._query_get(group, section, option, 'get')
 
     def getfloat(self, group, section, option):
-        return self.groups[group].getfloat(section, option)
+        return self._query_get(group, section, option, 'getfloat')
 
     def getboolean(self, group, section, option):
-        return self.groups[group].getboolean(section, option)
+        return self._query_get(group, section, option, 'getboolean')
 
-    def set(self, group, section, option, value):
+    def set(self, group, section, option, value, first=False):
+        if group not in self.groups:
+            raise Exception('no settings group %s' % group)
+
+        # we should generally always write to the LAST config in the hierarchy
+        # unless the user has specifically asked to be written to the first in
+        # the hierarchy like for MaxTickRate which only works in the base config
+        index = 0 if first else len(self.groups[group]) - 1
+
         if group not in self.dirty:
-            self.dirty[group] = {}
-        if section not in self.dirty[group]:
-            self.dirty[group][section] = {}
+            self.dirty[group] = []
 
-        self.dirty[group][section][option] = value
-        self.groups[group].set(section, option, value)
+        while len(self.dirty[group]) < index + 1:
+            self.dirty[group].append({})
+
+        if section not in self.dirty[group]:
+            self.dirty[group][index][section] = {}
+
+        if not self.groups[group][index].has_section(section):
+            self.groups[group][index].add_section(section)
+
+        self.dirty[group][index][section][option] = value
+        self.groups[group][index].set(section, option, value)
 
     def setboolean(self, group, section, option, value):
         self.set(group, section, option, 'True' if value else 'False')
 
+    @contextmanager
     def save(self):
+        yield
         self.refresh()
 
         # patch in dirty settings into the freshly loaded config files
-        for group_key, group in self.dirty.iteritems():
-            for section_key, section in group.iteritems():
-                for option_key, option in section.iteritems():
-                    self.logger.debug('DIRTY: %s.%s.%s=%s' % (group_key, section_key, option_key, option))
-                    self.groups[group_key].set(section_key, option_key, option)
+        for group_key, groups in self.dirty.iteritems():
+            for group_index, sections in enumerate(groups):
+                for section_key, section in sections.iteritems():
+                    for option_key, value in section.iteritems():
+                        if not self.groups[group_key][group_index].has_section(section_key):
+                            self.groups[group_key][group_index].add_section(section_key)
 
-        # write modified config files out to the first config path in each group
+                        self.logger.debug('DIRTY: %s %s.%s=%s' % (
+                            self.group_paths[group_key][group_index], section_key, option_key, value))
+
+                        self.groups[group_key][group_index].set(section_key, option_key, value)
+
+        # write modified config files out to the last config path in each group
         for group_key, group in self.groups.iteritems():
-            with open(self.group_paths[group_key][0], 'w') as group_file:
-                group.write(group_file)
+            for group_index, group_config in enumerate(group):
+                with open(self.group_paths[group_key][group_index], 'w') as group_file:
+                    group_config.write(group_file)
+
+        self.dirty = {}
