@@ -63,8 +63,27 @@ ServerCommunity = 1
 IsBattleEyeEnabled = True
 ```
 
+### Ginfo Integration
+
+Ginfo Integration allows you to track the position of players on your server in real time on the [Ginfo Map](https://conanexiles.ginfo.gg)
+
+**Set up the Integration:**
+
+* You'll need to be the admin of a ginfo group
+* Open the panel of your group by clicking on your groups button in the left bar
+* Click on the "..." more button at the top right of the panel
+* Open the "Access Tokens" Menu
+* Create an access token
+* Copy your group's UID and access token to your **serverthrall.config** under the `ApiUploader` section
+
+```
+[ApiUploader]
+enabled = true
+ginfo_group_uid = <GROUP UID>
+ginfo_access_token = <ACCESS TOKEN>
+```
+
 ### Coming Soon
- * [GInfo integration](https://conanexiles.ginfo.gg)
  * Access your server data from an online REST API
  * Online UI to audit your player's actions
 
