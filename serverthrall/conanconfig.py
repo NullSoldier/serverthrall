@@ -2,7 +2,43 @@ from collections import OrderedDict
 from configparser import ConfigParser
 from contextlib import contextmanager
 import logging
+import os
 
+
+class MultiSetOrderedDict(OrderedDict):
+
+    def __setitem__(self, key, value):
+        if key in self:
+            item = self.__getitem__(key)
+
+            if isinstance(value, list):
+                item.extend(value)
+            else:
+                item.append(value)
+        else:
+            super(MultiSetOrderedDict, self).__setitem__(key, value)
+
+    def items(self, *args, **kwargs):
+        result = []
+
+        for key, value in super(MultiSetOrderedDict, self).items(*args, **kwargs):
+            if isinstance(value, list):
+                for subvalue in value:
+                    result.append((key, subvalue))
+
+        return result
+
+class ConanConfigParser(ConfigParser):
+
+    def __init__(self, *args, **kwargs):
+        kwargs['interpolation'] = None
+        kwargs['strict'] = False
+        kwargs['dict_type'] = MultiSetOrderedDict
+        super(ConanConfigParser, self).__init__(*args, **kwargs)
+        self.optionxform = lambda k: k
+
+    def items(self, *args, **kwargs):
+        super(ConanConfigParser, self).items(*args, **kwargs)
 
 class ConanConfig(object):
 
@@ -34,8 +70,7 @@ class ConanConfig(object):
             groups[key] = []
 
             for path in paths:
-                config = ConfigParser.RawConfigParser()
-                config.optionxform = str
+                config = ConanConfigParser()
                 files_read = config.read(path)
                 groups[key].append(config)
 
