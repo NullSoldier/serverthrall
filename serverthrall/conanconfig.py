@@ -1,7 +1,6 @@
+from collections import OrderedDict
+from configparser import ConfigParser
 from contextlib import contextmanager
-from collections import defaultdict
-import ConfigParser
-import os
 import logging
 
 
@@ -31,7 +30,7 @@ class ConanConfig(object):
     def refresh(self):
         groups = {}
 
-        for key, paths in self.group_paths.iteritems():
+        for key, paths in self.group_paths.items():
             groups[key] = []
 
             for path in paths:
@@ -100,10 +99,10 @@ class ConanConfig(object):
         self.refresh()
 
         # patch in dirty settings into the freshly loaded config files
-        for group_key, groups in self.dirty.iteritems():
+        for group_key, groups in self.dirty.items():
             for group_index, sections in enumerate(groups):
-                for section_key, section in sections.iteritems():
-                    for option_key, value in section.iteritems():
+                for section_key, section in sections.items():
+                    for option_key, value in section.items():
                         if not self.groups[group_key][group_index].has_section(section_key):
                             self.groups[group_key][group_index].add_section(section_key)
 
@@ -113,7 +112,7 @@ class ConanConfig(object):
                         self.groups[group_key][group_index].set(section_key, option_key, value)
 
         # write modified config files out to the last config path in each group
-        for group_key, group in self.groups.iteritems():
+        for group_key, group in self.groups.items():
             for group_index, group_config in enumerate(group):
                 with open(self.group_paths[group_key][group_index], 'w') as group_file:
                     group_config.write(group_file)

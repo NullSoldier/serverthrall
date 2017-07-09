@@ -1,15 +1,14 @@
-# flake8: noqa
 from .appconfig import config_load, ThrallConfig, PluginConfig
 from .conanconfig import ConanConfig
 from .conanserver import ConanServer
 from .plugins import UptimeTracker, DownRecovery, ServerUpdater, RaidManager, ApiUploader, ServerConfig
-from .thrall import Thrall
 from .steamcmd import SteamCmd
-import settings
-import ConfigParser
-import os
-import logging
+from .thrall import Thrall
+from configparser import ConfigParser
 import atexit
+import logging
+import os
+from . import settings
 
 INSTALLED_PLUGINS = (
     ServerConfig,
@@ -61,8 +60,8 @@ for plugin_class in INSTALLED_PLUGINS:
     plugins.append(plugin)
 
 thrall = Thrall(steamcmd, thrall_config, conan_config, plugins, server)
-def onExit():
+def on_exit():
     logger.info('Safely shutting down server thrall...')
     thrall.stop()
-atexit.register(onExit)
+atexit.register(on_exit)
 thrall.start()

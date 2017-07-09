@@ -1,8 +1,8 @@
-import subprocess
+from . import acf
 import logging
-import acf
 import os
 import shutil
+import subprocess
 
 
 class SteamCmd(object):
