@@ -1,8 +1,8 @@
-import subprocess
+from . import acf
 import logging
-import acf
 import os
 import shutil
+import subprocess
 
 
 class SteamCmd(object):
@@ -19,7 +19,8 @@ class SteamCmd(object):
     def _get_steam_output(self, *args):
         commands = [self.steamcmd_path] + ["+%s" % c for c in args]
         self._log_steam_cmd(commands)
-        return subprocess.check_output(commands, stderr=subprocess.PIPE)
+        output = subprocess.check_output(commands, stderr=subprocess.PIPE)
+        return output.decode('UTF-8', 'replace')
 
     def _execute_steam_commands(self, *args):
         commands = [self.steamcmd_path] + ["+%s" % c for c in args]

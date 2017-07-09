@@ -1,6 +1,6 @@
+from configparser import RawConfigParser
 from serverthrall import settings
 import os
-import ConfigParser
 
 
 def config_exists():
@@ -13,7 +13,7 @@ def config_save(config):
 
 
 def config_load():
-    config = ConfigParser.RawConfigParser()
+    config = RawConfigParser()
     config.optionxform = str
 
     try:

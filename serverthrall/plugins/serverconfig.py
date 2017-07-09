@@ -1,5 +1,5 @@
 from .thrallplugin import ThrallPlugin
-from ConfigParser import NoOptionError, NoSectionError
+from configparser import NoOptionError, NoSectionError
 
 
 class ServerConfig(ThrallPlugin):
@@ -31,7 +31,7 @@ class ServerConfig(ThrallPlugin):
     def sync_mapping(self,mapping):
         changed = False
 
-        for src, dest in self.CONFIG_MAPPING.iteritems():
+        for src, dest in self.CONFIG_MAPPING.items():
             group, section, option = dest
 
             value = self.config_get_safe(src)

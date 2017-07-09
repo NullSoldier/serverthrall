@@ -2,7 +2,7 @@ from .conanconfig import ConanConfig
 import subprocess
 import psutil
 import time
-import settings
+from . import settings
 import os
 import logging
 
