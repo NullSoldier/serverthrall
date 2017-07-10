@@ -1,5 +1,2 @@
-flake8==3.3.0
-isort==4.2.5
 psutil==5.1.3
 requests==2.18.1
-steamfiles==0.1.2
