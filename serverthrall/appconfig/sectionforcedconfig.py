@@ -20,8 +20,8 @@ class SectionForcedConfig(object):
         return self.config.getint(self.section_name, key)
 
     def set(self, key, value):
-        self.config.set(self.section_name, key, value)
+        self.config.set(self.section_name, key, str(value))
 
     def set_default(self, key, value):
         if not self.config.has_option(self.section_name, key):
-            self.config.set(self.section_name, key, value)
+            self.config.set(self.section_name, key, str(value))
