@@ -1,8 +1,8 @@
-*.pyc
-serverthrall.config
-serverthrall.log
 vendor/
 virtualenv/
-
-# for jason only, remove later
-notes/
+installer/build
+installer/dist
+installer/serverthrall.spec
+serverthrall.config
+serverthrall.log
+*.pyc
