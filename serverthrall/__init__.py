@@ -25,7 +25,7 @@ def run_server_thrall():
     config = config_load()
     if config is None:
         logger.info('No config found, creating for the first time')
-        config = ConfigParser.RawConfigParser()
+        config = ConfigParser()
         config.optionxform = str
 
     steamcmd = SteamCmd(settings.STEAMCMD_PATH)
