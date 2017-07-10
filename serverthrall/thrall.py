@@ -31,6 +31,7 @@ class Thrall(object):
     def start(self):
         if not self.server.is_running():
             self.server.start()
+            self.conan_config.refresh()
 
         for plugin in self.plugins:
             if plugin.enabled:
