@@ -45,7 +45,7 @@ class ServerUpdater(IntervalTickPlugin):
         if not os.path.exists(appmanifest_path):
             return self.NO_INSTALLED_VERSION
 
-        with open(appmanifest_path, 'rb') as f:
+        with open(appmanifest_path, 'r') as f:
             data = acf.load(f)
 
         return data['AppState']['buildid']
