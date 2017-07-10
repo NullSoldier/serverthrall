@@ -1,3 +1,3 @@
 @echo off
-python -B -u -m serverthrall
+python -B -u main.py
 pause>nul
