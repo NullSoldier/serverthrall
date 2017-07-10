@@ -31,6 +31,9 @@ def run_server_thrall():
     steamcmd = SteamCmd(settings.STEAMCMD_PATH)
     thrall_config = ThrallConfig(config)
 
+    # Load the unreal engine configs for the server
+    conan_config = ConanConfig(thrall_config.get('conan_server_directory'))
+
     # Try to attach to a running server before launching a new one
     server = ConanServer.create_from_running(thrall_config, steamcmd)
 
@@ -45,13 +48,23 @@ def run_server_thrall():
         # Install the server if it's not installed
         logger.info('Conan server not installed, installing.')
         server.install_or_update()
+        server.start()
+        conan_config.wait_for_configs_to_exist()
+        server.close()
+        conan_config.refresh()
+
     elif thrall_config.getboolean('force_update_on_launch'):
         # user can force an update on launch if files are missing
         logger.info('Forcing update because you told me to do so in your configuration.')
         server.install_or_update()
+        server.start()
+        conan_config.wait_for_configs_to_exist()
+        server.close()
+        conan_config.refresh()
 
-    # Load the unreal engine configs for the server
-    conan_config = ConanConfig(thrall_config.get('conan_server_directory'))
+    else:
+        conan_config.wait_for_configs_to_exist()
+        conan_config.refresh()
 
     # Initialize and configure plugins
     plugins = []

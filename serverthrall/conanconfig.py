@@ -3,6 +3,7 @@ from configparser import ConfigParser
 from contextlib import contextmanager
 import logging
 import os
+import time
 
 
 class MultiSetOrderedDict(OrderedDict):
@@ -61,7 +62,6 @@ class ConanConfig(object):
         }
 
         self.logger = logging.getLogger('serverthrall.conan_config')
-        self.refresh()
 
     def refresh(self):
         groups = {}
@@ -153,3 +153,24 @@ class ConanConfig(object):
                     group_config.write(group_file)
 
         self.dirty = {}
+
+    def wait_for_configs_to_exist(self):
+        group_paths = OrderedDict(self.group_paths)
+
+        def get_ready_status():
+            for group in group_paths.values():
+                for config_path in group:
+                    if not os.path.exists(config_path):
+                        return (False, config_path,)
+
+            return (True, None)
+
+        last_waiting_on = None
+        while True:
+            is_ready, waiting_on = get_ready_status()
+            if is_ready:
+                return
+            if waiting_on != last_waiting_on:
+                self.logger.warn('Waiting for config to exist %s' % waiting_on)
+                last_waiting_on = waiting_on
+            time.sleep(3)
