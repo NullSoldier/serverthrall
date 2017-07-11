@@ -65,3 +65,16 @@ class TestConanConfig(object):
         config.group_paths = {'Test': [child]}
         config.refresh()
         assert config.get('Test', 'FOO', 'BAR') == 'BAZ'
+
+    def test_boolean(self):
+        config = ConanConfig(self.tmp_dir)
+        config.group_paths = {'Test': [self.tmp_path]}
+        config.refresh()
+
+        config.set('Test', 'FOO', 'BAR', True)
+        config.save()
+        assert config.get('Test', 'FOO', 'BAR') == True
+
+        config.set('Test', 'FOO', 'BAR', False)
+        config.save()
+        assert config.get('Test', 'FOO', 'BAR') == False

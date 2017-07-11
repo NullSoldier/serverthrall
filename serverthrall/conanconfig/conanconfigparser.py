@@ -1,8 +1,8 @@
 from .conanconfigdict import ConanConfigDict
-from configparser import ConfigParser
+from configparser import RawConfigParser
 
 
-class ConanConfigParser(ConfigParser):
+class ConanConfigParser(RawConfigParser):
 
     def __init__(self, *args, **kwargs):
         kwargs['allow_no_value'] = True
