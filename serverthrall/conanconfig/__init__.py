@@ -1,45 +1,9 @@
+from .conanconfigparser import ConanConfigParser
 from collections import OrderedDict
-from configparser import ConfigParser
-from contextlib import contextmanager
 import logging
 import os
 import time
 
-
-class MultiSetOrderedDict(OrderedDict):
-
-    def __setitem__(self, key, value):
-        if key in self:
-            item = self.__getitem__(key)
-
-            if isinstance(value, list):
-                item.extend(value)
-            else:
-                item.append(value)
-        else:
-            super(MultiSetOrderedDict, self).__setitem__(key, value)
-
-    def items(self, *args, **kwargs):
-        result = []
-
-        for key, value in super(MultiSetOrderedDict, self).items(*args, **kwargs):
-            if isinstance(value, list):
-                for subvalue in value:
-                    result.append((key, subvalue))
-
-        return result
-
-class ConanConfigParser(ConfigParser):
-
-    def __init__(self, *args, **kwargs):
-        kwargs['interpolation'] = None
-        kwargs['strict'] = False
-        kwargs['dict_type'] = MultiSetOrderedDict
-        super(ConanConfigParser, self).__init__(*args, **kwargs)
-        self.optionxform = lambda k: k
-
-    def items(self, *args, **kwargs):
-        super(ConanConfigParser, self).items(*args, **kwargs)
 
 class ConanConfig(object):
 
@@ -49,19 +13,20 @@ class ConanConfig(object):
         self.group_paths = {
             'ServerSettings': [
                 os.path.join(conan_server_directory, 'ConanSandbox\\Config\\DefaultServerSettings.ini'),
-                os.path.join(conan_server_directory, 'ConanSandbox\\Saved\\Config\\\WindowsServer\\ServerSettings.ini')
+                os.path.join(conan_server_directory, 'ConanSandbox\\Saved\\Config\\WindowsServer\\ServerSettings.ini')
             ],
             'Engine': [
                 os.path.join(conan_server_directory, 'ConanSandbox\\Config\\DefaultEngine.ini'),
-                os.path.join(conan_server_directory, 'ConanSandbox\\Saved\\Config\\\WindowsServer\\Engine.ini')
+                os.path.join(conan_server_directory, 'ConanSandbox\\Saved\\Config\\WindowsServer\\Engine.ini')
             ],
             'Game': [
                 os.path.join(conan_server_directory, 'ConanSandbox\\Config\\DefaultGame.ini'),
-                os.path.join(conan_server_directory, 'ConanSandbox\\Saved\\Config\\\WindowsServer\\Game.ini')
+                os.path.join(conan_server_directory, 'ConanSandbox\\Saved\\Config\\WindowsServer\\Game.ini')
             ]
         }
 
         self.logger = logging.getLogger('serverthrall.conan_config')
+        self.logger.setLevel(logging.DEBUG)
 
     def refresh(self):
         groups = {}
@@ -78,6 +43,7 @@ class ConanConfig(object):
                     raise Exception('Failed to load config %s' % path)
 
         self.groups = groups
+        self._patch_dirty()
 
     def _query_get(self, group, section, option, getter):
         if group not in self.groups:
@@ -128,11 +94,18 @@ class ConanConfig(object):
     def setboolean(self, group, section, option, value):
         self.set(group, section, option, 'True' if value else 'False')
 
-    @contextmanager
     def save(self):
-        yield
         self.refresh()
 
+        # write modified config files out to the last config path in each group
+        for group_key, group in self.groups.items():
+            for group_index, group_config in enumerate(group):
+                with open(self.group_paths[group_key][group_index], 'w') as group_file:
+                    group_config.write(group_file)
+
+        self.dirty = {}
+
+    def _patch_dirty(self):
         # patch in dirty settings into the freshly loaded config files
         for group_key, groups in self.dirty.items():
             for group_index, sections in enumerate(groups):
@@ -145,14 +118,6 @@ class ConanConfig(object):
                             self.group_paths[group_key][group_index], section_key, option_key, value))
 
                         self.groups[group_key][group_index].set(section_key, option_key, value)
-
-        # write modified config files out to the last config path in each group
-        for group_key, group in self.groups.items():
-            for group_index, group_config in enumerate(group):
-                with open(self.group_paths[group_key][group_index], 'w') as group_file:
-                    group_config.write(group_file)
-
-        self.dirty = {}
 
     def wait_for_configs_to_exist(self):
         group_paths = OrderedDict(self.group_paths)
