@@ -26,7 +26,6 @@ class ConanConfig(object):
         }
 
         self.logger = logging.getLogger('serverthrall.conan_config')
-        self.logger.setLevel(logging.DEBUG)
 
     def refresh(self):
         groups = {}
@@ -90,6 +89,8 @@ class ConanConfig(object):
 
         self.dirty[group][index][section][option] = value
         self.groups[group][index].set(section, option, value)
+
+        return self.group_paths[group][index]
 
     def setboolean(self, group, section, option, value):
         self.set(group, section, option, 'True' if value else 'False')

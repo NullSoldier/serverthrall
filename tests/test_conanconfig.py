@@ -97,7 +97,9 @@ class TestConanConfig(object):
 
         self.config.group_paths = {'Test': [parent, child]}
         self.config.refresh()
+
         assert self.config.get('Test', 'URL', 'Port') == '7777'
+
         self.config.set('Test', 'URL', 'Port', '7778', first=True)
         self.config.set('Test', 'URL', 'Port', '7778')
         self.config.save()

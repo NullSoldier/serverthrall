@@ -27,4 +27,4 @@ steamcmd_logger = logging.getLogger('serverthrall.steamcmd')
 steamcmd_logger.setLevel(logging.WARNING)
 
 conan_config_logger = logging.getLogger('serverthrall.conan_config')
-conan_config_logger.setLevel(logging.WARNING)
+conan_config_logger.setLevel(logging.INFO)
