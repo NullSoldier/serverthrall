@@ -1,4 +1,3 @@
-from .conanconfig import ConanConfig
 import subprocess
 import psutil
 import time
@@ -13,7 +12,7 @@ class ConanServer():
         self.path = path
         self.steamcmd = steamcmd
         self.arguments = arguments
-        self.high_priority = high_priority;
+        self.high_priority = high_priority
         self.logger = logging.getLogger('serverthrall')
         self.process = None
 

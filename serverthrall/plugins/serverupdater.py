@@ -3,7 +3,7 @@ from serverthrall import settings, acf
 from datetime import datetime
 import time
 import subprocess
-import os       
+import os
 
 
 class ServerUpdater(IntervalTickPlugin):
@@ -19,7 +19,7 @@ class ServerUpdater(IntervalTickPlugin):
     def ready(self, steamcmd, server, thrall):
         super(ServerUpdater, self).ready(steamcmd, server, thrall)
         self.installed_version = self.config.get('installed_version')
-        
+
         if self.installed_version == self.NO_INSTALLED_VERSION:
             self.detect_existing_version()
 
@@ -109,6 +109,5 @@ class ServerUpdater(IntervalTickPlugin):
             self.logger.info('An update is available from build %s to %s' % (current, target))
             self.server.close()
             self.update_server(target)
+            self.thrall.conan_config.refresh()
             self.server.start()
-
-        
