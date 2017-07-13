@@ -53,4 +53,4 @@ class Thrall(object):
                     self.plugins.remove(plugin)
 
             self.config.save_if_queued()
-            time.sleep(5)
+            time.sleep(0.16)
