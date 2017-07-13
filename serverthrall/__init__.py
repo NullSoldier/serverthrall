@@ -1,7 +1,7 @@
 from .appconfig import config_load, ThrallConfig, PluginConfig
 from .conanconfig import ConanConfig
 from .conanserver import ConanServer
-from .plugins import UptimeTracker, DownRecovery, ServerUpdater, ApiUploader, ServerConfig
+from .plugins import UptimeTracker, DownRecovery, ServerUpdater, ApiUploader, ServerConfig, DeadManSnitch
 from .steamcmd import SteamCmd
 from .thrall import Thrall
 from configparser import ConfigParser
@@ -16,6 +16,7 @@ INSTALLED_PLUGINS = (
     DownRecovery,
     ServerUpdater,
     ApiUploader,
+    DeadManSnitch
 )
 
 def run_server_thrall():
