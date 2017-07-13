@@ -69,7 +69,7 @@ def run_server_thrall():
     plugins = []
     for plugin_class in INSTALLED_PLUGINS:
         logger.info('Initializing with plugin %s' % plugin_class.__name__)
-        plugin_config = PluginConfig(plugin_class, config)
+        plugin_config = PluginConfig(plugin_class, config, thrall_config)
         plugin = plugin_class(plugin_config)
         plugins.append(plugin)
 

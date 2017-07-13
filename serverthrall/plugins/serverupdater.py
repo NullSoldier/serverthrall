@@ -12,9 +12,10 @@ class ServerUpdater(IntervalTickPlugin):
     FIFTEEN_MINUTES_IN_SECONDS = 15 * 60
 
     def __init__(self, config):
+        super(ServerUpdater, self).__init__(config)
         config.set_default('interval.interval_seconds', self.FIFTEEN_MINUTES_IN_SECONDS)
         config.set_default('installed_version', self.NO_INSTALLED_VERSION)
-        super(ServerUpdater, self).__init__(config)
+        config.queue_save()
 
     def ready(self, steamcmd, server, thrall):
         super(ServerUpdater, self).ready(steamcmd, server, thrall)
@@ -33,6 +34,7 @@ class ServerUpdater(IntervalTickPlugin):
 
         self.installed_version = buildid
         self.config.set('installed_version', buildid)
+        self.config.queue_save()
 
         if buildid != self.NO_INSTALLED_VERSION:
             self.logger.info('Conan server already installed with buildid %s' % buildid)
@@ -101,6 +103,7 @@ class ServerUpdater(IntervalTickPlugin):
         self.server.install_or_update()
         self.installed_version = target_build_id
         self.config.set('installed_version', target_build_id)
+        self.config.queue_save()
 
     def tick_interval(self):
         is_available, current, target = self.is_update_available()

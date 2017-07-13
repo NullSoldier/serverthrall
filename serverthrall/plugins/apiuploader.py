@@ -24,13 +24,14 @@ class ApiUploader(IntervalTickPlugin):
     SERVER_THRALL_API_URL = 'http://serverthrallapi.herokuapp.com'
 
     def __init__(self, config):
+        super(ApiUploader, self).__init__(config)
         config.set_default('interval.interval_seconds', 60)
         config.set_default('private_secret', self.NO_VALUE)
         config.set_default('server_id', self.NO_VALUE)
         config.set_default('last_sync_time', self.NO_VALUE)
         config.set_default('ginfo_group_uid', self.NO_VALUE)
         config.set_default('ginfo_access_token', self.NO_VALUE)
-        super(ApiUploader, self).__init__(config)
+        config.queue_save()
 
     def ready(self, steamcmd, server, thrall):
         super(ApiUploader, self).ready(steamcmd, server, thrall)
@@ -62,6 +63,7 @@ class ApiUploader(IntervalTickPlugin):
 
         self.config.set('server_id', self.server_id)
         self.config.set('private_secret', self.private_secret)
+        self.config.queue_save()
 
         self.logger.info('Registered, server id: %s, private secret: %s' % (self.server_id, self.private_secret))
 

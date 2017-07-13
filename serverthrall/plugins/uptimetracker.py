@@ -9,6 +9,7 @@ class UptimeTracker(ThrallPlugin):
         super(UptimeTracker, self).__init__(config)
         self.config.set_default('initial', self.get_current_timestamp())
         self.config.set_default('seconds_up', 0)
+        self.config.queue_save()
         self.last_check = None
 
     def ready(self, steamcmd, server, thrall):
@@ -38,6 +39,7 @@ class UptimeTracker(ThrallPlugin):
             self.seconds_up += elapsed
             self.last_check = current
             self.config.set('seconds_up', self.seconds_up)
+            self.config.queue_save()
 
             self.logger.info(
                 'Uptime at %s percent (%s / %s)' % (

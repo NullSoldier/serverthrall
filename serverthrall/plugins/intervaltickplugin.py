@@ -10,6 +10,7 @@ class IntervalTickPlugin(ThrallPlugin):
         super(IntervalTickPlugin, self).__init__(config)
         self.config.set_default('interval.last_checked_seconds', 0)
         self.config.set_default('interval.interval_seconds', self.ONE_MINUTE_IN_SECONDS)
+        self.config.queue_save()
         self.back_off_seconds = 0
         self.back_off_multiplier = 0.5
         self.back_off_called = False
@@ -33,6 +34,7 @@ class IntervalTickPlugin(ThrallPlugin):
     def tick(self):
         if self.trigger.is_ready(self.back_off_seconds):
             self.config.set('interval.last_checked_seconds', self.trigger.last_checked)
+            self.config.queue_save()
             self.trigger.reset()
             self.tick_interval()
 

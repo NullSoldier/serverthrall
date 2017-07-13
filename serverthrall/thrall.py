@@ -52,5 +52,5 @@ class Thrall(object):
                     self.logger.exception('Unloading %s plugin after error ' % plugin.name)
                     self.plugins.remove(plugin)
 
-            self.config.save()
+            self.config.save_if_queued()
             time.sleep(5)
