@@ -15,3 +15,4 @@ class ThrallPlugin(object):
         self.steamcmd = steamcmd
         self.thrall = thrall
         self.logger = logging.getLogger('serverthrall.' + self.name)
+        self.logger.setLevel(logging.INFO)
