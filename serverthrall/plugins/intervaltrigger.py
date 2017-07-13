@@ -12,7 +12,7 @@ class IntervalTrigger(object):
     def get_current_timestamp(self):
         return time.mktime(datetime.now().timetuple())
 
-    def trigger():
+    def trigger(self):
         self.triggered_manually = True
 
     def is_ready(self, extra_seconds=0):
