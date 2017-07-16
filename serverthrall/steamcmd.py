@@ -1,4 +1,4 @@
-from . import acf
+from steamfiles import acf
 import logging
 import os
 import shutil

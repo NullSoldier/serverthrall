@@ -1,13 +1,5 @@
 from .intervaltickplugin import IntervalTickPlugin
-from serverthrall import settings, acf
-from datetime import datetime
-import time
-import subprocess
-import os
-import sqlite3
-import requests
-from .intervaltickplugin import IntervalTickPlugin
-from serverthrall import settings, acf
+from serverthrall import settings
 from datetime import datetime
 import time
 import subprocess

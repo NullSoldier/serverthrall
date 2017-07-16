@@ -1,5 +1,6 @@
 from .intervaltickplugin import IntervalTickPlugin
-from serverthrall import settings, acf
+from serverthrall import settings
+from steamfiles import acf
 from datetime import datetime
 import time
 import subprocess

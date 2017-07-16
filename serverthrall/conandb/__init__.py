@@ -1,4 +1,4 @@
-from serverthrall import settings, acf
+from serverthrall import settings
 import sqlite3
 
 
