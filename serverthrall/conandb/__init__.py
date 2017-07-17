@@ -49,6 +49,23 @@ class ConanDbClient(object):
 
         return characters
 
-
     def get_character(self, conan_id):
         raise Exception('get_character not supported')
+
+    def get_clans(self):
+        SQL = '''
+            SELECT guildId, name, owner, messageOfTheDay FROM guilds
+        '''
+
+        guilds = []
+
+        with sqlite3.connect(self.db_path) as connection:
+            for row in connection.cursor().execute(SQL):
+                guilds.append({
+                    'id': row[0],
+                    'name': row[1],
+                    'owner_id': row[2],
+                    'motd': row[3]
+                })
+
+        return guilds
