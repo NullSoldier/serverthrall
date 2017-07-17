@@ -69,6 +69,7 @@ class ApiUploader(IntervalTickPlugin):
                 return
 
         characters = self.client.get_characters()
+        clans = self.client.get_clans()
 
         url = (self.SERVER_THRALL_API_URL + '/api/%s/sync/characters') % self.server_id
 
@@ -82,7 +83,7 @@ class ApiUploader(IntervalTickPlugin):
             requests.post(
                 url=url,
                 params=params,
-                json={'characters': characters})
+                json={'characters': characters, 'clans': clans})
         except ConnectionError:
             self.logger.error('Cant sync server to serverthrallapi')
             self.back_off()
