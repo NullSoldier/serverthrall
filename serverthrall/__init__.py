@@ -47,19 +47,19 @@ def run_server_thrall():
     if not server.is_installed():
         # Install the server if it's not installed
         logger.info('Conan server not installed, installing.')
+        server.close()
         server.install_or_update()
         server.start()
         conan_config.wait_for_configs_to_exist()
-        server.close()
         conan_config.refresh()
 
     elif thrall_config.getboolean('force_update_on_launch'):
         # user can force an update on launch if files are missing
         logger.info('Forcing update because you told me to do so in your configuration.')
+        server.close()
         server.install_or_update()
         server.start()
         conan_config.wait_for_configs_to_exist()
-        server.close()
         conan_config.refresh()
 
     else:
