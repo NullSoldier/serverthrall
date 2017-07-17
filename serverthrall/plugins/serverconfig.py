@@ -22,7 +22,7 @@ class OnModifiedHandler(FileSystemEventHandler):
         if self.ignore is True:
             return
 
-        self.logger.info('got modification %s: %s' % (ev.event_type, ev.src_path))
+        self.logger.debug('File %s: %s' % (ev.event_type, ev.src_path))
         self.plugin.tick_early()
 
     @contextmanager
