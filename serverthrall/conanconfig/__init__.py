@@ -101,8 +101,14 @@ class ConanConfig(object):
         # write modified config files out to the last config path in each group
         for group_key, group in self.groups.items():
             for group_index, group_config in enumerate(group):
-                with open(self.group_paths[group_key][group_index], 'w') as group_file:
-                    group_config.write(group_file)
+                is_modified = (
+                    group_key in self.dirty and
+                    len(self.dirty[group_key]) > group_index and
+                    self.dirty[group_key][group_index] != {})
+
+                if is_modified:
+                    with open(self.group_paths[group_key][group_index], 'w') as group_file:
+                        group_config.write(group_file)
 
         self.dirty = {}
 
