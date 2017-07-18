@@ -11,6 +11,7 @@ class ApiUploader(IntervalTickPlugin):
     SERVER_THRALL_API_URL = 'http://serverthrallapi.herokuapp.com'
 
     def __init__(self, config):
+        config.set_default('enabled', 'false')
         super(ApiUploader, self).__init__(config)
         config.set_default('interval.interval_seconds', 60)
         config.set_default('private_secret', self.NO_VALUE)

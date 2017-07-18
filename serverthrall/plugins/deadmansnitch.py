@@ -9,6 +9,7 @@ class DeadManSnitch(IntervalTickPlugin):
     TEN_MINUTES = 10 * 60
 
     def __init__(self, config):
+        config.set_default('enabled', 'false')
         super(DeadManSnitch, self).__init__(config)
         config.set_default('interval.interval_seconds', self.TEN_MINUTES)
         config.set_default('snitch_url', '')
