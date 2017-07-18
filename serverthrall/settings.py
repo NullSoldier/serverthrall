@@ -8,14 +8,15 @@ CONFIG_NAME = 'serverthrall.config'
 CONAN_EXE_NAME = 'ConanSandboxServer.exe'
 
 # LOGGING
-formatter = logging.Formatter('[%(name)s] %(message)s')
+consoleFormatter = logging.Formatter('[%(name)s] %(message)s')
+fileFormatter = logging.Formatter("[%(asctime)s|%(levelname)s|%(name)s] %(message)s", "%Y-%m-%d %H:%M:%S")
 
 fileHandler = logging.FileHandler('serverthrall.log')
-fileHandler.setFormatter(formatter)
+fileHandler.setFormatter(fileFormatter)
 fileHandler.setLevel(logging.DEBUG)
 
 consoleHandler = logging.StreamHandler()
-consoleHandler.setFormatter(formatter)
+consoleHandler.setFormatter(consoleFormatter)
 consoleHandler.setLevel(logging.DEBUG)
 
 thrall_logger = logging.getLogger('serverthrall')
