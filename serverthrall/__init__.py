@@ -23,13 +23,19 @@ def run_server_thrall():
     logger = logging.getLogger('serverthrall')
 
     config = config_load()
+    config_is_new = False
+
     if config is None:
         logger.info('No config found, creating for the first time')
         config = ConfigParser()
         config.optionxform = str
+        config_is_new = True
 
     steamcmd = SteamCmd(settings.STEAMCMD_PATH)
     thrall_config = ThrallConfig(config)
+
+    if config_is_new:
+        thrall_config.save()
 
     # Load the unreal engine configs for the server
     conan_config = ConanConfig(thrall_config.get('conan_server_directory'))
