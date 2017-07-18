@@ -1,13 +1,8 @@
 from .intervaltickplugin import IntervalTickPlugin
-from serverthrall import settings
-from datetime import datetime
-import time
-import subprocess
-import os
-import sqlite3
-import requests
-from serverthrall.conandb import ConanDbClient
 from requests.exceptions import ConnectionError
+from serverthrall.conandb import ConanDbClient
+import os
+import requests
 
 
 class ApiUploader(IntervalTickPlugin):

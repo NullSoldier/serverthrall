@@ -90,7 +90,7 @@ class ServerUpdater(IntervalTickPlugin):
                 error_message += exc.output
                 error_message += '\n==========='
             self.logger.error(error_message)
-            self.tick_early() # if there is an error, try again
+            self.tick_early()  # if there is an error, try again
             return False, None, None
 
         if self.installed_version == self.NO_INSTALLED_VERSION:
