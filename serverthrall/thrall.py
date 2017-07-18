@@ -1,5 +1,6 @@
-import time
+from .exceptions import UnloadPluginException
 import logging
+import time
 
 
 class Thrall(object):
@@ -37,6 +38,9 @@ class Thrall(object):
             if plugin.enabled:
                 try:
                     plugin.ready(self.server, self.steamcmd, self)
+                except UnloadPluginException:
+                    self.plugins.remove(plugin)
+                    plugin.unload()
                 except Exception:
                     self.logger.exception('Unloading %s plugin after error ' % plugin.name)
                     self.plugins.remove(plugin)
@@ -49,6 +53,9 @@ class Thrall(object):
 
                 try:
                     plugin.tick()
+                except UnloadPluginException:
+                    self.plugins.remove(plugin)
+                    plugin.unload()
                 except Exception:
                     self.logger.exception('Unloading %s plugin after error ' % plugin.name)
                     self.plugins.remove(plugin)
