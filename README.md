@@ -1,3 +1,5 @@
+### [Download the latest release](https://github.com/NullSoldier/serverthrall/releases/latest) and join the discord if you have any issues https://discord.gg/5dK2TdN
+
 Server Thrall is a python based dedicated server toolbox. It's not a GUI to manage your server, it adds new features to the dedicated server that are not previously supported. To get the full value out of server thrall, please read the Configuration for Plugins section.
 
 ### Installation
