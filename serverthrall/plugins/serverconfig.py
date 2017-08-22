@@ -37,9 +37,9 @@ class OnModifiedHandler(FileSystemEventHandler):
 class ServerConfig(IntervalTickPlugin):
 
     CONFIG_MAPPING = {
-        'ServerName':           ('Engine', 'OnlineSubsystemSteam', 'ServerName'),
-        'ServerPassword':       ('Engine', 'OnlineSubsystemSteam', 'ServerPassword'),
-        'QueryPort':            ('Engine', 'OnlineSubsystemSteam', 'QueryPort'),
+        'ServerName':           ('Engine', 'OnlineSubsystem', 'ServerName'),
+        'ServerPassword':       ('Engine', 'OnlineSubsystem', 'ServerPassword'),
+        'QueryPort':            ('Engine', 'OnlineSubsystem', 'QueryPort'),
         'MaxPlayers':           ('Game', '/Script/Engine.GameSession', 'MaxPlayers'),
         'AdminPassword':        ('ServerSettings', 'ServerSettings', 'AdminPassword'),
         'MaxNudity':            ('ServerSettings', 'ServerSettings', 'MaxNudity'),
@@ -51,7 +51,6 @@ class ServerConfig(IntervalTickPlugin):
         'NetServerMaxTickRate': ('Engine', '/Script/OnlineSubsystemUtils.IpNetDriver', 'NetServerMaxTickRate'),
     }
 
-    DEFAULT_WHITE_LIST = ['Port']
     FIVE_MINUTES = 5 * 60
 
     def __init__(self, config):
@@ -61,6 +60,12 @@ class ServerConfig(IntervalTickPlugin):
 
     def ready(self, *args, **kwargs):
         super(ServerConfig, self).ready(*args, **kwargs)
+
+        self.logger.warn(
+            "\n=============================================\n"
+            "WARNING: ServerConfig plugin has known issues that MAY restart your server infinitely.\n"
+            "https://github.com/NullSoldier/serverthrall/issues/37"
+            "\n=============================================")
 
         config_paths = self.get_conan_config_paths(self.thrall.conan_config)
         self.handler = OnModifiedHandler(self, config_paths, self.logger)
@@ -105,9 +110,12 @@ class ServerConfig(IntervalTickPlugin):
             original = self.thrall.conan_config.get(group, section, option)
 
             if value is not None and value != original:
-                use_default_config = option in self.DEFAULT_WHITE_LIST
-                path = self.thrall.conan_config.set(group, section, option, value, use_default_config)
+                path = self.thrall.conan_config.set(group, section, option, value, True)
                 self.logger.info('Syncing %s.%s=%s, %s' % (section, option, value, path))
+
+                path = self.thrall.conan_config.set(group, section, option, value, False)
+                self.logger.info('Syncing %s.%s=%s, %s' % (section, option, value, path))
+
                 changed = True
 
         return changed
