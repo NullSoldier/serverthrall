@@ -73,7 +73,7 @@ class ConanServer():
         logger = logging.getLogger('serverthrall')
 
         for p in psutil.process_iter():
-            if p.name() == settings.CONAN_EXE_NAME:
+            if p.name() == config.get('conan_exe_name'):
                 executable_path = p.exe()
                 running_path = os.path.dirname(executable_path)
                 expected_path = config.get('conan_server_directory')
