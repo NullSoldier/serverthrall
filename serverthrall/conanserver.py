@@ -58,10 +58,7 @@ class ConanServer():
         self.process = None
 
     def attach(self, root_process):
-        # TODO: remove this hack
-        while len(root_process.children()) == 0:
-            time.sleep(5)
-        self.process = root_process.children()[0]
+        self.process = root_process
 
         if self.high_priority:
             self.logger.info('Setting server process to high priority')
@@ -75,14 +72,20 @@ class ConanServer():
         for p in psutil.process_iter():
             if p.name() == config.get('conan_exe_name'):
                 executable_path = p.exe()
+
                 running_path = os.path.dirname(executable_path)
-                expected_path = config.get('conan_server_directory')
+                expected_path = os.path.join(
+                    config.get('conan_server_directory'),
+                    config.get('conan_exe_subpath'))
+
                 additional_arguments = config.get('additional_arguments')
                 high_priority = config.getboolean('set_high_priority')
 
                 # TODO: the to_lower hack does not work on linux
                 if running_path.lower() != expected_path.lower():
-                    logger.info('Found running server that is different than config')
+                    logger.info("Found running server that is different than config" +
+                        "\nExpected: " + expected_path.lower() +
+                        "\nActual: " + running_path.lower())
                     continue
 
                 logger.info('Found running server, attaching')
