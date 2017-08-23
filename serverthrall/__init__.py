@@ -50,9 +50,13 @@ def run_server_thrall():
 
     # Create the server if we could not attach to a running process
     if server is None:
-        server_path = os.path.join(thrall_config.get('conan_server_directory'), settings.CONAN_EXE_NAME)
         additional_arguments = thrall_config.get('additional_arguments')
         set_high_priority = thrall_config.getboolean('set_high_priority')
+
+        server_path = os.path.join(
+            thrall_config.get('conan_server_directory'),
+            thrall_config.get('conan_exe_name'))
+
         server = ConanServer(server_path, steamcmd, additional_arguments, set_high_priority)
 
     if not server.is_installed():
