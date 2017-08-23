@@ -46,7 +46,7 @@ class SteamCmd(object):
             'app_info_update 1',
             'app_info_print %s' % app_id,
             'app_info_print %s' % app_id,
-            'quit').split('\n')
+            'quit').splitlines()
 
         first_index = None
         last_index = None
@@ -64,7 +64,7 @@ class SteamCmd(object):
             raise Exception('couldnt parse steamcmd app_info output')
 
         acf_output = output[first_index + 1:last_index]
-        return acf.loads('\n'.join(acf_output))
+        return acf.loads(str('\n'.join(acf_output)))
 
     def update_app(self, app_id, app_dir):
         self.try_delete_cache()

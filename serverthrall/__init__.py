@@ -8,6 +8,7 @@ from configparser import ConfigParser
 import atexit
 import logging
 import os
+import sys
 from . import settings
 
 INSTALLED_PLUGINS = (
@@ -21,6 +22,10 @@ INSTALLED_PLUGINS = (
 
 def run_server_thrall():
     logger = logging.getLogger('serverthrall')
+    logger.debug('Starting serverthrall with python %s.%s.%s' % (
+        sys.version_info[0],
+        sys.version_info[1],
+        sys.version_info[2]))
 
     config = config_load()
     config_is_new = False
