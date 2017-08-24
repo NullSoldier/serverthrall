@@ -1,9 +1,8 @@
-import subprocess
-import psutil
-import time
-from . import settings
-import os
+from serverthrall import settings
 import logging
+import os
+import psutil
+import subprocess
 
 
 class ConanServer():
@@ -70,13 +69,13 @@ class ConanServer():
         logger = logging.getLogger('serverthrall')
 
         for p in psutil.process_iter():
-            if p.name() == config.get('conan_exe_name'):
+            if p.name() == config.get_conan_exe_name():
                 executable_path = p.exe()
 
                 running_path = os.path.dirname(executable_path)
                 expected_path = os.path.join(
                     config.get('conan_server_directory'),
-                    config.get('conan_exe_subpath'))
+                    config.get_conan_exe_subpath())
 
                 additional_arguments = config.get('additional_arguments')
                 high_priority = config.getboolean('set_high_priority')

@@ -50,14 +50,13 @@ def run_server_thrall():
 
         server_path = os.path.join(
             thrall_config.get('conan_server_directory'),
-            thrall_config.get('conan_exe_subpath'),
-            thrall_config.get('conan_exe_name'))
+            thrall_config.get_conan_exe_subpath(),
+            thrall_config.get_conan_exe_name())
 
         server = ConanServer(server_path, steamcmd, additional_arguments, set_high_priority)
 
     if not server.is_installed():
-        # Install the server if it's not installed
-        logger.info('Conan server not installed, installing.')
+        logger.info('Conan server not installed at %s, installing.' % server.path)
         server.close()
         server.install_or_update()
         server.start()
