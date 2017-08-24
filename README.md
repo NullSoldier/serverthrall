@@ -9,6 +9,16 @@ Server Thrall is a python based dedicated server toolbox. It's not a GUI to mana
 ### How to run
 **Click on serverthrall.exebat** If this is your first time running it you will see Server Thrall download the Conan Exiles Dedicated Server and then create a new **serverthrall.config** file in the same directory. See more information below on what **serverthrall.config** contains.
 
+### Common Issues
+ * **Q>** When the Conan Exiles server starts it opens up an error alert that says `The procedure entry point ?IsAlive@CThread@@QEBA_NXZ could not`
+ * **A>** This happens when steam is running at the same time. If you close steam the error goes away when launching Conan Exiles.
+
+ * **Q>** ServerThrall is stuck at **Waiting for config to exist**
+ * **A>** This can happen if the config doesn't exist, but if ServerThrall crashes during the updater process your configurations may not exist anymore and you need to force an update by using `force_update_on_launch = true` in your **serverthrall.config**. I do not recommend leaving that option on.
+
+ * **Q>** ServerThrall uses the 32bit server executable by default, how can I change that?
+ * **A>** Set `conan_exe_name`, `conan_exe_subpath` under `[ServerThrall]` in **serverthrall.config** to customize this
+
 ### Configuration for Plugins
 Do not edit serverthrall.config while serverthrall is running. Your changes will be overwritten by serverthrall.
 
