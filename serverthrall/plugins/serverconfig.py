@@ -61,12 +61,6 @@ class ServerConfig(IntervalTickPlugin):
     def ready(self, *args, **kwargs):
         super(ServerConfig, self).ready(*args, **kwargs)
 
-        self.logger.warn(
-            "\n=============================================\n"
-            "WARNING: ServerConfig plugin has known issues that MAY restart your server infinitely.\n"
-            "https://github.com/NullSoldier/serverthrall/issues/37"
-            "\n=============================================")
-
         config_paths = self.get_conan_config_paths(self.thrall.conan_config)
         self.handler = OnModifiedHandler(self, config_paths, self.logger)
 
