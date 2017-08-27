@@ -35,7 +35,7 @@ class ConanConfig(object):
 
             for path in paths:
                 config = ConanConfigParser()
-                files_read = config.read(path)
+                files_read = config.read(path, 'utf-8-sig')
                 groups[key].append(config)
 
                 if len(files_read) == 0:
