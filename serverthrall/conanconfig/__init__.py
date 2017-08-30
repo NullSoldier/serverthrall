@@ -1,4 +1,5 @@
 from .conanconfigparser import ConanConfigParser
+from .utils import guess_file_encoding
 from collections import OrderedDict
 import logging
 import os
@@ -34,8 +35,9 @@ class ConanConfig(object):
             groups[key] = []
 
             for path in paths:
+                encoding = guess_file_encoding(path)
                 config = ConanConfigParser()
-                files_read = config.read(path, 'utf-8-sig')
+                files_read = config.read(path, encoding)
                 groups[key].append(config)
 
                 if len(files_read) == 0:
