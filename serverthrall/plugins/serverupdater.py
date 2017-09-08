@@ -87,7 +87,7 @@ class ServerUpdater(IntervalTickPlugin):
             error_message = 'Failed to check for update: %s' % exc
             if exc.output:
                 error_message += '\n===========\n'
-                error_message += exc.output
+                error_message += exc.output.decode('UTF-8', 'replace')
                 error_message += '\n==========='
             self.logger.error(error_message)
             self.tick_early()  # if there is an error, try again
