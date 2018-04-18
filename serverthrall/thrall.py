@@ -13,21 +13,8 @@ class Thrall(object):
         self.server = server
         self.logger = logging.getLogger('serverthrall')
 
-    def validate(self):
-        # load configuration
-        # validate configuration
-            # check if config exists
-            # check if game is installed
-            # check if steam cmd is located
-        # look for existing server
-            # create instance of ConanServer
-            # attach to running process
-        # start thrall with ConanServer thrall.run(server)
-        pass
-
     def stop(self):
         self.logger.info('Stopping ServerThrall')
-        self.config.save()
 
     def start(self):
         if not self.server.is_running():
