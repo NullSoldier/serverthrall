@@ -14,10 +14,7 @@ Server Thrall is a python based dedicated server toolbox. It's not a GUI to mana
 - A> This happens when steam is running at the same time. If you close steam the error goes away when launching Conan Exiles.
 
 - **Q>** ServerThrall is stuck at **Waiting for config to exist**
-- A> This can happen if the config doesn't exist, but if ServerThrall crashes during the updater process your configurations may not exist anymore and you need to force an update by using `force_update_on_launch = true` in your **serverthrall.config**. I do not recommend leaving that option on.
-
-- **Q>** ServerThrall uses the 32bit server executable by default, how can I change that?
-- A> Set `conan_exe_name`, `conan_exe_subpath` under `[ServerThrall]` in **serverthrall.config** to customize this
+- A> This can happen if ServerThrall crashes during the updater process. Your configurations may not exist anymore and you need to force an update by using `force_update_on_launch = true` in your **serverthrall.config**. I do not recommend leaving that option on.
 
 ### Configuration for Plugins
 Do not edit serverthrall.config while serverthrall is running. Your changes will be overwritten by serverthrall.
@@ -38,8 +35,8 @@ Do not edit serverthrall.config while serverthrall is running. Your changes will
 [ServerThrall]
 force_update_on_launch = false
 conan_server_directory = c:\Users\Jason\Desktop\Projects\serverthrall\vendor\server
-additional_arguments = -MULTIHOME=192.168.2.15
 set_high_priority = false
+multihome = 192.168.1.15
 
 [UptimeTracker]
 initial = 1487425465.0
