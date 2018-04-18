@@ -3,7 +3,7 @@
 Server Thrall is a python based dedicated server toolbox. It's not a GUI to manage your server. It adds new features to the dedicated server that are not previously supported. To get the full value out of server thrall, please read the Configuration for Plugins section.
 
 ### Installation
-* [Download ServerThrall](https://github.com/NullSoldier/serverthrall/releases/download/v2.0.6/serverthrall.2.0.6.zip)
+* [Download ServerThrall](https://github.com/NullSoldier/serverthrall/releases/download/v2.0.7/serverthrall.2.0.7.zip)
 * Unzip somewhere on your computer
 
 ### How to run
