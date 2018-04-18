@@ -14,6 +14,7 @@ class ThrallConfig(SectionForcedConfig):
         self.set_default('additional_arguments', '')
 
         self.set_default('set_high_priority', 'false')
+        self.set_default('testlive', 'false')
         self.queue_save()
         self.save()
 

@@ -7,11 +7,12 @@ import subprocess
 
 class ConanServer():
 
-    def __init__(self, path, steamcmd, arguments, high_priority):
+    def __init__(self, path, steamcmd, arguments, high_priority, use_testlive):
         self.path = path
         self.steamcmd = steamcmd
         self.arguments = arguments
         self.high_priority = high_priority
+        self.use_testlive = use_testlive
         self.logger = logging.getLogger('serverthrall')
         self.process = None
 
@@ -25,7 +26,11 @@ class ConanServer():
 
     def install_or_update(self):
         directory = os.path.dirname(self.path)
-        self.steamcmd.update_app(settings.CONAN_SERVER_APP_ID, directory)
+
+        self.steamcmd.update_app(
+            app_id=settings.CONAN_SERVER_APP_ID,
+            app_dir=directory,
+            beta='testlive' if self.use_testlive else None)
 
     def start(self):
         if self.process or self.is_running():
@@ -79,6 +84,7 @@ class ConanServer():
 
                 additional_arguments = config.get('additional_arguments')
                 high_priority = config.getboolean('set_high_priority')
+                use_testlive = config.getboolean('testlive')
 
                 # TODO: the to_lower hack does not work on linux
                 if running_path.lower() != expected_path.lower():
@@ -88,7 +94,12 @@ class ConanServer():
                     continue
 
                 logger.info('Found running server, attaching')
-                server = ConanServer(executable_path, steamcmd, additional_arguments, high_priority)
+                server = ConanServer(
+                    executable_path,
+                    steamcmd,
+                    additional_arguments,
+                    high_priority,
+                    use_testlive)
                 server.attach(p)
                 return server
 

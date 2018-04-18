@@ -66,11 +66,14 @@ class SteamCmd(object):
         acf_output = output[first_index + 1:last_index]
         return acf.loads('\n'.join(acf_output))
 
-    def update_app(self, app_id, app_dir):
+    def update_app(self, app_id, app_dir, beta=None):
         self.try_delete_cache()
+
+        if beta:
+            beta = '-beta ' + beta
 
         self._execute_steam_commands(
             'login anonymous',
             'force_install_dir "%s"' % app_dir,
-            'app_update %s validate' % app_id,
+            'app_update %s validate %s' % (app_id, beta),
             'quit')

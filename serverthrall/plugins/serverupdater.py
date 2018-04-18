@@ -10,22 +10,31 @@ import os
 class ServerUpdater(IntervalTickPlugin):
 
     NO_INSTALLED_VERSION = ''
+    NO_INSTALLED_BRANCH = 'public'
     FIFTEEN_MINUTES_IN_SECONDS = 15 * 60
 
     def __init__(self, config):
         super(ServerUpdater, self).__init__(config)
         config.set_default('interval.interval_seconds', self.FIFTEEN_MINUTES_IN_SECONDS)
         config.set_default('installed_version', self.NO_INSTALLED_VERSION)
+        config.set_default('installed_branch', self.NO_INSTALLED_BRANCH)
         config.queue_save()
 
     def ready(self, steamcmd, server, thrall):
         super(ServerUpdater, self).ready(steamcmd, server, thrall)
         self.installed_version = self.config.get('installed_version')
+        self.installed_branch = self.config.get('installed_branch')
 
         if self.installed_version == self.NO_INSTALLED_VERSION:
             self.detect_existing_version()
 
         self.logger.info('Auto updater ready, currently known buildid is %s', self.installed_version)
+
+        if self.installed_branch != self.get_config_branch():
+            self.tick_early()
+
+    def get_config_branch(self):
+        return 'testlive' if self.thrall.config.getboolean('testlive') else 'public'
 
     def get_current_timestamp(self):
         return time.mktime(datetime.now().timetuple())
@@ -81,7 +90,7 @@ class ServerUpdater(IntervalTickPlugin):
         return build_id, None
 
     def is_update_available(self):
-        available_build_id, exc = self.get_available_build_id()
+        available_build_id, exc = self.get_available_build_id(branch=self.get_config_branch())
 
         if available_build_id is None:
             error_message = 'Failed to check for update: %s' % exc
@@ -98,12 +107,20 @@ class ServerUpdater(IntervalTickPlugin):
 
         current = int(self.installed_version)
         latest = int(available_build_id)
-        return latest > current, current, latest
+        is_latest_newer = latest > current
 
-    def update_server(self, target_build_id):
+        if self.installed_branch != self.get_config_branch():
+            self.logger.info('Client is not using the correct branch, updating to %s', self.get_config_branch())
+            is_latest_newer = True
+
+        return is_latest_newer, current, latest
+
+    def update_server(self, target_build_id, target_branch):
         self.server.install_or_update()
         self.installed_version = target_build_id
+        self.installed_branch = target_branch
         self.config.set('installed_version', target_build_id)
+        self.config.set('installed_branch', target_branch)
         self.config.queue_save()
 
     def tick_interval(self):
@@ -112,6 +129,6 @@ class ServerUpdater(IntervalTickPlugin):
         if is_available:
             self.logger.info('An update is available from build %s to %s' % (current, target))
             self.server.close()
-            self.update_server(target)
+            self.update_server(target, self.get_config_branch())
             self.thrall.conan_config.refresh()
             self.server.start()
