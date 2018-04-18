@@ -7,7 +7,7 @@ import subprocess
 
 class ConanServer():
 
-    def __init__(self, path, steamcmd, arguments, high_priority, use_testlive):
+    def __init__(self, path, steamcmd, arguments, high_priority, multihome, use_testlive):
         self.path = path
         self.steamcmd = steamcmd
         self.arguments = arguments
@@ -15,6 +15,9 @@ class ConanServer():
         self.use_testlive = use_testlive
         self.logger = logging.getLogger('serverthrall')
         self.process = None
+
+        if multihome:
+            self.arguments = arguments + " -MULTIHOME=" + multihome
 
     def is_running(self):
         if self.process is None:
@@ -85,6 +88,7 @@ class ConanServer():
                 additional_arguments = config.get('additional_arguments')
                 high_priority = config.getboolean('set_high_priority')
                 use_testlive = config.getboolean('testlive')
+                multihome = config.get('multihome')
 
                 # TODO: the to_lower hack does not work on linux
                 if running_path.lower() != expected_path.lower():
@@ -99,6 +103,7 @@ class ConanServer():
                     steamcmd,
                     additional_arguments,
                     high_priority,
+                    multihome,
                     use_testlive)
                 server.attach(p)
                 return server

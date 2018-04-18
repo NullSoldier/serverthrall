@@ -12,7 +12,7 @@ class ThrallConfig(SectionForcedConfig):
         self.set_default('conan_server_directory', os.path.join(os.getcwd(), 'vendor\\server'))
         self.set_default('force_update_on_launch', 'false')
         self.set_default('additional_arguments', '')
-
+        self.set_default('multihome', '')
         self.set_default('set_high_priority', 'false')
         self.set_default('testlive', 'false')
         self.queue_save()

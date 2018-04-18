@@ -47,6 +47,7 @@ def run_server_thrall():
     if server is None:
         additional_arguments = thrall_config.get('additional_arguments')
         set_high_priority = thrall_config.getboolean('set_high_priority')
+        multihome = thrall_config.get('multihome')
         use_testlive = thrall_config.getboolean('testlive')
 
         server_path = os.path.join(
@@ -59,6 +60,7 @@ def run_server_thrall():
             steamcmd,
             additional_arguments,
             set_high_priority,
+            multihome,
             use_testlive)
 
     if not server.is_installed():
