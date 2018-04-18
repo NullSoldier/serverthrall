@@ -51,7 +51,7 @@ class ServerUpdater(IntervalTickPlugin):
 
     def get_installed_build_id(self):
         appmanifest_path = os.path.join(
-            self.thrall.config.get('conan_server_directory'),
+            self.thrall.config.get_server_root(),
             'steamapps/appmanifest_%s.acf' % settings.CONAN_SERVER_APP_ID)
 
         if not os.path.exists(appmanifest_path):

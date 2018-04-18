@@ -8,8 +8,9 @@ import socket
 
 class ConanServer():
 
-    def __init__(self, path, steamcmd, arguments, high_priority, multihome, use_testlive):
-        self.path = path
+    def __init__(self, server_root, server_path, steamcmd, arguments, high_priority, multihome, use_testlive):
+        self.server_root = server_root
+        self.server_path = server_path
         self.steamcmd = steamcmd
         self.arguments = arguments
         self.high_priority = high_priority
@@ -28,14 +29,12 @@ class ConanServer():
         return self.process.is_running()
 
     def is_installed(self):
-        return os.path.exists(self.path)
+        return os.path.exists(self.server_path)
 
     def install_or_update(self):
-        directory = os.path.dirname(self.path)
-
         self.steamcmd.update_app(
             app_id=settings.CONAN_SERVER_APP_ID,
-            app_dir=directory,
+            app_dir=self.server_root,
             beta='testlive' if self.use_testlive else None)
 
     def start(self):
@@ -49,7 +48,7 @@ class ConanServer():
             self.logger.info('Launching server and waiting for child processes with extra arguments, %s' % self.arguments)
 
         try:
-            process = subprocess.Popen([self.path, '-log', self.arguments])
+            process = subprocess.Popen([self.server_path, '-log', self.arguments])
             process = psutil.Process(process.pid)
             self.attach(process)
         except subprocess.CalledProcessError as ex:
@@ -82,32 +81,25 @@ class ConanServer():
         for p in psutil.process_iter():
             if p.name() == config.get_conan_exe_name():
                 executable_path = p.exe()
-
-                running_path = os.path.dirname(executable_path)
-                expected_path = os.path.join(
-                    config.get('conan_server_directory'),
-                    config.get_conan_exe_subpath())
-
-                additional_arguments = config.get('additional_arguments')
-                high_priority = config.getboolean('set_high_priority')
-                use_testlive = config.getboolean('testlive')
-                multihome = config.get('multihome')
+                running_dir = os.path.dirname(executable_path)
+                expected_dir = os.path.dirname(config.get_server_path())
 
                 # TODO: the to_lower hack does not work on linux
-                if running_path.lower() != expected_path.lower():
+                if running_dir.lower() != expected_dir.lower():
                     logger.info("Found running server that is different than config" +
-                        "\nExpected: " + expected_path.lower() +
-                        "\nActual: " + running_path.lower())
+                        "\nExpected: " + config.get_server_path().lower() +
+                        "\nActual: " + executable_path.lower())
                     continue
 
                 logger.info('Found running server, attaching')
                 server = ConanServer(
-                    executable_path,
-                    steamcmd,
-                    additional_arguments,
-                    high_priority,
-                    multihome,
-                    use_testlive)
+                    server_root=config.get_server_root(),
+                    server_path=executable_path,
+                    steamcmd=steamcmd,
+                    arguments=config.get('additional_arguments'),
+                    high_priority=config.getboolean('set_high_priority'),
+                    multihome=config.get('multihome'),
+                    use_testlive=config.getboolean('testlive'))
                 server.attach(p)
                 return server
 

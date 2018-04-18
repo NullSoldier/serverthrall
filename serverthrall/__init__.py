@@ -42,7 +42,7 @@ def run_server_thrall(app_version):
         thrall_config.save()
 
     # Load the unreal engine configs for the server
-    conan_config = ConanConfig(thrall_config.get('conan_server_directory'))
+    conan_config = ConanConfig(thrall_config.get_server_root())
 
     # Try to attach to a running server before launching a new one
     server = ConanServer.create_from_running(thrall_config, steamcmd)
@@ -54,21 +54,17 @@ def run_server_thrall(app_version):
         multihome = thrall_config.get('multihome')
         use_testlive = thrall_config.getboolean('testlive')
 
-        server_path = os.path.join(
-            thrall_config.get('conan_server_directory'),
-            thrall_config.get_conan_exe_subpath(),
-            thrall_config.get_conan_exe_name())
-
         server = ConanServer(
-            server_path,
-            steamcmd,
-            additional_arguments,
-            set_high_priority,
-            multihome,
-            use_testlive)
+            server_root=thrall_config.get_server_root(),
+            server_path=thrall_config.get_server_path(),
+            steamcmd=steamcmd,
+            arguments=additional_arguments,
+            high_priority=set_high_priority,
+            multihome=multihome,
+            use_testlive=use_testlive)
 
     if not server.is_installed():
-        logger.info('Conan server not installed at %s, installing.' % server.path)
+        logger.info('Conan server not installed at %s, installing.' % server.server_path)
         server.close()
         server.install_or_update()
         server.start()

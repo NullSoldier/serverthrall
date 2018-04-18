@@ -28,7 +28,7 @@ class ApiUploader(IntervalTickPlugin):
         self.ginfo_group_uid = self.config.get('ginfo_group_uid')
         self.ginfo_access_token = self.config.get('ginfo_access_token')
 
-        db_path = os.path.join(self.thrall.config.get('conan_server_directory'),
+        db_path = os.path.join(self.thrall.config.get_server_root(),
             'ConanSandbox\\Saved\\game.db')
 
         if not os.path.exists(db_path):

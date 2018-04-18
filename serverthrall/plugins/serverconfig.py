@@ -64,8 +64,8 @@ class ServerConfig(IntervalTickPlugin):
         config_paths = self.get_conan_config_paths(self.thrall.conan_config)
         self.handler = OnModifiedHandler(self, config_paths, self.logger)
 
-        default_config_dir = os.path.join(self.thrall.config.get('conan_server_directory'), 'ConanSandbox\\Config')
-        derived_config_dir = os.path.join(self.thrall.config.get('conan_server_directory'), 'ConanSandbox\\Saved\\Config\\WindowsServer')
+        default_config_dir = os.path.join(self.thrall.config.get_server_root(), 'ConanSandbox\\Config')
+        derived_config_dir = os.path.join(self.thrall.config.get_server_root(), 'ConanSandbox\\Saved\\Config\\WindowsServer')
 
         self.observer = Observer()
         self.observer.schedule(self.handler, path=default_config_dir, recursive=False)

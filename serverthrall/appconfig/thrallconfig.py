@@ -19,10 +19,19 @@ class ThrallConfig(SectionForcedConfig):
         self.save()
 
     def get_conan_exe_name(self):
-        return self.get('conan_exe_name', settings.CONAN_EXE_NAME)
+        return settings.CONAN_EXE_NAME
 
     def get_conan_exe_subpath(self):
-        return self.get('conan_exe_subpath', settings.CONAN_EXE_SUBPATH)
+        return settings.CONAN_EXE_SUBPATH
+
+    def get_server_root(self):
+        return self.get('conan_server_directory')
+
+    def get_server_path(self):
+        return os.path.join(
+            self.get('conan_server_directory'),
+            self.get_conan_exe_subpath(),
+            self.get_conan_exe_name())
 
     def save(self):
         config_save(self.config)
