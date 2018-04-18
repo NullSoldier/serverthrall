@@ -9,4 +9,15 @@ if not is_python_version_correct:
     sys.exit(1)
 
 from serverthrall import run_server_thrall # noqa
-run_server_thrall()
+import os # noqa
+
+def get_app_version():
+    if not os.path.exists('version.txt'):
+        return None
+    try:
+        with open('version.txt', 'r') as file:
+            return file.read().strip()
+    except:
+        return None
+
+run_server_thrall(get_app_version())

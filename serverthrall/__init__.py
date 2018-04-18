@@ -19,7 +19,7 @@ INSTALLED_PLUGINS = (
     DeadManSnitch
 )
 
-def run_server_thrall():
+def run_server_thrall(app_version):
     logger = logging.getLogger('serverthrall')
 
     config = config_load()
@@ -33,6 +33,10 @@ def run_server_thrall():
 
     steamcmd = SteamCmd(settings.STEAMCMD_PATH)
     thrall_config = ThrallConfig(config)
+
+    if app_version is not None:
+        logger.info('Running version ' + app_version)
+        thrall_config.set('version', app_version)
 
     if config_is_new:
         thrall_config.save()
