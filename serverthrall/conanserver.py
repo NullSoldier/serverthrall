@@ -3,6 +3,7 @@ import logging
 import os
 import psutil
 import subprocess
+import socket
 
 
 class ConanServer():
@@ -17,7 +18,9 @@ class ConanServer():
         self.process = None
 
         if multihome:
-            self.arguments = arguments + " -MULTIHOME=" + multihome
+            self.arguments = self.arguments + " -MULTIHOME=" + multihome
+        else:
+            self.arguments = self.arguments + " -MULTIHOME=" + socket.gethostbyname(socket.gethostname())
 
     def is_running(self):
         if self.process is None:
