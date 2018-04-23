@@ -24,6 +24,7 @@ class ConanDbClient(object):
                 ch.playerId,
                 ch.lastTimeOnline,
                 ch.killerName,
+                ch.guild,
                 act.x,
                 act.y,
                 act.z
@@ -43,9 +44,10 @@ class ConanDbClient(object):
                     'conan_id': row[1],
                     'last_killed_by': row[6],
                     'last_online': row[5],
-                    'x': row[7],
-                    'y': row[8],
-                    'z': row[9]})
+                    'clan_id': row[7],
+                    'x': row[8],
+                    'y': row[9],
+                    'z': row[10]})
 
         return characters
 

@@ -55,6 +55,11 @@ class ApiUploader(IntervalTickPlugin):
 
         self.logger.info('Registered, server id: %s, private secret: %s' % (self.server_id, self.private_secret))
 
+    def get_server_info(self):
+        return {
+            'name': self.thrall.conan_config.get('Engine', 'OnlineSubsystem', 'ServerName')
+        }
+
     def tick_interval(self):
         if not self.is_registered():
             try:
@@ -64,22 +69,21 @@ class ApiUploader(IntervalTickPlugin):
                 self.back_off()
                 return
 
-        characters = self.client.get_characters()
-        clans = self.client.get_clans()
-
         url = (self.SERVER_THRALL_API_URL + '/api/%s/sync/characters') % self.server_id
-
         params = {'private_secret': self.private_secret}
 
         if self.ginfo_group_uid != self.NO_VALUE and self.ginfo_access_token != "":
             params['ginfo_group_uid'] = self.ginfo_group_uid
             params['ginfo_access_token'] = self.ginfo_access_token
 
+        payload = {
+            'server': self.get_server_info(),
+            'characters': self.client.get_characters(),
+            'clans': self.client.get_clans()
+        }
+
         try:
-            requests.post(
-                url=url,
-                params=params,
-                json={'characters': characters, 'clans': clans})
+            requests.post(url=url, params=params, json=payload)
         except ConnectionError:
             self.logger.error('Cant sync server to serverthrallapi')
             self.back_off()
