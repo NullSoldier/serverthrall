@@ -16,6 +16,7 @@ class ApiUploader(IntervalTickPlugin):
         config.set_default('interval.interval_seconds', 60)
         config.set_default('private_secret', self.NO_VALUE)
         config.set_default('server_id', self.NO_VALUE)
+        config.set_default('ip_address', self.NO_VALUE)
         config.set_default('last_sync_time', self.NO_VALUE)
         config.set_default('ginfo_group_uid', self.NO_VALUE)
         config.set_default('ginfo_access_token', self.NO_VALUE)
@@ -35,6 +36,7 @@ class ApiUploader(IntervalTickPlugin):
             raise Exception('Server DB not found at path %s' % db_path)
 
         self.client = ConanDbClient(db_path)
+        self.update_global_ip()
 
     def is_registered(self):
         return self.config.get('private_secret') != self.NO_VALUE
@@ -55,11 +57,6 @@ class ApiUploader(IntervalTickPlugin):
 
         self.logger.info('Registered, server id: %s, private secret: %s' % (self.server_id, self.private_secret))
 
-    def get_server_info(self):
-        return {
-            'name': self.thrall.conan_config.get('Engine', 'OnlineSubsystem', 'ServerName')
-        }
-
     def tick_interval(self):
         if not self.is_registered():
             try:
@@ -76,8 +73,13 @@ class ApiUploader(IntervalTickPlugin):
             params['ginfo_group_uid'] = self.ginfo_group_uid
             params['ginfo_access_token'] = self.ginfo_access_token
 
+        server_info = {
+            'name': self.thrall.conan_config.get('Engine', 'OnlineSubsystem', 'ServerName'),
+            'ip_address': self.config.get('ip_address')
+        }
+
         payload = {
-            'server': self.get_server_info(),
+            'server': server_info,
             'characters': self.client.get_characters(),
             'clans': self.client.get_clans()
         }
@@ -88,3 +90,16 @@ class ApiUploader(IntervalTickPlugin):
             self.logger.error('Cant sync server to serverthrallapi')
             self.back_off()
             return
+
+    def update_global_ip(self):
+        try:
+            response = requests.get('https://api.ipify.org')
+        except ConnectionError:
+            self.logger.warn('Failed to get global Ip Address of the server.')
+            return
+
+        if response.status_code != 200:
+            self.logger.warn('Failed to get global Ip Address of the server.')
+            return
+
+        self.config.set('ip_address', response.text)
