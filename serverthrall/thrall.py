@@ -13,6 +13,12 @@ class Thrall(object):
         self.server = server
         self.logger = logging.getLogger('serverthrall')
 
+    def get_plugin(self, type):
+        for plugin in self.plugins:
+            if isinstance(plugin, type):
+                return plugin
+        return None
+
     def stop(self):
         self.logger.info('Stopping ServerThrall')
 

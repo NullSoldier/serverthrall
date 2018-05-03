@@ -1,4 +1,5 @@
 from .intervaltickplugin import IntervalTickPlugin
+from .discord import Discord
 from serverthrall import settings
 from steamfiles import acf
 from datetime import datetime
@@ -22,6 +23,7 @@ class ServerUpdater(IntervalTickPlugin):
 
     def ready(self, steamcmd, server, thrall):
         super(ServerUpdater, self).ready(steamcmd, server, thrall)
+        self.discord = thrall.get_plugin(Discord)
         self.installed_version = self.config.get('installed_version')
         self.installed_branch = self.config.get('installed_branch')
 
@@ -126,9 +128,14 @@ class ServerUpdater(IntervalTickPlugin):
     def tick_interval(self):
         is_available, current, target = self.is_update_available()
 
-        if is_available:
-            self.logger.info('An update is available from build %s to %s' % (current, target))
-            self.server.close()
-            self.update_server(target, self.get_config_branch())
-            self.thrall.conan_config.refresh()
-            self.server.start()
+        if not is_available:
+            return
+
+        if self.discord is not None:
+            self.discord.send_message("ServerUpdater", "@everyone The server is restarting to install an update!")
+
+        self.logger.info('An update is available from build %s to %s' % (current, target))
+        self.server.close()
+        self.update_server(target, self.get_config_branch())
+        self.thrall.conan_config.refresh()
+        self.server.start()
