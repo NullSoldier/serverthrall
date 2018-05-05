@@ -10,7 +10,7 @@ class Discord(IntervalTickPlugin):
     TWO_MINUTES = 2 * 60
 
     def __init__(self, config):
-        config.set_default('enabled', 'false')
+        config.set_default('enabled', 'true')
         super(Discord, self).__init__(config)
         config.set_default('stale_message_seconds', self.TWO_MINUTES)
         config.set_default('interval.interval_seconds', self.ONE_MINUTE)
