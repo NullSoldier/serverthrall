@@ -34,7 +34,7 @@ class Discord(IntervalTickPlugin):
             self.failed_queue.insert(0, (key, message, datetime.now()))
             return
 
-        self.logger.info("Sending to discord in %s: %s" % (key, message))
+        self.logger.debug("Sending to discord in %s: %s" % (key, message))
         sent_successfully = self._send_message(key, message)
 
         if not sent_successfully:
