@@ -22,13 +22,20 @@ class ServerRestarter(IntervalTickPlugin):
 
         self.warning_minutes = self.config.getint('warning_minutes')
         self.send_warning_message = self.config.getboolean('send_warning_message')
-        self.restart_times = self.get_restart_times(self.config.get('restart_times'))
         self.last_restart_day = datetime.date.today() - datetime.timedelta(days=1)
+        self.restart_times = self.get_restart_times(self.config.get('restart_times'))
         self.restart_dates = []
         self.messaged_warning = False
 
         self.ensure_dates_added()
         self.tick_early()
+        self.log_restart_times()
+
+    def log_restart_times(self):
+        self.logger.debug("Restart Times")
+
+        for date in self.restart_dates:
+            self.logger.debug(date.strftime("%d/%m/%y %I:%M %p"))
 
     def ensure_dates_added(self):
         now = datetime.datetime.now()
@@ -47,7 +54,7 @@ class ServerRestarter(IntervalTickPlugin):
 
     def get_restart_times(self, restart_times_config):
         times_option = restart_times_config
-        times_splits = sorted(times_option.strip().split(','))
+        times_splits = times_option.strip().split(',')
 
         times = []
 
@@ -68,7 +75,7 @@ class ServerRestarter(IntervalTickPlugin):
 
             times.append(datetime.time(hour=hour, minute=minute))
 
-        return times
+        return sorted(times, key=lambda time: (time.hour) * 60 + time.second)
 
     def get_past_time(self):
         past_time = None
