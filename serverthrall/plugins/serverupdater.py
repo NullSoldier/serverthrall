@@ -132,7 +132,7 @@ class ServerUpdater(IntervalTickPlugin):
             return
 
         if self.discord is not None:
-            self.discord.send_message("ServerUpdater", "@everyone The server is restarting to install an update!")
+            self.discord.send_message("ServerUpdater", "The server is restarting to install an update!")
 
         self.logger.info('An update is available from build %s to %s' % (current, target))
         self.server.close()
