@@ -83,10 +83,16 @@ class ServerRestarter(IntervalTickPlugin):
         return past_time
 
     def restart_server(self):
-        if self.discord is not None:
-            self.discord.send_message('ServerRestarter', 'The server is being restarted now.')
+        message = 'The server is being restarted now.'
+        self.logger.info(message)
 
-        self.logger.info('The server is being restarted now.')
+        if self.config.has_option_filled('discord_restart_message'):
+            message = self.config.get('discord_restart_message')
+
+        if self.discord is not None:
+            self.discord.send_message('ServerRestarter', message, {
+                'nextrestart': self.restart_dates[0].strftime("%I:%M %p")})
+
         self.server.close()
         self.server.start()
 
@@ -94,8 +100,13 @@ class ServerRestarter(IntervalTickPlugin):
         message = 'The server is being restarted in %s minutes.' % minutes
         self.logger.info(message)
 
+        if self.config.has_option_filled('discord_warning_message'):
+            message = self.config.get('discord_warning_message')
+
         if self.discord is not None:
-            self.discord.send_message('ServerRestarter', message)
+            self.discord.send_message('ServerRestarter', message, {
+                'timeleft': minutes,
+                'timeunit': 'minute' if minutes == 1 else 'minutes'})
 
     def tick(self):
         now = datetime.datetime.now()

@@ -1,6 +1,7 @@
 from .intervaltickplugin import IntervalTickPlugin
 from datetime import datetime, timedelta
 from requests.exceptions import ConnectionError
+from string import Template
 import requests
 
 
@@ -26,9 +27,12 @@ class Discord(IntervalTickPlugin):
     def tick_interval(self):
         self.try_failed_messages()
 
-    def send_message(self, key, message):
+    def send_message(self, key, message, mapping):
         if not self.enabled:
             return
+
+        if mapping is not None:
+            message = Template(message).safe_substitute(mapping)
 
         if not self.is_ready:
             self.failed_queue.insert(0, (key, message, datetime.now()))

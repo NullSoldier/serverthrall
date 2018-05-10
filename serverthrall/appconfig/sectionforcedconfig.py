@@ -53,3 +53,12 @@ class SectionForcedConfig(object):
 
     def has_option(self, key):
         return self.config.has_option(self.section_name, key)
+
+    def has_option_filled(self, key):
+        if not self.config.has_option(self.section_name, key):
+            return False
+
+        if len(self.get(key).strip()) == 0:
+            return False
+
+        return True
