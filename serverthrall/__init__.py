@@ -7,6 +7,8 @@ from .thrall import Thrall
 from configparser import ConfigParser
 import atexit
 import logging
+import sys
+import traceback
 from . import settings
 
 INSTALLED_PLUGINS = (
@@ -22,6 +24,11 @@ INSTALLED_PLUGINS = (
 
 def run_server_thrall(app_version):
     logger = logging.getLogger('serverthrall')
+
+    def unhandled_exception(exc_type, value, trace):
+        logger.error("".join(traceback.format_exception(exc_type, value, trace)))
+
+    sys.excepthook = unhandled_exception
 
     config = config_load()
     config_is_new = False
