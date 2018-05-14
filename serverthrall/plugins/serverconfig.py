@@ -38,6 +38,7 @@ class OnModifiedHandler(FileSystemEventHandler):
 class ServerConfig(IntervalTickPlugin):
 
     FIVE_MINUTES = 5 * 60
+    AUTO_QUOTE_ITEMS = ['ServerName']
 
     def __init__(self, config):
         super(ServerConfig, self).__init__(config)
@@ -65,6 +66,13 @@ class ServerConfig(IntervalTickPlugin):
             self.observer.stop()
             self.observer.join()
 
+    def quote_value(self, value):
+        if not value.startswith('"'):
+            value = '"' + value
+        if not value.endswith('"'):
+            value = value + '"'
+        return value
+
     def get_conan_config_paths(self, conan_config):
         config_paths = []
 
@@ -90,6 +98,9 @@ class ServerConfig(IntervalTickPlugin):
             original = self.thrall.conan_config.get(group, section, option)
 
             if value is not None and value != original:
+                if src in self.AUTO_QUOTE_ITEMS:
+                    value = self.quote_value(value)
+
                 path = self.thrall.conan_config.set(group, section, option, value, True)
                 self.logger.info('Syncing %s.%s=%s, %s' % (section, option, value, path))
 
