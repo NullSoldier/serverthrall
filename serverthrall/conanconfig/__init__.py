@@ -5,6 +5,30 @@ import logging
 import os
 import time
 
+CONAN_SETTINGS_MAPPING = {
+    'ServerName':           ('Engine', 'OnlineSubsystem', 'ServerName'),
+    'ServerPassword':       ('Engine', 'OnlineSubsystem', 'ServerPassword'),
+    'QueryPort':            ('Engine', 'OnlineSubsystemSteam', 'GameServerQueryPort'),
+    'NetServerMaxTickRate': ('Engine', '/Script/OnlineSubsystemUtils.IpNetDriver', 'NetServerMaxTickRate'),
+
+    'RconEnabled':  ('Game', 'RconPlugin', 'RconEnabled'),
+    'RconPassword': ('Game', 'RconPlugin', 'RconPassword'),
+    'RconPort':     ('Game', 'RconPlugin', 'RconPort'),
+    'RconMaxKarma': ('Game', 'RconPlugin', 'RconMaxKarma'),
+    'MaxPlayers':   ('Game', '/Script/Engine.GameSession', 'MaxPlayers'),
+
+    'AdminPassword':                 ('ServerSettings', 'ServerSettings', 'AdminPassword'),
+    'MaxNudity':                     ('ServerSettings', 'ServerSettings', 'MaxNudity'),
+    'IsBattlEyeEnabled':             ('ServerSettings', 'ServerSettings', 'IsBattlEyeEnabled'),
+    'ServerRegion':                  ('ServerSettings', 'ServerSettings', 'ServerRegion'),
+    'ServerCommunity':               ('ServerSettings', 'ServerSettings', 'ServerCommunity'),
+    'PVPEnabled':                    ('ServerSettings', 'ServerSettings', 'PVPEnabled'),
+    'BuildingPreloadRadius':         ('ServerSettings', 'ServerSettings', 'BuildingPreloadRadius'),
+    'MaxBuildingDecayTime':          ('ServerSettings', 'ServerSettings', 'MaxBuildingDecayTime'),
+    'MaxDecayTimeToAutoDemolish':    ('ServerSettings', 'ServerSettings', 'MaxDecayTimeToAutoDemolish'),
+    'PlayerOfflineThirstMultiplier': ('ServerSettings', 'ServerSettings', 'PlayerOfflineThirstMultiplier'),
+    'PlayerOfflineHungerMultiplier': ('ServerSettings', 'ServerSettings', 'PlayerOfflineHungerMultiplier'),
+}
 
 class ConanConfig(object):
 

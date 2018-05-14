@@ -3,6 +3,7 @@ from configparser import NoOptionError
 from contextlib import contextmanager
 from watchdog.events import FileSystemEventHandler
 from watchdog.observers import Observer
+from ..conanconfig import CONAN_SETTINGS_MAPPING
 import os
 
 
@@ -35,32 +36,6 @@ class OnModifiedHandler(FileSystemEventHandler):
 
 
 class ServerConfig(IntervalTickPlugin):
-
-    CONFIG_MAPPING = {
-        'ServerName':           ('Engine', 'OnlineSubsystem', 'ServerName'),
-        'ServerPassword':       ('Engine', 'OnlineSubsystem', 'ServerPassword'),
-        'QueryPort':            ('Engine', 'OnlineSubsystemSteam', 'GameServerQueryPort'),
-        'NetServerMaxTickRate': ('Engine', '/Script/OnlineSubsystemUtils.IpNetDriver', 'NetServerMaxTickRate'),
-
-        'RconEnabled' : ('Game', 'RconPlugin', 'RconEnabled'),
-        'RconPassword': ('Game', 'RconPlugin', 'RconPassword'),
-        'RconPort':     ('Game', 'RconPlugin', 'RconPort'),
-        'RconMaxKarma': ('Game', 'RconPlugin', 'RconMaxKarma'),
-        'MaxPlayers':   ('Game', '/Script/Engine.GameSession', 'MaxPlayers'),
-
-        'AdminPassword':                 ('ServerSettings', 'ServerSettings', 'AdminPassword'),
-        'MaxNudity':                     ('ServerSettings', 'ServerSettings', 'MaxNudity'),
-        'IsBattlEyeEnabled':             ('ServerSettings', 'ServerSettings', 'IsBattlEyeEnabled'),
-        'ServerRegion':                  ('ServerSettings', 'ServerSettings', 'ServerRegion'),
-        'ServerCommunity':               ('ServerSettings', 'ServerSettings', 'ServerCommunity'),
-        'PVPEnabled':                    ('ServerSettings', 'ServerSettings', 'PVPEnabled'),
-        'BuildingPreloadRadius':         ('ServerSettings', 'ServerSettings', 'BuildingPreloadRadius'),
-        'MaxBuildingDecayTime':          ('ServerSettings', 'ServerSettings', 'MaxBuildingDecayTime'),
-        'MaxDecayTimeToAutoDemolish':    ('ServerSettings', 'ServerSettings', 'MaxDecayTimeToAutoDemolish'),
-        'PlayerOfflineThirstMultiplier': ('ServerSettings', 'ServerSettings', 'PlayerOfflineThirstMultiplier'),
-        'PlayerOfflineHungerMultiplier': ('ServerSettings', 'ServerSettings', 'PlayerOfflineHungerMultiplier'),
-
-    }
 
     FIVE_MINUTES = 5 * 60
 
@@ -108,7 +83,7 @@ class ServerConfig(IntervalTickPlugin):
     def sync(self):
         changed = False
 
-        for src, dest in self.CONFIG_MAPPING.items():
+        for src, dest in CONAN_SETTINGS_MAPPING.items():
             group, section, option = dest
 
             value = self.get_config_value_safe(src)

@@ -1,3 +1,4 @@
+from ..conanconfig import CONAN_SETTINGS_MAPPING
 from .intervaltickplugin import IntervalTickPlugin
 from requests.exceptions import ConnectionError
 from serverthrall.conandb import ConanDbClient
@@ -66,23 +67,13 @@ class ApiUploader(IntervalTickPlugin):
                 self.back_off()
                 return
 
-        url = (self.SERVER_THRALL_API_URL + '/api/%s/sync/characters') % self.server_id
+        payload = self.get_sync_payload()
+        url = '%s/api/%s/sync/characters' % (self.SERVER_THRALL_API_URL, self.server_id)
         params = {'private_secret': self.private_secret}
 
         if self.ginfo_group_uid != self.NO_VALUE and self.ginfo_access_token != "":
             params['ginfo_group_uid'] = self.ginfo_group_uid
             params['ginfo_access_token'] = self.ginfo_access_token
-
-        server_info = {
-            'name': self.thrall.conan_config.get('Engine', 'OnlineSubsystem', 'ServerName'),
-            'ip_address': self.config.get('ip_address')
-        }
-
-        payload = {
-            'server': server_info,
-            'characters': self.client.get_characters(),
-            'clans': self.client.get_clans()
-        }
 
         try:
             requests.post(url=url, params=params, json=payload)
@@ -103,3 +94,16 @@ class ApiUploader(IntervalTickPlugin):
             return
 
         self.config.set('ip_address', response.text)
+
+    def get_sync_payload(self):
+        return {
+            'characters': self.client.get_characters(),
+            'clans': self.client.get_clans(),
+            'server': {
+                'name': self.thrall.conan_config.get(*CONAN_SETTINGS_MAPPING['ServerName']),
+                'query_port': self.thrall.conan_config.get(*CONAN_SETTINGS_MAPPING['QueryPort']),
+                'max_players': self.thrall.conan_config.get(*CONAN_SETTINGS_MAPPING['MaxPlayers']),
+                'tick_rate': self.thrall.conan_config.get(*CONAN_SETTINGS_MAPPING['NetServerMaxTickRate']),
+                'ip_address': self.config.get('ip_address')
+            }
+        }
