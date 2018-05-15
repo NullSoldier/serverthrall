@@ -17,11 +17,12 @@ class ConanServer():
         self.use_testlive = use_testlive
         self.logger = logging.getLogger('serverthrall')
         self.process = None
+        self.multihome = multihome
 
-        if multihome:
-            self.arguments = self.arguments + " -MULTIHOME=" + multihome
-        else:
-            self.arguments = self.arguments + " -MULTIHOME=" + socket.gethostbyname(socket.gethostname())
+        if not self.multihome:
+            self.multihome = socket.gethostbyname(socket.gethostname())
+
+        self.arguments = self.arguments + " -MULTIHOME=" + self.multihome
 
     def is_running(self):
         if self.process is None:

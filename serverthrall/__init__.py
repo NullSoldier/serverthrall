@@ -1,7 +1,7 @@
 from .appconfig import config_load, ThrallConfig, PluginConfig
 from .conanconfig import ConanConfig
 from .conanserver import ConanServer
-from .plugins import UptimeTracker, DownRecovery, ServerUpdater, ApiUploader, ServerConfig, DeadManSnitch, ServerRestarter, Discord
+from .plugins import UptimeTracker, DownRecovery, ServerUpdater, ApiUploader, ServerConfig, DeadManSnitch, ServerRestarter, Discord, RemoteConsole
 from .steamcmd import SteamCmd
 from .thrall import Thrall
 from configparser import ConfigParser
@@ -16,9 +16,10 @@ INSTALLED_PLUGINS = (
     DeadManSnitch,
     Discord,
     DownRecovery,
+    RemoteConsole,
     ServerConfig,
-    ServerUpdater,
     ServerRestarter,
+    ServerUpdater,
     UptimeTracker,
 )
 
