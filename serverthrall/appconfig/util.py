@@ -3,22 +3,30 @@ from serverthrall import settings
 import os
 
 
-def config_exists():
-    return os.path.isfile(settings.CONFIG_NAME)
-
-
-def config_save(config):
-    with open(settings.CONFIG_NAME, 'w') as f:
+def _save(config, name):
+    with open(name, 'w') as f:
         config.write(f)
 
 
-def config_load():
+def _load(name)
     config = RawConfigParser()
     config.optionxform = str
 
     try:
-        with open(settings.CONFIG_NAME) as f:
+        with open(name) as f:
             config.readfp(f)
     except IOError:
         return None
     return config
+
+def config_save(config):
+    _save(settings.CONFIG_NAME)
+
+def config_load():
+    return _load(settings.CONFIG_NAME)
+
+def config_save(config):
+    _save(settings.DATA_NAME)
+
+def data_load():
+    return _load(settings.DATA_NAME)

@@ -41,8 +41,18 @@ def run_server_thrall(app_version):
         config.optionxform = str
         config_is_new = True
 
+    data = data_load()
+    data_is_new = False
+
+    if data is None:
+        logger.info('No data found, creating for the first time')
+        data = ConfigParser()
+        data.optionxform = str
+        data_is_new = True
+
     steamcmd = SteamCmd(settings.STEAMCMD_PATH)
     thrall_config = ThrallConfig(config)
+    thrall_data = ThrallConfig(data)
 
     if app_version is not None:
         logger.info('Running version ' + app_version)
@@ -50,6 +60,8 @@ def run_server_thrall(app_version):
 
     if config_is_new:
         thrall_config.save()
+    if data_is_new:
+        thrall_data.save()
 
     # Load the unreal engine configs for the server
     conan_config = ConanConfig(thrall_config.get_server_root())
@@ -99,7 +111,8 @@ def run_server_thrall(app_version):
     for plugin_class in INSTALLED_PLUGINS:
         logger.info('Initializing with plugin %s' % plugin_class.__name__)
         plugin_config = PluginConfig(plugin_class, config, thrall_config)
-        plugin = plugin_class(plugin_config)
+        plugin_data = PluginConfig(plugin_class, data, thrall_data)
+        plugin = plugin_class(plugin_config, plugin_data)
         plugins.append(plugin)
 
     thrall = Thrall(steamcmd, thrall_config, conan_config, plugins, server)
