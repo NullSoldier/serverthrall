@@ -8,3 +8,5 @@ from .serverconfig import ServerConfig
 from .serverrestarter import ServerRestarter
 from .serverupdater import ServerUpdater
 from .uptimetracker import UptimeTracker
+from .intervaltickplugin import IntervalTickPlugin
+from .restartmanager import RestartManager

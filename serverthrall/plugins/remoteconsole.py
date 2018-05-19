@@ -2,7 +2,6 @@ from ..conanconfig import CONAN_SETTINGS_MAPPING
 from .intervaltickplugin import IntervalTickPlugin
 from contextlib import contextmanager
 from valve.rcon import RCON, RCONError
-from string import Template
 
 
 class RemoteConsole(IntervalTickPlugin):
@@ -39,11 +38,10 @@ class RemoteConsole(IntervalTickPlugin):
                 return rcon.execute(command)
         except RCONError:
             self.logger.error('Error sending command ' + command)
+        except Exception:
+            self.logger.exception()
 
-    def broadcast(self, message, mapping=None):
-        if mapping is not None:
-            message = Template(message).safe_substitute(mapping)
-
+    def broadcast(self, message):
         return self.execute_safe('broadcast "%s"' % message)
 
     def tick_interval(self):

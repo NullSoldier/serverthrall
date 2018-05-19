@@ -44,6 +44,9 @@ class SectionForcedConfig(object):
     def getint(self, key):
         return self.config.getint(self.section_name, key)
 
+    def remove_option(self, key):
+        self.config.remove_option(self.section_name, key)
+
     def set(self, key, value):
         self.config.set(self.section_name, key, str(value))
 

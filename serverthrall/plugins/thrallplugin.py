@@ -17,5 +17,14 @@ class ThrallPlugin(object):
         self.logger = logging.getLogger('serverthrall.' + self.name)
         self.logger.setLevel(logging.INFO)
 
+        if self.config.has_option('log_level'):
+            self.logger.setLevel({
+                'debug': logging.DEBUG,
+                'info': logging.INFO,
+                'warning': logging.WARNING,
+                'error': logging.ERROR,
+                'critical': logging.CRITICAL,
+            }.get(self.config.get('log_level').lower(), logging.INFO))
+
     def unload(self):
-        pass
+        self.enabled = False

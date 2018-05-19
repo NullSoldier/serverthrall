@@ -19,6 +19,16 @@ class Thrall(object):
                 return plugin
         return None
 
+    def unload_plugin(self, plugin, exception=None):
+        if exception is not None:
+            try:
+                raise exception
+            except:
+                self.logger.exception('Unloading %s plugin after error ' % plugin.name)
+
+        self.plugins.remove(plugin)
+        plugin.unload()
+
     def stop(self):
         self.logger.info('Stopping ServerThrall')
 
@@ -32,12 +42,9 @@ class Thrall(object):
                 try:
                     plugin.ready(self.server, self.steamcmd, self)
                 except UnloadPluginException:
-                    self.plugins.remove(plugin)
-                    plugin.unload()
-                except Exception:
-                    self.logger.exception('Unloading %s plugin after error ' % plugin.name)
-                    self.plugins.remove(plugin)
-                    plugin.unload()
+                    self.unload_plugin(plugin)
+                except Exception as ex:
+                    self.unload_plugin(plugin, ex)
 
         while True:
             for plugin in self.plugins:

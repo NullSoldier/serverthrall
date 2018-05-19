@@ -1,5 +1,5 @@
 from .intervaltickplugin import IntervalTickPlugin
-from .discord import Discord
+from .restartmanager import RestartManager
 from serverthrall import settings
 from steamfiles import acf
 from datetime import datetime
@@ -23,9 +23,11 @@ class ServerUpdater(IntervalTickPlugin):
 
     def ready(self, steamcmd, server, thrall):
         super(ServerUpdater, self).ready(steamcmd, server, thrall)
-        self.discord = thrall.get_plugin(Discord)
+        self.restartmanager = self.thrall.get_plugin(RestartManager)
         self.installed_version = self.config.get('installed_version')
         self.installed_branch = self.config.get('installed_branch')
+        self.install_build_id = None
+        self.install_branch = None
 
         if self.installed_version == self.NO_INSTALLED_VERSION:
             self.detect_existing_version()
@@ -126,16 +128,33 @@ class ServerUpdater(IntervalTickPlugin):
         self.config.queue_save()
 
     def tick_interval(self):
+        if self.install_build_id is not None:
+            return
+
         is_available, current, target = self.is_update_available()
 
         if not is_available:
             return
 
-        if self.discord is not None:
-            self.discord.send_message("ServerUpdater", "The server is restarting to install an update!")
+        def on_notify_offline():
+            try:
+                self.update_server(self.install_build_id, self.install_branch)
+                self.thrall.conan_config.refresh()
+            finally:
+                self.install_build_id = None
+                self.install_branch = None
 
         self.logger.info('An update is available from build %s to %s' % (current, target))
-        self.server.close()
-        self.update_server(target, self.get_config_branch())
-        self.thrall.conan_config.refresh()
-        self.server.start()
+        self.install_build_id = target
+        self.install_branch = self.get_config_branch()
+
+        restart_message = 'The server is restarting to install an update!'
+        warning_message = 'There is a new update for Conan Exiles. The Server is restarting in $timeleft $timeunit to install the update.'
+
+        self.restartmanager.start_restart(
+            plugin=self,
+            rcon_warning=warning_message,
+            rcon_restart=restart_message,
+            discord_warning=warning_message,
+            discord_restart=restart_message,
+            offline_callback=on_notify_offline)

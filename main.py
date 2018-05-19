@@ -11,13 +11,5 @@ if not is_python_version_correct:
 from serverthrall import run_server_thrall # noqa
 import os # noqa
 
-def get_app_version():
-    if not os.path.exists('version.txt'):
-        return None
-    try:
-        with open('version.txt', 'r') as file:
-            return file.read().strip()
-    except:
-        return None
-
-run_server_thrall(get_app_version())
+VERSION = '2.1.3'
+run_server_thrall(VERSION)
