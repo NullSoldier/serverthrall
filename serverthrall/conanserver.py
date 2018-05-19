@@ -84,22 +84,28 @@ class ConanServer():
         logger = logging.getLogger('serverthrall')
 
         for p in psutil.process_iter():
-            if p.name() == config.get_conan_exe_name():
-                executable_path = p.exe()
-                running_dir = os.path.dirname(executable_path)
+
+            try:
+                process_name = p.name()
+                process_exe_path = p.exe()
+            except psutil.AccessDenied:
+                continue
+
+            if process_name == config.get_conan_exe_name():
+                running_dir = os.path.dirname(process_exe_path)
                 expected_dir = os.path.dirname(config.get_server_path())
 
                 # TODO: the to_lower hack does not work on linux
                 if running_dir.lower() != expected_dir.lower():
                     logger.info("Found running server that is different than config" +
                         "\nExpected: " + config.get_server_path().lower() +
-                        "\nActual: " + executable_path.lower())
+                        "\nActual: " + process_exe_path.lower())
                     continue
 
                 logger.info('Found running server, attaching')
                 server = ConanServer(
                     server_root=config.get_server_root(),
-                    server_path=executable_path,
+                    server_path=process_exe_path,
                     steamcmd=steamcmd,
                     arguments=config.get('additional_arguments'),
                     high_priority=config.getboolean('set_high_priority'),
