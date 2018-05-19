@@ -23,6 +23,8 @@ class ConanServer():
             self.multihome = socket.gethostbyname(socket.gethostname())
 
         self.arguments = self.arguments + " -MULTIHOME=" + self.multihome
+        self.arguments = self.arguments + " -nosteam"
+        self.arguments = self.arguments.strip()
 
     def is_running(self):
         if self.process is None:
@@ -49,7 +51,7 @@ class ConanServer():
             self.logger.info('Launching server and waiting for child processes with extra arguments, %s' % self.arguments)
 
         try:
-            process = subprocess.Popen([self.server_path, '-log', self.arguments])
+            process = subprocess.Popen([self.server_path, self.arguments])
             process = psutil.Process(process.pid)
             self.attach(process)
         except subprocess.CalledProcessError as ex:
@@ -65,6 +67,8 @@ class ConanServer():
     def close(self):
         if self.process is not None and self.process.is_running():
             self.process.terminate()
+            psutil.wait_procs([self.process])
+
         self.process = None
 
     def attach(self, root_process):
