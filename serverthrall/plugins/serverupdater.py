@@ -177,7 +177,7 @@ class ServerUpdater(IntervalTickPlugin):
             'branch': branch
         }
 
-        discord_message = Template(discord_message).safe_substitute(template),
+        discord_message = Template(discord_message).safe_substitute(template)
         rcon_message = Template(rcon_message).safe_substitute(template)
 
         return discord_message, rcon_message
