@@ -56,7 +56,7 @@ class Discord(IntervalTickPlugin):
             self.logger.debug("Failed to send message because of connection error")
             return False
         except Exception:
-            self.logger.exception()
+            self.logger.exception('Error when sending discord message')
 
         if response.status_code < 200 and response.status_code >= 300:
             self.logger.debug("Failed to send message with response " + response.status_code)

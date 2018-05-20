@@ -1,6 +1,5 @@
 from ..conanconfig import CONAN_SETTINGS_MAPPING
 from .intervaltickplugin import IntervalTickPlugin
-from contextlib import contextmanager
 from valve.rcon import RCON, RCONError
 
 
@@ -15,31 +14,26 @@ class RemoteConsole(IntervalTickPlugin):
         config.set_default('interval.interval_seconds', self.ONE_MINUTE)
         config.queue_save()
 
-    def ready(self, *args, **kwargs):
-        super(RemoteConsole, self).ready(*args, **kwargs)
-
-        self.rcon_host     = self.server.multihome
-        self.rcon_port     = int(self.thrall.conan_config.get(*CONAN_SETTINGS_MAPPING['RconPort']))
-        self.rcon_password = self.thrall.conan_config.get(*CONAN_SETTINGS_MAPPING['RconPassword'])
-
-    @contextmanager
-    def get_rcon(self):
-        with RCON((self.rcon_host, self.rcon_port), self.rcon_password) as rcon:
-            yield rcon
-
     def execute_safe(self, command):
         if not self.enabled:
+            return
+
+        rcon_host     = self.server.multihome
+        rcon_port     = self.thrall.conan_config.get(*CONAN_SETTINGS_MAPPING['RconPort'])
+        rcon_password = self.thrall.conan_config.get(*CONAN_SETTINGS_MAPPING['RconPassword'])
+
+        if not rcon_host or not rcon_port or not rcon_password:
             return
 
         self.logger.debug('Executing: ' + command)
 
         try:
-            with self.get_rcon() as rcon:
+            with RCON((rcon_host, int(rcon_port)), rcon_password) as rcon:
                 return rcon.execute(command)
         except RCONError:
             self.logger.error('Error sending command ' + command)
         except Exception:
-            self.logger.exception()
+            self.logger.exception('Error when exceuting RCON command')
 
     def broadcast(self, message):
         return self.execute_safe('broadcast "%s"' % message)
