@@ -83,6 +83,8 @@ def run_server_thrall(app_version):
         conan_config.refresh()
 
     elif thrall_config.getboolean('force_update_on_launch'):
+        thrall_config.set('force_update_on_launch', False)
+        thrall_config.save()
         # user can force an update on launch if files are missing
         logger.info('Forcing update because you told me to do so in your configuration.')
         server.close()
