@@ -63,7 +63,7 @@ class RestartManager(IntervalTickPlugin):
         self.logger.info('Beginning restart for ' + plugin.name)
 
         template = {
-            'timeleft': self.warning_minutes,
+            'timeleft': str(self.warning_minutes),
             'timeunit': 'minute' if self.warning_minutes == 1 else 'minutes',
             'newline': '\n'
         }

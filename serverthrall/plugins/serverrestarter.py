@@ -86,7 +86,7 @@ class ServerRestarter(IntervalTickPlugin):
             'nextrestart': self.restart_dates[0].strftime("%I:%M %p"),
         }
 
-        discord_message = Template(discord_message).safe_substitute(template),
+        discord_message = Template(discord_message).safe_substitute(template)
         rcon_message = Template(rcon_message).safe_substitute(template)
 
         return discord_message, rcon_message
@@ -114,8 +114,8 @@ class ServerRestarter(IntervalTickPlugin):
             self.ensure_dates_added()
 
         if past_time is not None:
-            rcon_warning, discord_warning = self.get_warning_messages()
-            rcon_restart, discord_restart = self.get_restart_messages()
+            discord_warning, rcon_warning = self.get_warning_messages()
+            discord_restart, rcon_restart = self.get_restart_messages()
 
             self.restartmanager.start_restart(
                 plugin=self,
