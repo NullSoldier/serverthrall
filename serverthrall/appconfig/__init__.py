@@ -1,4 +1,4 @@
-#flake8: noqa
+# flake8: noqa
 from .pluginconfig import PluginConfig
 from .sectionforcedconfig import SectionForcedConfig
 from .thrallconfig import ThrallConfig

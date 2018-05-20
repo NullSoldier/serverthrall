@@ -4,7 +4,6 @@ from .remoteconsole import RemoteConsole
 from datetime import datetime, timedelta
 from string import Template
 import time
-import sys
 
 
 class RestartInformation():

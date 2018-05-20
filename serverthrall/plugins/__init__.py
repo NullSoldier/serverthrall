@@ -1,4 +1,4 @@
-#flake8: noqa
+# flake8: noqa
 from .apiuploader import ApiUploader
 from .deadmansnitch import DeadManSnitch
 from .discord import Discord

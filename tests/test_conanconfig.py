@@ -63,7 +63,7 @@ class TestConanConfig(object):
 
         self.config.group_paths = {'Test': [parent]}
         self.config.refresh()
-        assert self.config.get('Test', 'FOO', 'BAR') == None
+        assert self.config.get('Test', 'FOO', 'BAR') is None
 
         self.config.group_paths = {'Test': [child]}
         self.config.refresh()
@@ -77,11 +77,11 @@ class TestConanConfig(object):
 
         self.config.set('Test', 'FOO', 'BAR', True)
         self.config.save()
-        assert self.config.get('Test', 'FOO', 'BAR') == True
+        assert self.config.get('Test', 'FOO', 'BAR') is True
 
         self.config.set('Test', 'FOO', 'BAR', False)
         self.config.save()
-        assert self.config.get('Test', 'FOO', 'BAR') == False
+        assert self.config.get('Test', 'FOO', 'BAR') is False
 
     def test_get_hierarchy(self):
         parent, _ = self.generate_config('port.ini')

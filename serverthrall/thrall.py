@@ -37,6 +37,29 @@ class Thrall(object):
             self.server.start()
             self.conan_config.refresh()
 
+        self._load_plugins()
+
+        while True:
+            self._tick_plugins()
+            self.config.save_if_queued()
+            time.sleep(0.16)
+
+    def _tick_plugins(self):
+        for plugin in self.plugins:
+            if not plugin.enabled:
+                continue
+
+            try:
+                plugin.tick()
+            except UnloadPluginException:
+                self.plugins.remove(plugin)
+                plugin.unload()
+            except Exception:
+                self.logger.exception('Unloading %s plugin after error ' % plugin.name)
+                self.plugins.remove(plugin)
+                plugin.unload()
+
+    def _load_plugins(self):
         for plugin in self.plugins:
             if plugin.enabled:
                 try:
@@ -45,21 +68,3 @@ class Thrall(object):
                     self.unload_plugin(plugin)
                 except Exception as ex:
                     self.unload_plugin(plugin, ex)
-
-        while True:
-            for plugin in self.plugins:
-                if not plugin.enabled:
-                    continue
-
-                try:
-                    plugin.tick()
-                except UnloadPluginException:
-                    self.plugins.remove(plugin)
-                    plugin.unload()
-                except Exception:
-                    self.logger.exception('Unloading %s plugin after error ' % plugin.name)
-                    self.plugins.remove(plugin)
-                    plugin.unload()
-
-            self.config.save_if_queued()
-            time.sleep(0.16)

@@ -1,7 +1,9 @@
+from . import settings
 from .appconfig import config_load, ThrallConfig, PluginConfig
 from .conanconfig import ConanConfig
 from .conanserver import ConanServer
-from .plugins import UptimeTracker, DownRecovery, ServerUpdater, ApiUploader, ServerConfig, DeadManSnitch, ServerRestarter, Discord, RemoteConsole, RestartManager
+from .plugins import DeadManSnitch, ServerRestarter, Discord, RemoteConsole, RestartManager
+from .plugins import UptimeTracker, DownRecovery, ServerUpdater, ApiUploader, ServerConfig
 from .steamcmd import SteamCmd
 from .thrall import Thrall
 from configparser import ConfigParser
@@ -9,7 +11,6 @@ import atexit
 import logging
 import sys
 import traceback
-from . import settings
 
 INSTALLED_PLUGINS = (
     ApiUploader,
@@ -103,8 +104,10 @@ def run_server_thrall(app_version):
         plugins.append(plugin)
 
     thrall = Thrall(steamcmd, thrall_config, conan_config, plugins, server)
+
     def on_exit():
         logger.info('Safely shutting down server thrall...')
         thrall.stop()
+
     atexit.register(on_exit)
     thrall.start()

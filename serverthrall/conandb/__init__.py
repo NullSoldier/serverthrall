@@ -1,4 +1,3 @@
-from serverthrall import settings
 import sqlite3
 
 
