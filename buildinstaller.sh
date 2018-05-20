@@ -17,4 +17,3 @@ pyinstaller main.py \
  mkdir installer/dist/vendor
  mkdir installer/dist/vendor/steamcmd
  cp -r vendor/steamcmd/steamcmd.exe installer/dist/vendor/steamcmd/steamcmd.exe
- cp -r version.txt installer/dist/version.txt
