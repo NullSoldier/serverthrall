@@ -111,8 +111,18 @@ class ServerConfig(IntervalTickPlugin):
 
         return changed
 
+    def try_safe_refresh(self):
+        try:
+            self.thrall.conan_config.refresh()
+        except PermissionError:
+            return False
+        return True
+
     def tick_interval(self):
-        self.thrall.conan_config.refresh()
+        if not self.try_safe_refresh():
+            self.logger.debug("Skipping config sync because conan has locked the configurations")
+            return
+
         changed = self.sync()
 
         if changed:
