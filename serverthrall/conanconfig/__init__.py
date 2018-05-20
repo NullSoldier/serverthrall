@@ -17,17 +17,21 @@ CONAN_SETTINGS_MAPPING = {
     'RconMaxKarma': ('Game', 'RconPlugin', 'RconMaxKarma'),
     'MaxPlayers':   ('Game', '/Script/Engine.GameSession', 'MaxPlayers'),
 
-    'AdminPassword':                 ('ServerSettings', 'ServerSettings', 'AdminPassword'),
-    'MaxNudity':                     ('ServerSettings', 'ServerSettings', 'MaxNudity'),
-    'IsBattlEyeEnabled':             ('ServerSettings', 'ServerSettings', 'IsBattlEyeEnabled'),
-    'ServerRegion':                  ('ServerSettings', 'ServerSettings', 'ServerRegion'),
-    'ServerCommunity':               ('ServerSettings', 'ServerSettings', 'ServerCommunity'),
-    'PVPEnabled':                    ('ServerSettings', 'ServerSettings', 'PVPEnabled'),
-    'BuildingPreloadRadius':         ('ServerSettings', 'ServerSettings', 'BuildingPreloadRadius'),
-    'MaxBuildingDecayTime':          ('ServerSettings', 'ServerSettings', 'MaxBuildingDecayTime'),
-    'MaxDecayTimeToAutoDemolish':    ('ServerSettings', 'ServerSettings', 'MaxDecayTimeToAutoDemolish'),
-    'PlayerOfflineThirstMultiplier': ('ServerSettings', 'ServerSettings', 'PlayerOfflineThirstMultiplier'),
-    'PlayerOfflineHungerMultiplier': ('ServerSettings', 'ServerSettings', 'PlayerOfflineHungerMultiplier'),
+    'AdminPassword':                    ('ServerSettings', 'ServerSettings', 'AdminPassword'),
+    'MaxNudity':                        ('ServerSettings', 'ServerSettings', 'MaxNudity'),
+    'IsBattlEyeEnabled':                ('ServerSettings', 'ServerSettings', 'IsBattlEyeEnabled'),
+    'ServerRegion':                     ('ServerSettings', 'ServerSettings', 'ServerRegion'),
+    'ServerCommunity':                  ('ServerSettings', 'ServerSettings', 'ServerCommunity'),
+    'PVPEnabled':                       ('ServerSettings', 'ServerSettings', 'PVPEnabled'),
+    'BuildingPreloadRadius':            ('ServerSettings', 'ServerSettings', 'BuildingPreloadRadius'),
+    'MaxBuildingDecayTime':             ('ServerSettings', 'ServerSettings', 'MaxBuildingDecayTime'),
+    'MaxDecayTimeToAutoDemolish':       ('ServerSettings', 'ServerSettings', 'MaxDecayTimeToAutoDemolish'),
+    'PlayerOfflineThirstMultiplier':    ('ServerSettings', 'ServerSettings', 'PlayerOfflineThirstMultiplier'),
+    'PlayerOfflineHungerMultiplier':    ('ServerSettings', 'ServerSettings', 'PlayerOfflineHungerMultiplier'),
+    'LogoutCharactersRemainInTheWorld': ('ServerSettings', 'ServerSettings', 'LogoutCharactersRemainInTheWorld'),
+
+    'KickAFKPercentage': ('ServerSettings', 'ServerSettings', 'KickAFKPercentage'),
+    'KickAFKTime':       ('ServerSettings', 'ServerSettings', 'KickAFKTime'),
 }
 
 class ConanConfig(object):
