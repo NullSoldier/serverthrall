@@ -116,6 +116,8 @@ class ServerConfig(IntervalTickPlugin):
             self.thrall.conan_config.refresh()
         except PermissionError:
             return False
+        except FileNotFoundError:
+            return False
         return True
 
     def tick_interval(self):
