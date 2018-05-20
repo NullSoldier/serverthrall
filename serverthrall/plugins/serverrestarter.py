@@ -1,7 +1,7 @@
 from .intervaltickplugin import IntervalTickPlugin
 from .restartmanager import RestartManager
 from string import Template
-import datetime
+from datetime import date, datetime, timedelta, time
 
 
 class ServerRestarter(IntervalTickPlugin):
@@ -20,38 +20,38 @@ class ServerRestarter(IntervalTickPlugin):
         super(ServerRestarter, self).ready(steamcmd, server, thrall)
 
         self.restartmanager = self.thrall.get_plugin(RestartManager)
-        self.last_restart_day = datetime.date.today() - datetime.timedelta(days=1)
+        self.last_restart_day = date.today() - timedelta(days=1)
         self.restart_times = self.get_restart_times(self.config.get('restart_times'))
         self.restart_dates = []
 
-        self.ensure_dates_added()
+        self.ensure_dates_added(self.restartmanager.warning_minutes)
 
         if self.config.getboolean('force_restart_on_launch'):
             self.config.set('force_restart_on_launch', False)
             self.config.queue_save()
-            self.restart_dates = [datetime.datetime.now()] + self.restart_dates
+            self.restart_dates = [datetime.now()] + self.restart_dates
 
         # Log restart times
         self.logger.debug("Next Restart Times:")
-        for date in self.restart_dates[:5]:
-            self.logger.debug(date.strftime("%d/%m/%y %I:%M %p"))
+        for restart_date in self.restart_dates[:5]:
+            self.logger.debug(restart_date.strftime("%d/%m/%y %I:%M %p"))
 
         self.tick_early()
 
-    def ensure_dates_added(self):
-        now = datetime.datetime.now()
+    def ensure_dates_added(self, warning_minutes):
+        now = datetime.now()
 
         while len(self.restart_dates) < len(self.restart_times) * 2:
-            self.last_restart_day = self.last_restart_day + datetime.timedelta(days=1)
+            self.last_restart_day = self.last_restart_day + timedelta(days=1)
 
-            restart_dates = self.get_restart_dates(self.last_restart_day, self.restart_times)
+            restart_dates = self.get_restart_dates(self.last_restart_day, self.restart_times, warning_minutes)
 
             for restart_date in restart_dates:
                 if restart_date > now:
                     self.restart_dates.append(restart_date)
 
-    def get_restart_dates(self, date, times):
-        return [datetime.datetime.combine(date, t) for t in times]
+    def get_restart_dates(self, restart_date, restart_times, warning_minutes):
+        return [datetime.combine(restart_date, t) - timedelta(minutes=warning_minutes) for t in restart_times]
 
     def get_restart_times(self, restart_times_config):
         times_option = restart_times_config
@@ -74,7 +74,7 @@ class ServerRestarter(IntervalTickPlugin):
                 self.config.error('Expected time in HH:MM format (04:20) but got %s' % time_split)
                 continue
 
-            times.append(datetime.time(hour=hour, minute=minute))
+            times.append(time(hour=hour, minute=minute))
 
         return sorted(times, key=lambda time: (time.hour) * 60 + time.second)
 
@@ -115,7 +115,7 @@ class ServerRestarter(IntervalTickPlugin):
         past_time = None
 
         # handle clock jumping forward
-        while datetime.datetime.now() > self.restart_dates[0]:
+        while datetime.now() > self.restart_dates[0]:
             past_time = self.restart_dates[0]
             del self.restart_dates[0]
             self.ensure_dates_added()

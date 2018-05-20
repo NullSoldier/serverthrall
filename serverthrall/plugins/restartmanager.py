@@ -30,9 +30,10 @@ class RestartManager(IntervalTickPlugin):
         config.set_default('restart_send_rcon', True)
         config.queue_save()
 
+        self.warning_minutes = self.config.getint('warning_minutes')
+
     def ready(self, steamcmd, server, thrall):
         super(RestartManager, self).ready(steamcmd, server, thrall)
-        self.warning_minutes = self.config.getint('warning_minutes')
         self.warning_send_discord = self.config.getboolean('warning_send_discord')
         self.warning_send_rcon = self.config.getboolean('warning_send_rcon')
         self.restart_send_discord = self.config.getboolean('restart_send_discord')
