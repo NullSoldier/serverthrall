@@ -3,6 +3,7 @@ from .restartmanager import RestartManager
 from serverthrall import settings
 from steamfiles import acf
 from datetime import datetime
+from string import Template
 import time
 import subprocess
 import os
@@ -148,13 +149,57 @@ class ServerUpdater(IntervalTickPlugin):
         self.install_build_id = target
         self.install_branch = self.get_config_branch()
 
-        restart_message = 'The server is restarting to install an update!'
-        warning_message = 'There is a new update for Conan Exiles. The Server is restarting in $timeleft $timeunit to install the update.'
+        rcon_warning, discord_warning = self.get_warning_messages(current, target, self.get_config_branch())
+        rcon_restart, discord_restart = self.get_restart_messages(current, target, self.get_config_branch())
 
         self.restartmanager.start_restart(
             plugin=self,
-            rcon_warning=warning_message,
-            rcon_restart=restart_message,
-            discord_warning=warning_message,
-            discord_restart=restart_message,
+            rcon_warning=rcon_warning,
+            rcon_restart=rcon_restart,
+            discord_warning=discord_warning,
+            discord_restart=discord_restart,
             offline_callback=on_notify_offline)
+
+    def get_restart_messages(self, current, target, branch):
+        default_message = 'The server is restarting to install an update!'
+        discord_message = default_message
+        rcon_message = default_message
+
+        if self.config.has_option_filled('discord_restart_message'):
+            discord_message = self.config.get('discord_restart_message')
+
+        if self.config.has_option_filled('rcon_restart_message'):
+            rcon_message = self.config.get('rcon_restart_message')
+
+        template = {
+            'current': current,
+            'target': target,
+            'branch': branch
+        }
+
+        discord_message = Template(discord_message).safe_substitute(template),
+        rcon_message = Template(rcon_message).safe_substitute(template)
+
+        return discord_message, rcon_message
+
+    def get_warning_messages(self, current, target, branch):
+        default_message = 'There is a new update available. The Server is restarting in $timeleft $timeunit to install the update.'
+        discord_message = default_message
+        rcon_message = default_message
+
+        if self.config.has_option_filled('discord_warning_message'):
+            discord_message = self.config.get('discord_warning_message')
+
+        if self.config.has_option_filled('rcon_warning_message'):
+            rcon_message = self.config.get('rcon_warning_message')
+
+        template = {
+            'current': current,
+            'target': target,
+            'branch': branch
+        }
+
+        discord_message = Template(discord_message).safe_substitute(template),
+        rcon_message = Template(rcon_message).safe_substitute(template)
+
+        return discord_message, rcon_message
