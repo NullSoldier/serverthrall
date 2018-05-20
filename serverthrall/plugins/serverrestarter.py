@@ -24,7 +24,7 @@ class ServerRestarter(IntervalTickPlugin):
         self.restart_times = self.get_restart_times(self.config.get('restart_times'))
         self.restart_dates = []
 
-        self.ensure_dates_added(self.restartmanager.warning_minutes)
+        self.ensure_dates_added()
 
         if self.config.getboolean('force_restart_on_launch'):
             self.config.set('force_restart_on_launch', False)
@@ -38,13 +38,16 @@ class ServerRestarter(IntervalTickPlugin):
 
         self.tick_early()
 
-    def ensure_dates_added(self, warning_minutes):
+    def ensure_dates_added(self):
         now = datetime.now()
 
         while len(self.restart_dates) < len(self.restart_times) * 2:
             self.last_restart_day = self.last_restart_day + timedelta(days=1)
 
-            restart_dates = self.get_restart_dates(self.last_restart_day, self.restart_times, warning_minutes)
+            restart_dates = self.get_restart_dates(
+                self.last_restart_day,
+                self.restart_times,
+                self.restartmanager.warning_minutes)
 
             for restart_date in restart_dates:
                 if restart_date > now:
