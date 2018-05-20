@@ -38,6 +38,7 @@ class Thrall(object):
             self.conan_config.refresh()
 
         self._load_plugins()
+        self.config.save_if_queued()
 
         while True:
             self._tick_plugins()

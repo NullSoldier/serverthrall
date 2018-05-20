@@ -13,6 +13,7 @@ class ServerRestarter(IntervalTickPlugin):
         super(ServerRestarter, self).__init__(config)
         config.set_default('interval.interval_seconds', self.ONE_MINUTE)
         config.set_default('restart_times', '')
+        config.set_default('force_restart_on_launch', False)
         config.queue_save()
 
     def ready(self, steamcmd, server, thrall):
@@ -24,12 +25,18 @@ class ServerRestarter(IntervalTickPlugin):
         self.restart_dates = []
 
         self.ensure_dates_added()
-        self.tick_early()
+
+        if self.config.getboolean('force_restart_on_launch'):
+            self.config.set('force_restart_on_launch', False)
+            self.config.queue_save()
+            self.restart_dates = [datetime.datetime.now()] + self.restart_dates
 
         # Log restart times
         self.logger.debug("Next Restart Times:")
         for date in self.restart_dates[:5]:
             self.logger.debug(date.strftime("%d/%m/%y %I:%M %p"))
+
+        self.tick_early()
 
     def ensure_dates_added(self):
         now = datetime.datetime.now()
