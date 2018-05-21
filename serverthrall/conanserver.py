@@ -17,23 +17,16 @@ class ConanServer():
         self.use_testlive = use_testlive
         self.logger = logging.getLogger('serverthrall')
         self.process = None
-        self.multihome = self._correct_multihome(multihome)
+        self.multihome = multihome
+
+        if not self.multihome:
+            self.multihome = socket.gethostbyname(socket.gethostname())
 
         if self.multihome:
             self.arguments = self.arguments + " -MULTIHOME=" + self.multihome
 
         self.arguments = self.arguments + " -nosteam"
         self.arguments = self.arguments.strip()
-
-    def _correct_multihome(self, multihome):
-        host = multihome
-
-        if not multihome:
-            current_host = socket.gethostbyname(socket.gethostname())
-            if host not in ('127.0.0.1', '0.0.0.0'):
-                host = current_host
-
-        return host
 
     def is_running(self):
         if self.process is None:
