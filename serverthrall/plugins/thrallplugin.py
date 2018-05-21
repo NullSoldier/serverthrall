@@ -3,6 +3,8 @@ import logging
 
 class ThrallPlugin(object):
 
+    DEFAULT_LOGGING = logging.DEBUG
+
     def __init__(self, config):
         self.config = config
         self.name = self.__class__.__name__
@@ -15,7 +17,7 @@ class ThrallPlugin(object):
         self.steamcmd = steamcmd
         self.thrall = thrall
         self.logger = logging.getLogger('serverthrall.' + self.name)
-        self.logger.setLevel(logging.INFO)
+        self.logger.setLevel(self.DEFAULT_LOGGING)
 
         if self.config.has_option('log_level'):
             self.logger.setLevel({
@@ -24,7 +26,7 @@ class ThrallPlugin(object):
                 'warning': logging.WARNING,
                 'error': logging.ERROR,
                 'critical': logging.CRITICAL,
-            }.get(self.config.get('log_level').lower(), logging.INFO))
+            }.get(self.config.get('log_level').lower(), self.DEFAULT_LOGGING))
 
     def unload(self):
         self.enabled = False
