@@ -67,14 +67,14 @@ class Discord(IntervalTickPlugin):
     def try_failed_messages(self):
         stale_config = self.config.getint('stale_message_seconds')
         threshold = datetime.now() - timedelta(seconds=stale_config)
+        failed_count = len(self.failed_queue)
 
-        count = len(self.failed_queue)
-        i = 0
+        if failed_count == 0:
+            return
 
-        while i < count:
+        i = failed_count - 1
+        while i >= 0:
             key, message, created_time = self.failed_queue[i]
-
-            print(created_time, threshold)
 
             if created_time < threshold:
                 self.logger.debug("Destroying discord message that is too old " + message)
@@ -85,4 +85,4 @@ class Discord(IntervalTickPlugin):
                 if was_successful:
                     del self.failed_queue[i]
 
-            i += 1
+            i -= 1
