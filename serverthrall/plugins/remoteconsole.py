@@ -18,14 +18,14 @@ class RemoteConsole(IntervalTickPlugin):
         if not self.enabled:
             return
 
-        rcon_host     = self.server.multihome
+        rcon_host     = self.server.multihome or '127.0.0.1'
         rcon_port     = self.thrall.conan_config.get(*CONAN_SETTINGS_MAPPING['RconPort'])
         rcon_password = self.thrall.conan_config.get(*CONAN_SETTINGS_MAPPING['RconPassword'])
 
         if not rcon_host or not rcon_port or not rcon_password:
             return
 
-        self.logger.debug('Executing: ' + command)
+        self.logger.debug('Executing on %s:%s %s' % (rcon_host, rcon_port, command))
 
         try:
             with RCON((rcon_host, int(rcon_port)), rcon_password) as rcon:
