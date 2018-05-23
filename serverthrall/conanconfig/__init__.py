@@ -138,7 +138,7 @@ class ConanConfig(object):
 
                 if is_modified:
                     with open(self.group_paths[group_key][group_index], 'w') as group_file:
-                        group_config.write(group_file)
+                        group_config.write(group_file, space_around_delimiters=False)
 
         self.dirty = {}
 
