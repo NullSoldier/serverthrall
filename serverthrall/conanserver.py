@@ -1,4 +1,5 @@
 from serverthrall import settings
+from datetime import datetime, timedelta
 import logging
 import os
 import psutil
@@ -18,6 +19,7 @@ class ConanServer():
         self.logger = logging.getLogger('serverthrall')
         self.process = None
         self.multihome = multihome
+        self.start_time = None
 
         if not self.multihome:
             self.multihome = socket.gethostbyname(socket.gethostname())
@@ -35,6 +37,11 @@ class ConanServer():
 
     def is_installed(self):
         return os.path.exists(self.server_path)
+
+    def running_time(self):
+        if self.start_time is None:
+            return timedelta()
+        return datetime.now() - self.start_time
 
     def install_or_update(self):
         self.steamcmd.update_app(
@@ -63,6 +70,7 @@ class ConanServer():
             self.logger.exception('Server started but crashed shortly after... %s' % ex)
             return False
 
+        self.start_time = datetime.now()
         self.logger.info('Server running successfully')
         return True
 
@@ -71,6 +79,7 @@ class ConanServer():
             self.process.terminate()
             psutil.wait_procs([self.process])
 
+        self.start_time = None
         self.process = None
 
     def attach(self, root_process):
@@ -114,6 +123,7 @@ class ConanServer():
                     multihome=config.get('multihome'),
                     use_testlive=config.getboolean('testlive'))
                 server.attach(p)
+                server.start_time = datetime.min
                 return server
 
         return None

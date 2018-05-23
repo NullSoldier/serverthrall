@@ -1,6 +1,7 @@
 from ..conanconfig import CONAN_SETTINGS_MAPPING
 from .intervaltickplugin import IntervalTickPlugin
 from valve.rcon import RCON, RCONError
+from datetime import timedelta
 
 
 class RemoteConsole(IntervalTickPlugin):
@@ -16,7 +17,10 @@ class RemoteConsole(IntervalTickPlugin):
 
     def execute_safe(self, command):
         if not self.enabled:
-            return
+            return None
+
+        if self.server.running_time() <= timedelta(minutes=1):
+            return None
 
         rcon_host     = self.server.multihome
         rcon_port     = self.thrall.conan_config.get(*CONAN_SETTINGS_MAPPING['RconPort'])
@@ -26,7 +30,7 @@ class RemoteConsole(IntervalTickPlugin):
             rcon_host = '127.0.0.1'
 
         if not rcon_host or not rcon_port or not rcon_password:
-            return
+            return None
 
         self.logger.debug('Executing on %s:%s %s' % (rcon_host, rcon_port, command))
 
@@ -37,6 +41,8 @@ class RemoteConsole(IntervalTickPlugin):
             self.logger.error('Error sending command ' + command)
         except Exception:
             self.logger.exception('Error when exceuting RCON command')
+
+        return None
 
     def broadcast(self, message):
         return self.execute_safe('broadcast "%s"' % message)
