@@ -111,7 +111,7 @@ class ConanConfig(object):
         while len(self.dirty[group]) < index + 1:
             self.dirty[group].append({})
 
-        if section not in self.dirty[group]:
+        if section not in self.dirty[group][index]:
             self.dirty[group][index][section] = {}
 
         if not self.groups[group][index].has_section(section):
