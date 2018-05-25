@@ -114,6 +114,7 @@ Do not edit serverthrall.config while serverthrall is running. Your changes will
 | DownRecovery | | A webhook URL for the DownRecovery plugin to send messages on. |
 | ServerUpdater | | A webhook URL for the ServerUpdater plugin to send messages on. |
 | stale_message_seconds | | Don't retry failed message on the webhook that are older than this time in seconds. |
+| force_test_discord | | Send a test message to every hook to test if it works. |
 
 | **RemoteConsole** | | |
 | --- | --- | --- |
