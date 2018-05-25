@@ -158,7 +158,7 @@ class ServerUpdater(IntervalTickPlugin):
             rcon_restart=rcon_restart,
             discord_warning=discord_warning,
             discord_restart=discord_restart,
-            offline_callback=on_notify_offline)
+            restart_callback=on_notify_offline)
 
     def get_restart_messages(self, current, target, branch):
         default_message = 'The server is restarting to install an update!'

@@ -18,9 +18,11 @@ class IntervalTickPlugin(ThrallPlugin):
     def ready(self, steamcmd, server, thrall):
         super(IntervalTickPlugin, self).ready(steamcmd, server, thrall)
 
+        self.interval_seconds = self.config.getfloat('interval.interval_seconds')
+
         self.trigger = IntervalTrigger(
             self.config.getfloat('interval.last_checked_seconds'),
-            self.config.getfloat('interval.interval_seconds'))
+            self.interval_seconds)
 
     def tick_early(self):
         self.trigger.trigger()

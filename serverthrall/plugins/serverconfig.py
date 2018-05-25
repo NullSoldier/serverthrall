@@ -1,7 +1,9 @@
 from ..conanconfig import CONAN_SETTINGS_MAPPING
 from .intervaltickplugin import IntervalTickPlugin
+from .restartmanager import RestartManager
 from configparser import NoOptionError
 from contextlib import contextmanager
+from datetime import timedelta
 from watchdog.events import FileSystemEventHandler
 from watchdog.observers import Observer
 import os
@@ -46,6 +48,10 @@ class ServerConfig(IntervalTickPlugin):
 
     def ready(self, *args, **kwargs):
         super(ServerConfig, self).ready(*args, **kwargs)
+        self.stop_syncing = False
+
+        self.restartmanager = self.thrall.get_plugin(RestartManager)
+        self.restartmanager.register_offline_callback(self, self.on_server_offline)
 
         config_paths = self.get_conan_config_paths(self.thrall.conan_config)
         self.handler = OnModifiedHandler(self, config_paths, self.logger)
@@ -142,9 +148,29 @@ class ServerConfig(IntervalTickPlugin):
             return False
         return True
 
-    def tick_interval(self):
+    def on_server_offline(self):
         if not self.try_safe_refresh():
             self.logger.debug("Skipping config sync because conan has locked the configurations")
+            return
+
+        changed = self.sync()
+
+        if changed:
+            with self.handler.ignore_modifications():
+                self.thrall.conan_config.save()
+
+    def tick_interval(self):
+        if self.stop_syncing:
+            return
+
+        if not self.try_safe_refresh():
+            self.logger.debug("Skipping config sync because conan has locked the configurations")
+            return
+
+        if self.server.running_time() >= timedelta(seconds=self.interval_seconds):
+            self.logger.warning("Skipping config sync because the server has been running for too long")
+            self.stop_syncing = True
+            self.back_off()
             return
 
         changed = self.sync()

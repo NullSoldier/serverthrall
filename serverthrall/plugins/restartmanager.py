@@ -4,6 +4,7 @@ from .remoteconsole import RemoteConsole
 from datetime import datetime, timedelta
 from string import Template
 import time
+from itertools import chain
 
 
 class RestartInformation():
@@ -31,6 +32,9 @@ class RestartManager(IntervalTickPlugin):
         config.queue_save()
 
         self.warning_minutes = self.config.getint('warning_minutes')
+        self.active_restart_info = None
+        self.offline_callbacks = {}
+        self.restart_callbacks = {}
 
     def ready(self, steamcmd, server, thrall):
         super(RestartManager, self).ready(steamcmd, server, thrall)
@@ -41,22 +45,31 @@ class RestartManager(IntervalTickPlugin):
 
         self.discord = thrall.get_plugin(Discord)
         self.rcon = thrall.get_plugin(RemoteConsole)
-        self.active_restart_info = None
-        self.offline_callbacks = {}
 
-    def notify_offline_callbacks(self):
-        for plugin_name, (plugin, callback) in self.offline_callbacks.items():
+    def notify_callbacks(self):
+        callback_items = chain(
+            self.offline_callbacks.items(),
+            self.restart_callbacks.items())
+
+        for plugin_name, (plugin, callback) in callback_items:
             try:
                 callback()
             except Exception as ex:
                 self.logger.error('Plugin %s failed to handle on offline callback' % plugin_name)
                 self.thrall.unload_plugin(plugin, ex)
 
-        self.offline_callbacks.clear()
+        self.restart_callbacks.clear()
 
-    def start_restart(self, plugin, rcon_warning, rcon_restart, discord_warning, discord_restart, offline_callback=None):
+    def register_offline_callback(self, plugin, offline_callback):
         if plugin.name not in self.offline_callbacks and offline_callback is not None:
             self.offline_callbacks[plugin.name] = (plugin, offline_callback)
+
+    def register_restart_callback(self, plugin, restart_callback):
+        if plugin.name not in self.restart_callbacks and restart_callback is not None:
+            self.restart_callbacks[plugin.name] = (plugin, restart_callback)
+
+    def start_restart(self, plugin, rcon_warning, rcon_restart, discord_warning, discord_restart, restart_callback=None):
+        self.register_restart_callback(plugin, restart_callback)
 
         if self.active_restart_info is not None:
             return
@@ -109,5 +122,5 @@ class RestartManager(IntervalTickPlugin):
         time.sleep(1)
         self.active_restart_info = None
         self.server.close()
-        self.notify_offline_callbacks()
+        self.notify_callbacks()
         self.server.start()
