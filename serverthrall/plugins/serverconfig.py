@@ -39,11 +39,11 @@ class OnModifiedHandler(FileSystemEventHandler):
 
 class ServerConfig(IntervalTickPlugin):
 
-    FIVE_MINUTES = 5 * 60
+    ONE_MINUTE = 60
 
     def __init__(self, config):
         super(ServerConfig, self).__init__(config)
-        config.set_default('interval.interval_seconds', self.FIVE_MINUTES)
+        config.set_default('interval.interval_seconds', self.ONE_MINUTE)
         config.queue_save()
 
     def ready(self, *args, **kwargs):
@@ -129,8 +129,8 @@ class ServerConfig(IntervalTickPlugin):
 
             if setting_info.unquote:
                 source_value = self.unquote_value(source_value)
-                are_same |= self.unquote_value(source_value) == dest_value
-                are_same |= self.quote_value(source_value) == dest_value
+                are_same |= (source_value == dest_value)
+                are_same |= (self.quote_value(source_value) == dest_value)
 
             if not are_same:
                 path = self.thrall.conan_config.set_setting(setting_info, source_value, False)
@@ -168,7 +168,11 @@ class ServerConfig(IntervalTickPlugin):
             return
 
         if self.server.running_time() >= timedelta(seconds=self.interval_seconds):
-            self.logger.warning("Skipping config sync because the server has been running for too long")
+            self.logger.warning(
+                """Your server has been up for more than %s seconds."""
+                """ Configs will only be updated during the next restart."""
+                % int(self.interval_seconds))
+
             self.stop_syncing = True
             self.back_off()
             return
@@ -181,3 +185,5 @@ class ServerConfig(IntervalTickPlugin):
             with self.handler.ignore_modifications():
                 self.thrall.conan_config.save()
             self.server.start()
+
+        self.stop_syncing = True
