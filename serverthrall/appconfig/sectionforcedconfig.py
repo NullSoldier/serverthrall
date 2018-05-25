@@ -54,6 +54,9 @@ class SectionForcedConfig(object):
         if not self.config.has_option(self.section_name, key):
             self.config.set(self.section_name, key, str(value))
 
+    def options(self):
+        return self.config.options(self.section_name)
+
     def has_option(self, key):
         return self.config.has_option(self.section_name, key)
 
