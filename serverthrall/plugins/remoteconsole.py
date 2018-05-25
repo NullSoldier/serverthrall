@@ -32,6 +32,7 @@ class RemoteConsole(IntervalTickPlugin):
         if not rcon_host or not rcon_port or not rcon_password:
             return None
 
+        command = command.encode('ascii', 'replace')
         self.logger.debug('Executing on %s:%s %s' % (rcon_host, rcon_port, command))
 
         try:
