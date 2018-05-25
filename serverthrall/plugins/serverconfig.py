@@ -1,9 +1,9 @@
+from ..conanconfig import CONAN_SETTINGS_MAPPING
 from .intervaltickplugin import IntervalTickPlugin
 from configparser import NoOptionError
 from contextlib import contextmanager
 from watchdog.events import FileSystemEventHandler
 from watchdog.observers import Observer
-from ..conanconfig import CONAN_SETTINGS_MAPPING
 import os
 
 
@@ -38,7 +38,6 @@ class OnModifiedHandler(FileSystemEventHandler):
 class ServerConfig(IntervalTickPlugin):
 
     FIVE_MINUTES = 5 * 60
-    AUTO_QUOTE_ITEMS = ['ServerName']
 
     def __init__(self, config):
         super(ServerConfig, self).__init__(config)
@@ -73,6 +72,13 @@ class ServerConfig(IntervalTickPlugin):
             value = value + '"'
         return value
 
+    def unquote_value(self, value):
+        if value.startswith('"'):
+            value = value[1:]
+        if value.endswith('"'):
+            value = value[:-1]
+        return value
+
     def get_conan_config_paths(self, conan_config):
         config_paths = []
 
@@ -82,31 +88,47 @@ class ServerConfig(IntervalTickPlugin):
 
         return config_paths
 
-    def get_config_value_safe(self, src):
+    def get_config_value_safe(self, setting_name, setting_info):
+        value = None
+
         try:
-            return self.config.get(src)
+            value = self.config.get(setting_name)
         except NoOptionError:
             return None
+
+        if value is not None:
+            value = setting_info.transform(value)
+
+        return value
 
     def sync(self):
         changed = False
 
-        for src, dest in CONAN_SETTINGS_MAPPING.items():
-            group, section, option = dest
+        for setting_name, setting_info in CONAN_SETTINGS_MAPPING.items():
 
-            value = self.get_config_value_safe(src)
-            original = self.thrall.conan_config.get(group, section, option)
+            dest_value = self.thrall.conan_config.get_setting(setting_info)
+            source_value = self.get_config_value_safe(setting_name, setting_info)
 
-            if value is not None and value != original:
-                if src in self.AUTO_QUOTE_ITEMS:
-                    value = self.quote_value(value)
+            if source_value is None:
+                continue
 
-                path = self.thrall.conan_config.set(group, section, option, value, True)
-                self.logger.info('Syncing %s.%s=%s, %s' % (section, option, value, path))
+            if dest_value is not None:
+                dest_value = setting_info.transform(dest_value)
 
-                path = self.thrall.conan_config.set(group, section, option, value, False)
-                self.logger.info('Syncing %s.%s=%s, %s' % (section, option, value, path))
+            is_default = source_value == setting_info.default
+            are_same = source_value == dest_value
 
+            if dest_value is None and is_default:
+                continue
+
+            if setting_info.unquote:
+                source_value = self.unquote_value(source_value)
+                are_same |= self.unquote_value(source_value) == dest_value
+                are_same |= self.quote_value(source_value) == dest_value
+
+            if not are_same:
+                path = self.thrall.conan_config.set_setting(setting_info, source_value, False)
+                self.logger.info('Syncing %s=%s, %s' % (setting_info, source_value, path))
                 changed = True
 
         return changed

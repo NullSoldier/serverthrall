@@ -1,38 +1,11 @@
 from .conanconfigparser import ConanConfigParser
+from .mapping import CONAN_SETTINGS_MAPPING
 from .utils import guess_file_encoding
 from collections import OrderedDict
 import logging
 import os
 import time
 
-CONAN_SETTINGS_MAPPING = {
-    'ServerName':           ('Engine', 'OnlineSubsystem', 'ServerName'),
-    'ServerPassword':       ('Engine', 'OnlineSubsystem', 'ServerPassword'),
-    'QueryPort':            ('Engine', 'OnlineSubsystemSteam', 'GameServerQueryPort'),
-    'NetServerMaxTickRate': ('Engine', '/Script/OnlineSubsystemUtils.IpNetDriver', 'NetServerMaxTickRate'),
-
-    'RconEnabled':  ('Game', 'RconPlugin', 'RconEnabled'),
-    'RconPassword': ('Game', 'RconPlugin', 'RconPassword'),
-    'RconPort':     ('Game', 'RconPlugin', 'RconPort'),
-    'RconMaxKarma': ('Game', 'RconPlugin', 'RconMaxKarma'),
-    'MaxPlayers':   ('Game', '/Script/Engine.GameSession', 'MaxPlayers'),
-
-    'AdminPassword':                    ('ServerSettings', 'ServerSettings', 'AdminPassword'),
-    'MaxNudity':                        ('ServerSettings', 'ServerSettings', 'MaxNudity'),
-    'IsBattlEyeEnabled':                ('ServerSettings', 'ServerSettings', 'IsBattlEyeEnabled'),
-    'ServerRegion':                     ('ServerSettings', 'ServerSettings', 'ServerRegion'),
-    'ServerCommunity':                  ('ServerSettings', 'ServerSettings', 'ServerCommunity'),
-    'PVPEnabled':                       ('ServerSettings', 'ServerSettings', 'PVPEnabled'),
-    'BuildingPreloadRadius':            ('ServerSettings', 'ServerSettings', 'BuildingPreloadRadius'),
-    'MaxBuildingDecayTime':             ('ServerSettings', 'ServerSettings', 'MaxBuildingDecayTime'),
-    'MaxDecayTimeToAutoDemolish':       ('ServerSettings', 'ServerSettings', 'MaxDecayTimeToAutoDemolish'),
-    'PlayerOfflineThirstMultiplier':    ('ServerSettings', 'ServerSettings', 'PlayerOfflineThirstMultiplier'),
-    'PlayerOfflineHungerMultiplier':    ('ServerSettings', 'ServerSettings', 'PlayerOfflineHungerMultiplier'),
-    'LogoutCharactersRemainInTheWorld': ('ServerSettings', 'ServerSettings', 'LogoutCharactersRemainInTheWorld'),
-
-    'KickAFKPercentage': ('ServerSettings', 'ServerSettings', 'KickAFKPercentage'),
-    'KickAFKTime':       ('ServerSettings', 'ServerSettings', 'KickAFKTime'),
-}
 
 class ConanConfig(object):
 
@@ -87,13 +60,25 @@ class ConanConfig(object):
 
         return None
 
+    def get_setting(self, setting):
+        return self.get(setting.file, setting.section, setting.option)
+
+    def get_setting_float(self, setting):
+        return self.get_float(setting.file, setting.section, setting.option)
+
+    def get_setting_boolean(self, setting):
+        return self.get_boolean(setting.file, setting.section, setting.option)
+
+    def set_setting(self, setting, value, first=False):
+        return self.set(setting.file, setting.section, setting.option, value, first)
+
     def get(self, group, section, option):
         return self._query_get(group, section, option, 'get')
 
-    def getfloat(self, group, section, option):
+    def get_float(self, group, section, option):
         return self._query_get(group, section, option, 'getfloat')
 
-    def getboolean(self, group, section, option):
+    def get_boolean(self, group, section, option):
         return self._query_get(group, section, option, 'getboolean')
 
     def set(self, group, section, option, value, first=False):
@@ -176,3 +161,23 @@ class ConanConfig(object):
                 self.logger.warn('Waiting for config to exist %s' % waiting_on)
                 last_waiting_on = waiting_on
             time.sleep(3)
+
+    def _debug_config(self, config, needle=None):
+        for section in config.sections():
+            found = True
+
+            if needle is not None:
+                found = False
+
+                for option in config.options(section):
+                    if needle in option:
+                        found = True
+                        break
+
+            if not found:
+                continue
+
+            print('[%s]' % section)
+            for option in config.options(section):
+                if needle in option:
+                    print('%s=%s' % (option, config.get(section, option)))

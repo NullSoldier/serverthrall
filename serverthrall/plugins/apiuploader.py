@@ -101,10 +101,10 @@ class ApiUploader(IntervalTickPlugin):
             'characters': self.client.get_characters(),
             'clans': self.client.get_clans(),
             'server': {
-                'name': self.thrall.conan_config.get(*CONAN_SETTINGS_MAPPING['ServerName']),
-                'query_port': self.thrall.conan_config.get(*CONAN_SETTINGS_MAPPING['QueryPort']),
-                'max_players': self.thrall.conan_config.get(*CONAN_SETTINGS_MAPPING['MaxPlayers']),
-                'tick_rate': self.thrall.conan_config.get(*CONAN_SETTINGS_MAPPING['NetServerMaxTickRate']),
+                'name': self.thrall.conan_config.get_setting(CONAN_SETTINGS_MAPPING['ServerName']),
+                'query_port': self.thrall.conan_config.get_setting(CONAN_SETTINGS_MAPPING['QueryPort']),
+                'max_players': self.thrall.conan_config.get_setting(CONAN_SETTINGS_MAPPING['MaxPlayers']),
+                'tick_rate': self.thrall.conan_config.get_setting(CONAN_SETTINGS_MAPPING['NetServerMaxTickRate']),
                 'ip_address': self.config.get('ip_address'),
             }
         }
