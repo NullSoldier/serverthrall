@@ -3,7 +3,7 @@ import logging
 
 class ThrallPlugin(object):
 
-    DEFAULT_LOGGING = logging.DEBUG
+    DEFAULT_LOGGING = logging.INFO
 
     def __init__(self, config):
         self.config = config
