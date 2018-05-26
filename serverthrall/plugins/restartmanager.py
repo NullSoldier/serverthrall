@@ -78,7 +78,7 @@ class RestartManager(IntervalTickPlugin):
 
         template = {
             'timeleft': str(self.warning_minutes),
-            'timeunit': 'minute' if self.warning_minutes == 1 else 'minutes',
+            'timeunit': self.thrall.localization.return_word('minute') if self.warning_minutes == 1 else self.thrall.localization.return_word('minutes'),
             'newline': '\n'
         }
 

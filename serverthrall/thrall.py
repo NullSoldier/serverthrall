@@ -1,6 +1,7 @@
 from .exceptions import UnloadPluginException
 import logging
 import time
+from .localization import Localization
 
 
 class Thrall(object):
@@ -11,6 +12,7 @@ class Thrall(object):
         self.conan_config = conan_config
         self.plugins = plugins
         self.server = server
+        self.localization = Localization(config)
         self.logger = logging.getLogger('serverthrall')
 
     def get_plugin(self, type):
