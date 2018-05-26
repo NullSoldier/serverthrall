@@ -1,6 +1,7 @@
 .cache/
 vendor/
 virtualenv/
+.virtualenv/
 installer/build
 installer/dist
 installer/serverthrall.spec

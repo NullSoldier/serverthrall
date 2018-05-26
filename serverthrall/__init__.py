@@ -45,9 +45,8 @@ def run_server_thrall(app_version):
     steamcmd = SteamCmd(settings.STEAMCMD_PATH)
     thrall_config = ThrallConfig(config)
 
-    if app_version is not None:
-        logger.info('Running version ' + app_version)
-        thrall_config.set('version', app_version)
+    logger.info('Running version ' + app_version)
+    thrall_config.set('version', app_version)
 
     if config_is_new:
         thrall_config.save()

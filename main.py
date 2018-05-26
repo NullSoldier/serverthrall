@@ -11,5 +11,5 @@ if not is_python_version_correct:
 from serverthrall import run_server_thrall # noqa
 import os # noqa
 
-VERSION = '2.1.3'
+VERSION = '2.1.4'
 run_server_thrall(VERSION)
