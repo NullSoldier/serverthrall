@@ -1,11 +1,13 @@
 language_map = {
     'en': {
         'minute': 'minute',
-        'minutes': 'minutes'
+        'minutes': 'minutes',
+        'never': 'never'
     },
     'pl': {
         'minute': 'minuta',
-        'minutes': 'minut'
+        'minutes': 'minut',
+        'never': 'nigdy'
     }
 }
 

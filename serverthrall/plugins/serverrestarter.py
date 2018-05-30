@@ -41,6 +41,9 @@ class ServerRestarter(IntervalTickPlugin):
     def ensure_dates_added(self):
         now = datetime.now()
 
+        if len(self.restart_times) == 0:
+            return
+
         while len(self.restart_dates) < len(self.restart_times) * 2:
             self.last_restart_day = self.last_restart_day + timedelta(days=1)
 
@@ -63,6 +66,9 @@ class ServerRestarter(IntervalTickPlugin):
         times = []
 
         for time_split in times_splits:
+            if not time_split:
+                continue
+
             parts = time_split.strip().split(':')
             hour = None
             minute = 0
@@ -73,13 +79,14 @@ class ServerRestarter(IntervalTickPlugin):
             if len(parts) > 1:
                 minute = int(parts[1])
 
-            if hour is None or minute is None:
-                self.config.error('Expected time in HH:MM format (04:20) but got %s' % time_split)
+            if hour is None:
+                self.logger.error('Expected time in HH:MM format (04:20) but got %s' % time_split)
                 continue
 
             times.append(time(hour=hour, minute=minute))
 
         return sorted(times, key=lambda time: (time.hour) * 60 + time.second)
+
 
     def get_restart_messages(self):
         default_message = 'The server is being restarted now.'
@@ -92,8 +99,12 @@ class ServerRestarter(IntervalTickPlugin):
         if self.config.has_option_filled('rcon_restart_message'):
             rcon_message = self.config.get('rcon_restart_message')
 
+        next_restart_string = self.thrall.localization.return_word('never')
+        if len(self.restart_dates) > 0:
+            next_restart_string = self.restart_dates[0].strftime("%I:%M %p")
+
         template = {
-            'nextrestart': self.restart_dates[0].strftime("%I:%M %p"),
+            'nextrestart': next_restart_string,
         }
 
         discord_message = Template(discord_message).safe_substitute(template)
@@ -118,7 +129,7 @@ class ServerRestarter(IntervalTickPlugin):
         past_time = None
 
         # handle clock jumping forward
-        while datetime.now() > self.restart_dates[0]:
+        while len(self.restart_dates) > 0 and datetime.now() > self.restart_dates[0]:
             past_time = self.restart_dates[0]
             del self.restart_dates[0]
             self.ensure_dates_added()
