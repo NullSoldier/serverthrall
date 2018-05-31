@@ -9,13 +9,28 @@ from itertools import chain
 
 class RestartInformation():
 
-    def __init__(self, plugin, rcon_warning, rcon_restart, discord_warning, discord_restart, restart_time):
+    def __init__(self, plugin, rcon_warning, rcon_restart, discord_warning, discord_restart, restart_time, warning_thresholds):
         self.plugin = plugin
         self.rcon_warning = rcon_warning
         self.rcon_restart = rcon_restart
         self.discord_warning = discord_warning
         self.discord_restart = discord_restart
         self.restart_time = restart_time
+        self.warning_thresholds = warning_thresholds[:]
+
+    def should_restart(self):
+        return datetime.now() >= self.restart_time
+
+    def should_send_warning(self):
+        time_left = self.restart_time - datetime.now()
+        time_left_minutes = int(time_left.seconds / 60)
+        is_past = False
+
+        while len(self.warning_thresholds) > 0 and time_left_minutes <= self.warning_thresholds[0]:
+            is_past = True
+            del self.warning_thresholds[0]
+
+        return is_past
 
 
 class RestartManager(IntervalTickPlugin):
@@ -31,7 +46,8 @@ class RestartManager(IntervalTickPlugin):
         config.set_default('restart_send_rcon', True)
         config.queue_save()
 
-        self.warning_minutes = self.config.getint('warning_minutes')
+        self.warning_thresholds = sorted(self.config.getintarray('warning_minutes'), reverse=True)
+        self.warning_minutes = self.warning_thresholds[0]
         self.active_restart_info = None
         self.offline_callbacks = {}
         self.restart_callbacks = {}
@@ -76,46 +92,68 @@ class RestartManager(IntervalTickPlugin):
 
         self.logger.info('Beginning restart for ' + plugin.name)
 
-        template = {
-            'timeleft': str(self.warning_minutes),
-            'timeunit': self.thrall.localization.return_word('minute') if self.warning_minutes == 1 else self.thrall.localization.return_word('minutes'),
-            'newline': '\n'
-        }
-
         self.active_restart_info = RestartInformation(
             plugin=plugin,
-            rcon_warning=Template(rcon_warning).safe_substitute(template),
-            rcon_restart=Template(rcon_restart).safe_substitute(template),
-            discord_warning=Template(discord_warning).safe_substitute(template),
-            discord_restart=Template(discord_restart).safe_substitute(template),
-            restart_time=datetime.now() + timedelta(minutes=self.warning_minutes))
-
-        if self.warning_minutes > 0:
-            self.send_warning_message()
+            rcon_warning=rcon_warning,
+            rcon_restart=rcon_restart,
+            discord_warning=discord_warning,
+            discord_restart=discord_restart,
+            restart_time=datetime.now() + timedelta(minutes=self.warning_minutes),
+            warning_thresholds=self.warning_thresholds)
 
         self.tick_early()
 
+    def get_message_templates(self, time_left):
+        time_left_minutes = int(time_left.seconds / 60)
+
+        if time_left_minutes == 1:
+            time_unit = self.thrall.localization.return_word('minute')
+        else:
+            time_unit = self.thrall.localization.return_word('minutes')
+
+        return {
+            'timeleft': str(time_left_minutes),
+            'timeunit': time_unit,
+            'newline': '\n'
+        }
+
     def send_warning_message(self):
-        self.logger.info('The server is being restarted in %s minutes.' % self.warning_minutes)
+        time_left = self.active_restart_info.restart_time - datetime.now()
+        time_left_minutes = int(time_left.seconds / 60)
+        template = self.get_message_templates(time_left)
+
+        self.logger.info('The server is being restarted in %s minutes.' % time_left_minutes)
 
         if self.warning_send_rcon and self.rcon is not None:
-            self.rcon.broadcast(self.active_restart_info.rcon_warning)
+            rcon_warning = self.active_restart_info.rcon_warning
+            rcon_warning = Template(rcon_warning).safe_substitute(template)
+            self.rcon.broadcast(rcon_warning)
 
         if self.warning_send_discord and self.discord is not None:
-            self.discord.send_message(self.active_restart_info.plugin.name, self.active_restart_info.discord_warning)
+            discord_warning = self.active_restart_info.discord_warning
+            discord_warning = Template(discord_warning).safe_substitute(template)
+            self.discord.send_message(self.active_restart_info.plugin.name, discord_warning)
 
     def send_restart_message(self):
+        template = self.get_message_templates(timedelta())
+
         if self.restart_send_rcon and self.rcon is not None:
-            self.rcon.broadcast(self.active_restart_info.rcon_restart)
+            rcon_restart = self.active_restart_info.rcon_restart
+            rcon_restart = Template(rcon_restart).safe_substitute(template)
+            self.rcon.broadcast(rcon_restart)
 
         if self.restart_send_discord and self.discord is not None:
-            self.discord.send_message(self.active_restart_info.plugin.name, self.active_restart_info.discord_restart)
+            discord_restart = self.active_restart_info.discord_restart
+            discord_restart = Template(discord_restart).safe_substitute(template)
+            self.discord.send_message(self.active_restart_info.plugin.name, discord_restart)
 
     def tick_interval(self):
         if self.active_restart_info is None:
             return
 
-        if datetime.now() < self.active_restart_info.restart_time:
+        if not self.active_restart_info.should_restart():
+            if self.active_restart_info.should_send_warning():
+                self.send_warning_message()
             return
 
         self.send_restart_message()
