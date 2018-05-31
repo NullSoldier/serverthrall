@@ -2,14 +2,14 @@ set -e
 
 rm -rf bin/serverthrall/dist
 mkdir -p bin/serverthrall
-cp ./icon.ico bin/serverthrall/icon.ico
+cp serverthrall.ico bin/serverthrall/serverthrall.ico
 
 pyinstaller main.py \
 	--name serverthrall \
 	--workpath .\\bin\\serverthrall\\build \
 	--distpath .\\bin\\serverthrall\\dist \
 	--specpath .\\bin\\serverthrall \
-	--icon .\\bin\\serverthrall\\icon.ico \
+	--icon .\\bin\\serverthrall\\serverthrall.ico \
 	--console \
 	--onedir \
 	--onefile \
