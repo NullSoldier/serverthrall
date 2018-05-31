@@ -24,7 +24,7 @@ class RestartManager(IntervalTickPlugin):
         super(RestartManager, self).__init__(config)
         self.enabled = True
         config.set_default('interval.interval_seconds', 60)
-        config.set_default('warning_minutes', 5)
+        config.set_default('warning_minutes', 10)
         config.set_default('warning_send_discord', True)
         config.set_default('warning_send_rcon', True)
         config.set_default('restart_send_discord', True)

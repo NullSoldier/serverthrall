@@ -9,7 +9,8 @@ import requests
 class ApiUploader(IntervalTickPlugin):
 
     NO_VALUE = ''
-    SERVER_THRALL_API_URL = 'http://serverthrallapi.herokuapp.com'
+    # SERVER_THRALL_API_URL = 'http://serverthrallapi.herokuapp.com'
+    SERVER_THRALL_API_URL = 'http://127.0.0.1:8000'
 
     def __init__(self, config):
         config.set_default('enabled', 'false')

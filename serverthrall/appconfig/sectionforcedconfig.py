@@ -1,4 +1,5 @@
 import configparser
+from ..utils import parse_csv_times
 
 
 def enable_default(fn):
@@ -43,6 +44,12 @@ class SectionForcedConfig(object):
     @enable_default
     def getint(self, key):
         return self.config.getint(self.section_name, key)
+
+    def gettimearray(self, key):
+        return parse_csv_times(self.get(key))
+
+    def getintarray(self, key):
+        return [int(v.strip()) for v in self.get(key).split(',') if v.strip()]
 
     def remove_option(self, key):
         self.config.remove_option(self.section_name, key)

@@ -1,6 +1,6 @@
-from datetime import datetime
+from datetime import datetime, time
 import pprint
-import time
+from time import mktime
 
 
 def print_config(config):
@@ -16,7 +16,7 @@ class IntervalTrigger(object):
         self.triggered_manually = False
 
     def get_current_timestamp(self):
-        return time.mktime(datetime.now().timetuple())
+        return mktime(datetime.now().timetuple())
 
     def trigger(self):
         self.triggered_manually = True
@@ -32,3 +32,41 @@ class IntervalTrigger(object):
     def reset(self):
         self.last_checked = self.get_current_timestamp()
         self.triggered_manually = False
+
+
+def parse_csv_times(times_list_str):
+    if times_list_str is None:
+        return []
+
+    times_splits = times_list_str.strip().split(',')
+
+    times = []
+    invalid = []
+
+    for time_split in times_splits:
+        if not time_split:
+            continue
+
+        parts = time_split.strip().split(':')
+        hour = None
+        minute = 0
+
+        if len(parts) > 0:
+            try:
+                hour = int(parts[0])
+            except ValueError:
+                pass
+
+        if len(parts) > 1:
+            try:
+                minute = int(parts[1])
+            except ValueError:
+                pass
+
+        if hour is None:
+            invalid.append(time_split)
+            continue
+
+        times.append(time(hour=hour, minute=minute))
+
+    return times, invalid

@@ -21,8 +21,13 @@ class ServerRestarter(IntervalTickPlugin):
 
         self.restartmanager = self.thrall.get_plugin(RestartManager)
         self.last_restart_day = date.today() - timedelta(days=1)
-        self.restart_times = self.get_restart_times(self.config.get('restart_times'))
         self.restart_dates = []
+
+        self.restart_times, invalid_times = self.config.gettimearray('restart_times')
+        self.restart_times = sorted(self.restart_times, key=lambda t: (t.hour) * 60 + t.second)
+
+        for invalid_time in invalid_times:
+            self.logger.error('Expected time in HH:MM format (4:12) but got %s' % invalid_time)
 
         self.ensure_dates_added()
 
@@ -34,7 +39,8 @@ class ServerRestarter(IntervalTickPlugin):
         # Log restart times
         self.logger.debug("Next Restart Times:")
         for restart_date in self.restart_dates[:5]:
-            self.logger.debug(restart_date.strftime("%d/%m/%y %I:%M %p"))
+            actual = restart_date + timedelta(minutes=self.restartmanager.warning_minutes)
+            self.logger.debug(actual.strftime("%d/%m/%y %I:%M %p"))
 
         self.tick_early()
 
@@ -58,35 +64,6 @@ class ServerRestarter(IntervalTickPlugin):
 
     def get_restart_dates(self, restart_date, restart_times, warning_minutes):
         return [datetime.combine(restart_date, t) - timedelta(minutes=warning_minutes) for t in restart_times]
-
-    def get_restart_times(self, restart_times_config):
-        times_option = restart_times_config
-        times_splits = times_option.strip().split(',')
-
-        times = []
-
-        for time_split in times_splits:
-            if not time_split:
-                continue
-
-            parts = time_split.strip().split(':')
-            hour = None
-            minute = 0
-
-            if len(parts) > 0:
-                hour = int(parts[0])
-
-            if len(parts) > 1:
-                minute = int(parts[1])
-
-            if hour is None:
-                self.logger.error('Expected time in HH:MM format (04:20) but got %s' % time_split)
-                continue
-
-            times.append(time(hour=hour, minute=minute))
-
-        return sorted(times, key=lambda time: (time.hour) * 60 + time.second)
-
 
     def get_restart_messages(self):
         default_message = 'The server is being restarted now.'
