@@ -1,10 +1,8 @@
 .cache/
+bin/
 vendor/
 virtualenv/
 .virtualenv/
-installer/build
-installer/dist
-installer/serverthrall.spec
 serverthrall.config
 serverthrall.log
 *.pyc
