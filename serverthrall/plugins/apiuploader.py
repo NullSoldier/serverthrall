@@ -96,15 +96,21 @@ class ApiUploader(IntervalTickPlugin):
         self.config.set('ip_address', response.text)
 
     def get_sync_payload(self):
+
+        def get_setting_or_default(name):
+            setting = CONAN_SETTINGS_MAPPING[name]
+            value = self.thrall.conan_config.get_setting(setting)
+            return value if value is not None else setting.default
+
         return {
             'version': self.thrall.config.get('version'),
             'characters': self.client.get_characters(),
             'clans': self.client.get_clans(),
             'server': {
-                'name': self.thrall.conan_config.get_setting(CONAN_SETTINGS_MAPPING['ServerName']),
-                'query_port': self.thrall.conan_config.get_setting(CONAN_SETTINGS_MAPPING['QueryPort']),
-                'max_players': self.thrall.conan_config.get_setting(CONAN_SETTINGS_MAPPING['MaxPlayers']),
-                'tick_rate': self.thrall.conan_config.get_setting(CONAN_SETTINGS_MAPPING['NetServerMaxTickRate']),
+                'name': get_setting_or_default('ServerName'),
+                'query_port': get_setting_or_default('QueryPort'),
+                'max_players': get_setting_or_default('MaxPlayers'),
+                'tick_rate': get_setting_or_default('NetServerMaxTickRate'),
                 'ip_address': self.config.get('ip_address'),
             }
         }
