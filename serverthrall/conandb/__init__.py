@@ -1,4 +1,5 @@
 import sqlite3
+from .utils import parse_timestamp
 
 
 class ConanDbClient(object):
@@ -42,7 +43,7 @@ class ConanDbClient(object):
                     'steam_id': row[4],
                     'conan_id': row[1],
                     'last_killed_by': row[6],
-                    'last_online': row[5],
+                    'last_online': parse_timestamp(row[5]),
                     'clan_id': row[7],
                     'x': row[8],
                     'y': row[9],
