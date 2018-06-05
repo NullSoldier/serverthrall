@@ -10,6 +10,8 @@ Server Thrall is a python based dedicated server toolbox. It's not a GUI to mana
 **Click on serverthrall.exe** If this is your first time running it you will see Server Thrall download the Conan Exiles Dedicated Server and then create a new **serverthrall.config** file in the same directory. See more information below on what **serverthrall.config** contains.
 
 ### Common Issues
+- **Q>** ServerThrall stops responding or processing for periods of time
+- A> Disable Quick Edit by following the instructions here https://superuser.com/questions/555160/windows-command-prompt-freezing-on-focus/555204#555204
 - **Q>** When the Conan Exiles server starts it opens up an error alert that says `The procedure entry point ?IsAlive@CThread@@QEBA_NXZ could not`
 - A> This happens when steam is running at the same time. If you close steam the error goes away when launching Conan Exiles.
 
