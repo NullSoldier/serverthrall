@@ -33,7 +33,7 @@ Server Thrall is a python based dedicated server toolbox. It's not a GUI to mana
 | **RemoteConsole** | Sends messages and commands to a conan exiles server via the RCON protocol. |
 | **RestartManager** | Makes sure notifications are sent out during restarts and the waiting period for a restart is respected. Used by other plugins. |
 | **UptimeTracker** | Records the percentage of time the server has been online. If the server thrall is closed, this counts against the uptime percentage. |
-| **ApiUploader** | Uploads your server data to serverthrallapi so you can see your data online. If your **server_id** was `2`, and your **private_secret** was `200cd768-5b1d-11e7-9e82-d60626067254` you would access your servers characters at this URL: https://serverthrallapi.herokuapp.com/api/2/characters?private_secret=200cd768-5b1d-11e7-9e82-d60626067254  |
+| **ApiUploader** | Uploads your server data to serverthrallapi so you can see your data online. If your **server_id** was `2`, you would access your servers characters at this URL: https://thrallbrowser.com/server/2/characters and you can fetch your REST API data at https://serverthrallapi.herokuapp.com/api/2/characters |
 | **DeadManSnitch** | https://deadmanssnitch.com Emails you when your server is down. You can sign up for a free account which gives one limited snitch. |
 
 ### Configuration for Plugins
