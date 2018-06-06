@@ -45,7 +45,7 @@ Do not edit serverthrall.config while serverthrall is running. Your changes will
 | force_update_on_launch | false | Set to `true` to force ServerThrall to update and validate the conan exiles server files. This will then be turned off after it's read. Useful if you've accidently deleted or removed any files and your server won't launch.
 | additional_arguments | | Passes additional arguments to ConanSandboxServer. Arguments are documented here, https://docs.unrealengine.com/en-us/Programming/Basics/CommandLineArguments. By default the only parameter passed to the server is **-nosteam** and **-MULTIHOME** with your local computers IP.
 | set_high_priority | true | If `true`, ensures the operating system process priority for the conan exiles server is high. This works even if attaching or rebooting the server. |
-| multihome | | Conan Exiles will by default set your servers multihome argument to your local IP address. If this behavior is incorrect, or insufficient, you can override that value with this setting. Set this to your own computers IP to join a server on the same computer that you want to play on. |
+| multihome | | Server Thrall will by default set your servers multihome argument to your local IP address. If this behavior is incorrect, or insufficient, you can override that value with this setting. Set this to your own computers IP to join a server on the same computer that you want to play on. |
 | testlive | false | Set to `true` run your server for testlive, false to use the live version.  |
 
 | **ServerConfig** | | |
