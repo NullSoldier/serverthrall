@@ -8,6 +8,11 @@ language_map = {
         'minute': 'minuta',
         'minutes': 'minut',
         'never': 'nigdy'
+    },
+    'es': {
+        'minute': 'minuto',
+        'minutes': 'minutos',
+        'never': 'nunca'
     }
 }
 
