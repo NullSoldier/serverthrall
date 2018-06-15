@@ -27,7 +27,6 @@ class ConanServer():
         if self.multihome:
             self.arguments = self.arguments + " -MULTIHOME=" + self.multihome
 
-        self.arguments = self.arguments + " -nosteam"
         self.arguments = self.arguments.strip()
 
     def is_running(self):
