@@ -161,7 +161,7 @@ class ServerUpdater(IntervalTickPlugin):
             restart_callback=on_notify_offline)
 
     def get_restart_messages(self, current, target, branch):
-        default_message = 'The server is restarting to install an update!'
+        default_message = self.thrall.localization.return_word('ServerUpdater.restart')
         discord_message = default_message
         rcon_message = default_message
 
@@ -183,7 +183,7 @@ class ServerUpdater(IntervalTickPlugin):
         return discord_message, rcon_message
 
     def get_warning_messages(self, current, target, branch):
-        default_message = 'There is a new update available. The Server is restarting in $timeleft $timeunit to install the update.'
+        default_message = self.thrall.localization.return_word('ServerUpdater.warning')
         discord_message = default_message
         rcon_message = default_message
 

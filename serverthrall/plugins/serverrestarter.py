@@ -66,7 +66,7 @@ class ServerRestarter(IntervalTickPlugin):
         return [datetime.combine(restart_date, t) - timedelta(minutes=warning_minutes) for t in restart_times]
 
     def get_restart_messages(self):
-        default_message = 'The server is being restarted now.'
+        default_message = self.thrall.localization.return_word('ServerRestarter.restart')
         discord_message = default_message
         rcon_message = default_message
 
@@ -90,7 +90,7 @@ class ServerRestarter(IntervalTickPlugin):
         return discord_message, rcon_message
 
     def get_warning_messages(self):
-        default_message = 'The server is being restarted in $timeleft $timeunit.'
+        default_message = self.thrall.localization.return_word('ServerRestarter.warning')
         discord_message = default_message
         rcon_message = default_message
 
