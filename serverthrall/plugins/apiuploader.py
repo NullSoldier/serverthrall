@@ -38,7 +38,9 @@ class ApiUploader(IntervalTickPlugin):
             raise Exception('Server DB not found at path %s' % db_path)
 
         self.client = ConanDbClient(db_path)
-        self.update_global_ip()
+
+        if not self.config.has_option('ip_address_override'):
+            self.update_global_ip()
 
     def is_registered(self):
         return self.config.get('private_secret') != self.NO_VALUE
@@ -103,6 +105,10 @@ class ApiUploader(IntervalTickPlugin):
             value = self.thrall.conan_config.get_setting(setting)
             return value if value is not None else setting.default
 
+        ip_address = self.config.get('ip_address', default=None)
+        if self.config.has_option('ip_address_override'):
+            ip_address = self.config.get('ip_address_override')
+
         return {
             'version': self.thrall.config.get('version'),
             'characters': self.client.get_characters(),
@@ -112,6 +118,6 @@ class ApiUploader(IntervalTickPlugin):
                 'query_port': get_setting_or_default('QueryPort'),
                 'max_players': get_setting_or_default('MaxPlayers'),
                 'tick_rate': get_setting_or_default('NetServerMaxTickRate'),
-                'ip_address': self.config.get('ip_address'),
+                'ip_address': ip_address,
             }
         }
