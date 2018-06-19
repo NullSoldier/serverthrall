@@ -10,7 +10,6 @@ language_map = {
         'ServerUpdater.warning': 'There is a new update available. The Server is restarting in $timeleft $timeunit to install the update.',
         'ServerUpdater.restart': 'The server is restarting to install an update!',
     },
-    # added serverrestarter translations from google translate. Check with native online.
     'es': {
         'minute': 'minuto',
         'minutes': 'minutos',
@@ -20,8 +19,6 @@ language_map = {
         'ServerUpdater.warning': 'Hay una nueva actualización disponible. El servidor va a reiniciarse en $timeleft $timeunit para instalr la actualización',
         'ServerUpdater.restart': '¡El servidor se está reiniciando para instalar una actualización!',
     },
-    # test fr translations
-    # test serverrestarter and serverupdater message
     'fr': {
         'minute': 'minute',
         'minutes': 'minutes',
