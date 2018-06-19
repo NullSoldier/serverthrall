@@ -10,16 +10,28 @@ language_map = {
         'ServerUpdater.warning': 'There is a new update available. The Server is restarting in $timeleft $timeunit to install the update.',
         'ServerUpdater.restart': 'The server is restarting to install an update!',
     },
+    'es': {
+        'minute': 'minuto',
+        'minutes': 'minutos',
+        'never': 'nunca',
+        'ServerRestarter.warning': 'El servidor se reinicia en $ timeleft $ timeunit.',
+        'ServerRestarter.restart': 'El servidor se reinicia ahora.',
+        'ServerUpdater.warning': 'Hay una nueva actualización disponible. El servidor va a reiniciarse en $timeleft $timeunit para instalr la actualización',
+        'ServerUpdater.restart': '¡El servidor se está reiniciando para instalar una actualización!',
+    },
+    'fr': {
+        'minute': 'minute',
+        'minutes': 'minutes',
+        'never': 'jamais',
+        'ServerRestarter.warning': 'Le serveur va être redémarrer dans $timeleft $timeunit.',
+        'ServerRestarter.restart': 'Le serveur va maintenant redémarrer.',
+        'ServerUpdater.warning': 'Une nouvelle mise à jour est disponible. Le serveur va être redémarrer dans $timeleft $timeunit pour installer la mise à jour.',
+        'ServerUpdater.restart': 'Le serveur va maintenant redémarrer pour installer la mise à jour !',
+    },
     'pl': {
         'minute': 'minuta',
         'minutes': 'minut',
         'never': 'nigdy'
     },
-    'es': {
-        'minute': 'minuto',
-        'minutes': 'minutos',
-        'never': 'nunca',
-        'ServerUpdater.warning': 'Hay una nueva actualización disponible. El servidor va a reiniciarse en $timeleft $timeunit para instalr la actualización',
-        'ServerUpdater.restart': 'El servidor se está reiniciando para instalar una actualización!',
-    }
+
 }
