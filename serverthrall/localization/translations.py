@@ -14,7 +14,7 @@ language_map = {
         'minute': 'minuto',
         'minutes': 'minutos',
         'never': 'nunca',
-        'ServerRestarter.warning': 'El servidor se reinicia en $ timeleft $ timeunit.',
+        'ServerRestarter.warning': 'El servidor se reinicia en $timeleft $timeunit.',
         'ServerRestarter.restart': 'El servidor se reinicia ahora.',
         'ServerUpdater.warning': 'Hay una nueva actualización disponible. El servidor va a reiniciarse en $timeleft $timeunit para instalr la actualización',
         'ServerUpdater.restart': '¡El servidor se está reiniciando para instalar una actualización!',
@@ -33,5 +33,4 @@ language_map = {
         'minutes': 'minut',
         'never': 'nigdy'
     },
-
 }
