@@ -26,7 +26,7 @@ class RunScripts(ThrallPlugin):
             self.run_script()
 
     def run_script(self):
-        command = self.config.get('command', default=None)
+        command = self.config.get('command', default='').strip()
         arguments = self.config.get('command_arguments', default=None)
         timeout = self.config.getint('command_timeout', default=None)
 
