@@ -7,14 +7,14 @@ Server Thrall is a python based dedicated server toolbox. It's not a GUI to mana
 * [Check out some Common Issues|Common Issues](https://github.com/NullSoldier/serverthrall/wiki/Common-Issues)
 
 ### How To...
- * [Send notifications to discord before restarting|Setup-Restart-Notifications](https://github.com/NullSoldier/serverthrall/wiki/Setup-Restart-Notifications)
- * [Send notifications to players in game before restarting|Setup-Restart-Notifications](https://github.com/NullSoldier/serverthrall/wiki/Setup-Restart-Notifications)
- * [Setup your server for ThrallBrowser|Thrallbrowser](https://github.com/NullSoldier/serverthrall/wiki/Thrallbrowser)
- * [View a live map of all your players using GINFO|Ginfo-Integration](https://github.com/NullSoldier/serverthrall/wiki/Ginfo-Integration)
- * [Schedule automatic restarts|Server-Restarter-Plugin](https://github.com/NullSoldier/serverthrall/wiki/Server-Restarter-Plugin)
- * [Install mods into your server|Installing-Mods](https://github.com/NullSoldier/serverthrall/wiki/Installing-Mods)
- * [Notify you when the server is down|Deadmansnitch-Plugin](https://github.com/NullSoldier/serverthrall/wiki/Deadmansnitch-Plugin)
- * [Change the language ServerThrall uses|ConfigureLanguage](https://github.com/NullSoldier/serverthrall/wiki/ConfigureLanguage)
+ * [Send notifications to discord before restarting](https://github.com/NullSoldier/serverthrall/wiki/Setup-Restart-Notifications)
+ * [Send notifications to players in game before restarting](https://github.com/NullSoldier/serverthrall/wiki/Setup-Restart-Notifications)
+ * [Setup your server for ThrallBrowser](https://github.com/NullSoldier/serverthrall/wiki/Thrallbrowser)
+ * [View a live map of all your players using GINFO](https://github.com/NullSoldier/serverthrall/wiki/Ginfo-Integration)
+ * [Schedule automatic restarts](https://github.com/NullSoldier/serverthrall/wiki/Server-Restarter-Plugin)
+ * [Install mods into your server](https://github.com/NullSoldier/serverthrall/wiki/Installing-Mods)
+ * [Notify you when the server is down](https://github.com/NullSoldier/serverthrall/wiki/Deadmansnitch-Plugin)
+ * [Change the language ServerThrall uses](https://github.com/NullSoldier/serverthrall/wiki/ConfigureLanguage)
  * [Setup two servers on the same computer|Setup-two-servers-on-the-same-computer](https://github.com/NullSoldier/serverthrall/wiki/Setup-two-servers-on-the-same-computer)
 
 ### Plugins
