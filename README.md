@@ -2,28 +2,21 @@
 
 Server Thrall is a python based dedicated server toolbox. It's not a GUI to manage your server. It adds new features to the dedicated server that are not previously supported. I also highly recommend enabling the ApiUploader plugin to get your own live server website at http://thrallbrowser.com.
 
-### Installation
-* [Download ServerThrall v2.1.7](https://github.com/NullSoldier/serverthrall/releases/download/v2.1.7/serverthrall.2.1.7.zip)
-* Unzip somewhere on your computer
-
-### How to run
-**Click on serverthrall.exe** If this is your first time running it you will see Server Thrall download the Conan Exiles Dedicated Server and then create a new **serverthrall.config** file in the same directory. See more information below on what **serverthrall.config** contains.
-
 ### Quickstart
 * [Download the latest zipped release here](https://github.com/NullSoldier/serverthrall/releases/latest)
-* [[Install and Setup Serverthrall]]
-* [[Check out some Common Issues|Common Issues]]
+* [Install and Setup Serverthrall](https://github.com/NullSoldier/serverthrall/wiki/Install-and-Setup-Serverthrall)
+* [Check out some Common Issues|Common Issues](https://github.com/NullSoldier/serverthrall/wiki/Common-Issues)
 
 ### How To...
- * [[Send notifications to discord before restarting|Setup-Restart-Notifications]]
- * [[Send notifications to players in game before restarting|Setup-Restart-Notifications]]
- * [[Setup your server for ThrallBrowser|Thrallbrowser]]
- * [[View a live map of all your players using GINFO|Ginfo-Integration]]
- * [[Schedule automatic restarts|Server-Restarter-Plugin]]
- * [[Install mods into your server|Installing-Mods]]
- * [[Notify servers when the server is down|Deadmansnitch-Plugin]]
- * [[Change the language ServerThrall uses|ConfigureLanguage]]
- * [[Setup two servers on the same computer|Setup-two-servers-on-the-same-computer]]
+ * [Send notifications to discord before restarting|Setup-Restart-Notifications](https://github.com/NullSoldier/serverthrall/wiki/Setup-Restart-Notifications)
+ * [Send notifications to players in game before restarting|Setup-Restart-Notifications](https://github.com/NullSoldier/serverthrall/wiki/Setup-Restart-Notifications)
+ * [Setup your server for ThrallBrowser|Thrallbrowser](https://github.com/NullSoldier/serverthrall/wiki/Thrallbrowser)
+ * [View a live map of all your players using GINFO|Ginfo-Integration](https://github.com/NullSoldier/serverthrall/wiki/Ginfo-Integration)
+ * [Schedule automatic restarts|Server-Restarter-Plugin](https://github.com/NullSoldier/serverthrall/wiki/Server-Restarter-Plugin)
+ * [Install mods into your server|Installing-Mods](https://github.com/NullSoldier/serverthrall/wiki/Installing-Mods)
+ * [Notify you when the server is down|Deadmansnitch-Plugin](https://github.com/NullSoldier/serverthrall/wiki/Deadmansnitch-Plugin)
+ * [Change the language ServerThrall uses|ConfigureLanguage](https://github.com/NullSoldier/serverthrall/wiki/ConfigureLanguage)
+ * [Setup two servers on the same computer|Setup-two-servers-on-the-same-computer](https://github.com/NullSoldier/serverthrall/wiki/Setup-two-servers-on-the-same-computer)
 
 ### Plugins
 
