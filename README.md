@@ -3,7 +3,6 @@
 Server Thrall is a python based dedicated server toolbox. It's not a GUI to manage your server. It adds new features to the dedicated server that are not previously supported. I also highly recommend enabling the ApiUploader plugin to get your own live server website at http://thrallbrowser.com.
 
 ### Quickstart
-* [Download the latest zipped release here](https://github.com/NullSoldier/serverthrall/releases/latest)
 * [Install and Setup Serverthrall](https://github.com/NullSoldier/serverthrall/wiki/Install-and-Setup-Serverthrall)
 * [Check out some Common Issues|Common Issues](https://github.com/NullSoldier/serverthrall/wiki/Common-Issues)
 
