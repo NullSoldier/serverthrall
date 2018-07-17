@@ -4,7 +4,7 @@ Server Thrall is a python based dedicated server toolbox. It's not a GUI to mana
 
 ### Quickstart
 * [Install and Setup Serverthrall](https://github.com/NullSoldier/serverthrall/wiki/Install-and-Setup-Serverthrall)
-* [Check out some Common Issues|Common Issues](https://github.com/NullSoldier/serverthrall/wiki/Common-Issues)
+* [Check out some Common Issues](https://github.com/NullSoldier/serverthrall/wiki/Common-Issues)
 
 ### How To...
  * [Send notifications to discord before restarting](https://github.com/NullSoldier/serverthrall/wiki/Setup-Restart-Notifications)
