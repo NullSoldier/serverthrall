@@ -33,6 +33,8 @@ Do not edit serverthrall.config while serverthrall is running. Your changes will
 | **[UptimeTracker](https://github.com/NullSoldier/serverthrall/wiki/Uptime-Tracker-Plugin)** | Records the percentage of time the server has been online. If the server thrall is closed, this counts against the uptime percentage. |
 | **[ApiUploader](https://github.com/NullSoldier/serverthrall/wiki/Api-Uploader-Plugin)** | Uploads your server data to serverthrallapi so you can see your data online. If your **server_id** was `2`, you would access your servers characters at this URL: https://thrallbrowser.com/server/2/characters and you can fetch your REST API data at https://serverthrallapi.herokuapp.com/api/2/characters |
 | **[DeadManSnitch](https://github.com/NullSoldier/serverthrall/wiki/Deadmansnitch-Plugin)** | https://deadmanssnitch.com Emails you when your server is down. You can sign up for a free account which gives one limited snitch. |
+| **[PeriodicMessage](https://github.com/NullSoldier/serverthrall/wiki/PeriodicMessage)** | Lets you send messages using RCON into your server at a defined rate. |
+| **[RunScripts](https://github.com/NullSoldier/serverthrall/wiki/RunScripts)** | Lets you run arbitrary scripts when the server is restarting, and optionally send the results from STDOUT to a discord webhook. |
 
 ### Example Config
 ```ini
