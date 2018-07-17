@@ -15,7 +15,7 @@ Server Thrall is a python based dedicated server toolbox. It's not a GUI to mana
  * [Install mods into your server](https://github.com/NullSoldier/serverthrall/wiki/Installing-Mods)
  * [Notify you when the server is down](https://github.com/NullSoldier/serverthrall/wiki/Deadmansnitch-Plugin)
  * [Change the language ServerThrall uses](https://github.com/NullSoldier/serverthrall/wiki/ConfigureLanguage)
- * [Setup two servers on the same computer|Setup-two-servers-on-the-same-computer](https://github.com/NullSoldier/serverthrall/wiki/Setup-two-servers-on-the-same-computer)
+ * [Setup two servers on the same computer](https://github.com/NullSoldier/serverthrall/wiki/Setup-two-servers-on-the-same-computer)
 
 ### Plugins
 
