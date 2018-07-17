@@ -25,12 +25,12 @@ Do not edit serverthrall.config while serverthrall is running. Your changes will
 | Name | Description |
 | --- | --- |
 | **[ServerConfig](https://github.com/NullSoldier/serverthrall/wiki/Server-Config-Plugin)** | Allows you to configure common server settings from your server thrall config. If the config differs from expected, the config will be edited and the server restarted. |
-| **DownRecovery** | Restarts the server if the server is offline. |
-| **ServerUpdater** | Checks for updates and updates the server automatically |
-| **ServerRestarter** | Will restart the server at defined intervals, and sends out a warning to RCON and Discord |
-| **Discord** | Sends message to discord via webhooks. |
-| **RemoteConsole** | Sends messages and commands to a conan exiles server via the RCON protocol. |
-| **RestartManager** | Makes sure notifications are sent out during restarts and the waiting period for a restart is respected. Used by other plugins. |
+| **[DownRecovery](https://github.com/NullSoldier/serverthrall/wiki/Down-Recovery-Plugin)** | Restarts the server if the server is offline. |
+| **[ServerUpdater](https://github.com/NullSoldier/serverthrall/wiki/Server-Updater-Plugin)** | Checks for updates and updates the server automatically |
+| **[ServerRestarter](https://github.com/NullSoldier/serverthrall/wiki/Server-Restarter-Plugin)** | Will restart the server at defined intervals, and sends out a warning to RCON and Discord |
+| **[Discord](https://github.com/NullSoldier/serverthrall/wiki/Discord-Plugin)** | Sends message to discord via webhooks. |
+| **[RCON](https://github.com/NullSoldier/serverthrall/wiki/RCON-Plugin)** | Sends messages and commands to a conan exiles server via the RCON protocol. |
+| **[RestartManager](https://github.com/NullSoldier/serverthrall/wiki/RestartManager-Plugin)** | Makes sure notifications are sent out during restarts and the waiting period for a restart is respected. Used by other plugins. |
 | **[UptimeTracker](https://github.com/NullSoldier/serverthrall/wiki/Uptime-Tracker-Plugin)** | Records the percentage of time the server has been online. If the server thrall is closed, this counts against the uptime percentage. |
 | **[ApiUploader](https://github.com/NullSoldier/serverthrall/wiki/Api-Uploader-Plugin)** | Uploads your server data to serverthrallapi so you can see your data online. If your **server_id** was `2`, you would access your servers characters at this URL: https://thrallbrowser.com/server/2/characters and you can fetch your REST API data at https://serverthrallapi.herokuapp.com/api/2/characters |
 | **[DeadManSnitch](https://github.com/NullSoldier/serverthrall/wiki/Deadmansnitch-Plugin)** | https://deadmanssnitch.com Emails you when your server is down. You can sign up for a free account which gives one limited snitch. |
