@@ -27,7 +27,7 @@ CONAN_SETTINGS_MAPPING = {
     'AdminPassword':                    SettingInfo('ServerSettings', 'ServerSettings', 'AdminPassword'),
     'MaxNudity':                        SettingInfo('ServerSettings', 'ServerSettings', 'MaxNudity'),
     'IsBattlEyeEnabled':                SettingInfo('ServerSettings', 'ServerSettings', 'IsBattlEyeEnabled'),
-    'ServerRegion':                     SettingInfo('ServerSettings', 'ServerSettings', 'ServerRegion'),
+    'ServerRegion':                     SettingInfo('ServerSettings', 'ServerSettings', 'serverRegion', default=0),
     'ServerCommunity':                  SettingInfo('ServerSettings', 'ServerSettings', 'ServerCommunity'),
     'PVPEnabled':                       SettingInfo('ServerSettings', 'ServerSettings', 'PVPEnabled'),
     'BuildingPreloadRadius':            SettingInfo('ServerSettings', 'ServerSettings', 'BuildingPreloadRadius'),
