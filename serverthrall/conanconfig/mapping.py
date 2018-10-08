@@ -33,8 +33,14 @@ CONAN_SETTINGS_MAPPING = {
     'BuildingPreloadRadius':            SettingInfo('ServerSettings', 'ServerSettings', 'BuildingPreloadRadius'),
     'MaxBuildingDecayTime':             SettingInfo('ServerSettings', 'ServerSettings', 'MaxBuildingDecayTime'),
     'MaxDecayTimeToAutoDemolish':       SettingInfo('ServerSettings', 'ServerSettings', 'MaxDecayTimeToAutoDemolish'),
+
     'PlayerOfflineThirstMultiplier':    SettingInfo('ServerSettings', 'ServerSettings', 'PlayerOfflineThirstMultiplier', transform=float),
     'PlayerOfflineHungerMultiplier':    SettingInfo('ServerSettings', 'ServerSettings', 'PlayerOfflineHungerMultiplier', transform=float),
+    'PlayerIdleThirstMultiplier':    SettingInfo('ServerSettings', 'ServerSettings', 'PlayerIdleThirstMultiplier', transform=float),
+    'PlayerIdleHungerMultiplier':    SettingInfo('ServerSettings', 'ServerSettings', 'PlayerIdleHungerMultiplier', transform=float),
+    'PlayerActiveThirstMultiplier':    SettingInfo('ServerSettings', 'ServerSettings', 'PlayerActiveThirstMultiplier', transform=float),
+    'PlayerActiveHungerMultiplier':    SettingInfo('ServerSettings', 'ServerSettings', 'PlayerActiveHungerMultiplier', transform=float),
+
     'LogoutCharactersRemainInTheWorld': SettingInfo('ServerSettings', 'ServerSettings', 'LogoutCharactersRemainInTheWorld'),
 
     'KickAFKPercentage': SettingInfo('ServerSettings', 'ServerSettings', 'KickAFKPercentage', transform=float),
