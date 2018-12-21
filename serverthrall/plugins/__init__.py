@@ -12,3 +12,4 @@ from .serverconfig import ServerConfig
 from .serverrestarter import ServerRestarter
 from .serverupdater import ServerUpdater
 from .uptimetracker import UptimeTracker
+from .modupdater import ModUpdater

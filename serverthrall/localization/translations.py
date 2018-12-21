@@ -9,6 +9,8 @@ language_map = {
         'ServerRestarter.restart': 'The server is being restarted now.',
         'ServerUpdater.warning': 'There is a new update available. The Server is restarting in $timeleft $timeunit to install the update.',
         'ServerUpdater.restart': 'The server is restarting to install an update!',
+        'ModUpdater.warning': 'Restarting in $timeleft $timeunit to update $mods_count mods: $mods',
+        'ModUpdater.Restart': 'The server is restarting to update $mods_count mods.',
     },
     'es': {
         'minute': 'minuto',

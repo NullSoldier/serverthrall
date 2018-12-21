@@ -70,3 +70,26 @@ def parse_csv_times(times_list_str):
         times.append(time(hour=hour, minute=minute))
 
     return times, invalid
+
+
+class ProgressBar():
+
+    def __init__(self, formatter):
+        self.last_length = 0
+        self.formatter = formatter
+
+    def display(self, items, index):
+        current = index + 1
+        total = len(items)
+        item = items[index]
+
+        message = self.formatter(current, total, item)
+
+        self.clear()
+
+        self.last_length = len(message)
+        print(message, end='\r')
+
+    def clear(self):
+        print(' ' * self.last_length, end='\r')
+        self.last_length = 0

@@ -26,7 +26,7 @@ thrall_logger.addHandler(consoleHandler)
 thrall_logger.setLevel(logging.DEBUG)
 
 steamcmd_logger = logging.getLogger('serverthrall.steamcmd')
-steamcmd_logger.setLevel(logging.WARNING)
+steamcmd_logger.setLevel(logging.INFO)
 
 conan_config_logger = logging.getLogger('serverthrall.conan_config')
 conan_config_logger.setLevel(logging.INFO)
