@@ -180,9 +180,7 @@ class ModUpdater(IntervalTickPlugin):
                         pakfiles.append(pakfile)
 
         # use the preferred mod order before writing out the mod list
-        print('OLD MODLIST', pakfiles)
         pakfiles = self.reorder_mod_list(pakfiles)
-        print('NEW MODLIST', pakfiles)
 
         self.write_mod_list(pakfiles)
         self.logger.info('Finished updating mods')
@@ -199,7 +197,7 @@ class ModUpdater(IntervalTickPlugin):
 
         for pakfile in modlist:
             if pakfile not in managed_pakfiles_set:
-                result.append(result)
+                result.append(pakfile)
 
         for workshop_id in self.workshop_ids:
             result = result + managed_pakfiles.get(workshop_id, [])
