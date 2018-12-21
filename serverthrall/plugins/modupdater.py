@@ -89,6 +89,9 @@ class ModUpdater(IntervalTickPlugin):
         return pakfiles
 
     def write_mod_list(self, pakfiles):
+        if not os.path.exists(self.server_mods_dir):
+            os.makedirs(self.server_mods_dir)
+
         with open(self.server_modlist_path, 'w') as f:
             f.write('\n'.join([p.strip() for p in pakfiles if len(p) > 0]))
 
@@ -172,6 +175,9 @@ class ModUpdater(IntervalTickPlugin):
                 if pakfile.endswith('.pak'):
                     pak_source = os.path.join(download_mod_dir, pakfile)
                     pak_dest = os.path.join(self.server_mods_dir, pakfile)
+
+                    if not os.path.exists(self.server_mods_dir):
+                        os.makedirs(self.server_mods_dir)
 
                     self.logger.debug('Copying PAK file %s\n%s\n%s' % (pakfile, pak_source, pak_dest))
                     shutil.copyfile(pak_source, pak_dest)
