@@ -135,6 +135,21 @@ class ModUpdater(IntervalTickPlugin):
 
         return result
 
+    def pakfile_in_modlist(self, pakfile, modlist):
+        with_star = None
+        without_star = None
+
+        if pakfile.startswith('*'):
+            with_star = pakfile
+            without_star = pakfile[1:]
+        else:
+            with_star = '*%s' % pakfile
+            without_star = pakfile
+
+        return (
+            with_star in modlist or
+            without_star in modlist)
+
     def get_outdated_mods(self):
         result = set()
 
@@ -152,7 +167,7 @@ class ModUpdater(IntervalTickPlugin):
 
         for workshop_id, pakfiles in downloaded_pakfiles.items():
             for pakfile in pakfiles:
-                if pakfile not in modlist_pakfiles:
+                if not self.pakfile_in_modlist(pakfile, modlist_pakfiles):
                     result.add(workshop_id)
                 elif pakfile not in installed_pakfiles:
                     result.add(workshop_id)
@@ -182,7 +197,7 @@ class ModUpdater(IntervalTickPlugin):
                     self.logger.debug('Copying PAK file %s\n%s\n%s' % (pakfile, pak_source, pak_dest))
                     shutil.copyfile(pak_source, pak_dest)
 
-                    if pakfile not in pakfiles:
+                    if not self.pakfile_in_modlist(pakfile, pakfiles):
                         pakfiles.append(pakfile)
 
         # use the preferred mod order before writing out the mod list
@@ -192,21 +207,21 @@ class ModUpdater(IntervalTickPlugin):
         self.logger.info('Finished updating mods')
 
     def reorder_mod_list(self, modlist):
-        managed_pakfiles  = self.get_downloaded_pakfiles()
+        downloaded_pakfiles = self.get_downloaded_pakfiles()
 
-        managed_pakfiles_set = set()
-        for pakfile_list in managed_pakfiles.values():
+        downloaded_pakfiles_set = set()
+        for pakfile_list in downloaded_pakfiles.values():
             for pakfile in pakfile_list:
-                managed_pakfiles_set.add(pakfile)
+                downloaded_pakfiles_set.add(pakfile)
 
         result = []
 
         for pakfile in modlist:
-            if pakfile not in managed_pakfiles_set:
+            if not self.pakfile_in_modlist(pakfile, downloaded_pakfiles_set):
                 result.append(pakfile)
 
         for workshop_id in self.workshop_ids:
-            result = result + managed_pakfiles.get(workshop_id, [])
+            result = result + downloaded_pakfiles.get(workshop_id, [])
 
         return result
 
