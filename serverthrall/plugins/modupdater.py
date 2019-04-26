@@ -151,6 +151,7 @@ class ModUpdater(IntervalTickPlugin):
             without_star in modlist)
 
     def get_outdated_mods(self):
+        latest_update_time = self.last_updated
         result = set()
 
         # check updated mods that need to be copied
@@ -158,6 +159,8 @@ class ModUpdater(IntervalTickPlugin):
         for workshop_id, last_updated in updated_times.items():
             if last_updated > self.last_updated:
                 result.add(workshop_id)
+
+            latest_update_time = max(latest_update_time, last_updated)
 
         # check for pakfiles that arent in modlist
         # and pakfiles missing from installation
@@ -172,7 +175,7 @@ class ModUpdater(IntervalTickPlugin):
                 elif pakfile not in installed_pakfiles:
                     result.add(workshop_id)
 
-        return list(result)
+        return list(result), latest_update_time
 
     def sync_mods(self, workshop_ids):
         self.logger.info('Syncing updated mod files for %s' % self.format_mod_names(workshop_ids, True))
@@ -247,7 +250,7 @@ class ModUpdater(IntervalTickPlugin):
             progress.clear()
 
             self.update_known_mod_names()
-            outdated_mods = self.get_outdated_mods()
+            outdated_mods, latest_update_time = self.get_outdated_mods()
         except subprocess.CalledProcessError:
             self.logger.error('Failed to check for mod updates')
             return
@@ -267,8 +270,8 @@ class ModUpdater(IntervalTickPlugin):
                 return
 
             self.waiting_for_restart = False
-            self.last_updated = int(datetime.utcnow().timestamp())
-            self.config.set('last_updated', self.last_updated)
+            self.last_updated = latest_update_time
+            self.config.set('last_updated', latest_update_time)
 
         discord_warning, rcon_warning = self.get_warning_messages(outdated_mods)
         discord_restart, rcon_restart = self.get_restart_messages(outdated_mods)
