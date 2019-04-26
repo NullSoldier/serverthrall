@@ -135,7 +135,23 @@ class ModUpdater(IntervalTickPlugin):
 
         return result
 
+    def pakfile_in_modlist(self, pakfile, modlist):
+        with_star = None
+        without_star = None
+
+        if pakfile.startswith('*'):
+            with_star = pakfile
+            without_star = pakfile[1:]
+        else:
+            with_star = '*%s' % pakfile
+            without_star = pakfile
+
+        return (
+            with_star in modlist or
+            without_star in modlist)
+
     def get_outdated_mods(self):
+        latest_update_time = self.last_updated
         result = set()
 
         # check updated mods that need to be copied
@@ -143,6 +159,8 @@ class ModUpdater(IntervalTickPlugin):
         for workshop_id, last_updated in updated_times.items():
             if last_updated > self.last_updated:
                 result.add(workshop_id)
+
+            latest_update_time = max(latest_update_time, last_updated)
 
         # check for pakfiles that arent in modlist
         # and pakfiles missing from installation
@@ -152,12 +170,12 @@ class ModUpdater(IntervalTickPlugin):
 
         for workshop_id, pakfiles in downloaded_pakfiles.items():
             for pakfile in pakfiles:
-                if pakfile not in modlist_pakfiles:
+                if not self.pakfile_in_modlist(pakfile, modlist_pakfiles):
                     result.add(workshop_id)
                 elif pakfile not in installed_pakfiles:
                     result.add(workshop_id)
 
-        return list(result)
+        return list(result), latest_update_time
 
     def sync_mods(self, workshop_ids):
         self.logger.info('Syncing updated mod files for %s' % self.format_mod_names(workshop_ids, True))
@@ -182,7 +200,7 @@ class ModUpdater(IntervalTickPlugin):
                     self.logger.debug('Copying PAK file %s\n%s\n%s' % (pakfile, pak_source, pak_dest))
                     shutil.copyfile(pak_source, pak_dest)
 
-                    if pakfile not in pakfiles:
+                    if not self.pakfile_in_modlist(pakfile, pakfiles):
                         pakfiles.append(pakfile)
 
         # use the preferred mod order before writing out the mod list
@@ -192,21 +210,21 @@ class ModUpdater(IntervalTickPlugin):
         self.logger.info('Finished updating mods')
 
     def reorder_mod_list(self, modlist):
-        managed_pakfiles  = self.get_downloaded_pakfiles()
+        downloaded_pakfiles = self.get_downloaded_pakfiles()
 
-        managed_pakfiles_set = set()
-        for pakfile_list in managed_pakfiles.values():
+        downloaded_pakfiles_set = set()
+        for pakfile_list in downloaded_pakfiles.values():
             for pakfile in pakfile_list:
-                managed_pakfiles_set.add(pakfile)
+                downloaded_pakfiles_set.add(pakfile)
 
         result = []
 
         for pakfile in modlist:
-            if pakfile not in managed_pakfiles_set:
+            if not self.pakfile_in_modlist(pakfile, downloaded_pakfiles_set):
                 result.append(pakfile)
 
         for workshop_id in self.workshop_ids:
-            result = result + managed_pakfiles.get(workshop_id, [])
+            result = result + downloaded_pakfiles.get(workshop_id, [])
 
         return result
 
@@ -232,7 +250,7 @@ class ModUpdater(IntervalTickPlugin):
             progress.clear()
 
             self.update_known_mod_names()
-            outdated_mods = self.get_outdated_mods()
+            outdated_mods, latest_update_time = self.get_outdated_mods()
         except subprocess.CalledProcessError:
             self.logger.error('Failed to check for mod updates')
             return
@@ -252,8 +270,8 @@ class ModUpdater(IntervalTickPlugin):
                 return
 
             self.waiting_for_restart = False
-            self.last_updated = int(datetime.utcnow().timestamp())
-            self.config.set('last_updated', self.last_updated)
+            self.last_updated = latest_update_time
+            self.config.set('last_updated', latest_update_time)
 
         discord_warning, rcon_warning = self.get_warning_messages(outdated_mods)
         discord_restart, rcon_restart = self.get_restart_messages(outdated_mods)
