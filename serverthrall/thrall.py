@@ -66,7 +66,7 @@ class Thrall(object):
         for plugin in self.plugins:
             if plugin.enabled:
                 try:
-                    plugin.ready(self.server, self.steamcmd, self)
+                    plugin.ready(self.steamcmd, self.server, self)
                 except UnloadPluginException:
                     self.unload_plugin(plugin)
                 except Exception as ex:

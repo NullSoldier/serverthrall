@@ -12,9 +12,9 @@ class ThrallPlugin(object):
         self.config.queue_save()
         self.enabled = self.config.getboolean('enabled')
 
-    def ready(self, server, steamcmd, thrall):
-        self.server = server
+    def ready(self, steamcmd, server, thrall):
         self.steamcmd = steamcmd
+        self.server = server
         self.thrall = thrall
         self.logger = logging.getLogger('serverthrall.' + self.name)
         self.logger.setLevel(self.DEFAULT_LOGGING)
