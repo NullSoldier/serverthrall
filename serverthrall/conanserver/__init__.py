@@ -6,7 +6,6 @@ import psutil
 import subprocess
 import socket
 
-
 class ConanServer():
 
     def __init__(self, server_root, server_path, steamcmd, arguments, high_priority, multihome, use_testlive):
