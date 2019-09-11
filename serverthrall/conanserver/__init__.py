@@ -5,6 +5,10 @@ import os
 import psutil
 import subprocess
 import socket
+from .windows import close_server_windows
+
+# The estimated time it rougly takes a server to start up and properly respond to CTRL+C events
+IS_RESPONSIVE_HUERISTIC = timedelta(minutes=2)
 
 class ConanServer():
 
@@ -72,13 +76,33 @@ class ConanServer():
         self.logger.info('Server running successfully')
         return True
 
-    def close(self):
+    def close(self, kill=False):
+        if not kill and self.running_time() < IS_RESPONSIVE_HUERISTIC:
+            self.logger.debug('Server was asked to close cleanly, forcing the server to terminate because its probably not responsive')
+            kill = True
+
+        if not kill:
+            # Try windows safe close first
+            if self.process is not None and self.process.is_running():
+                close_server_windows(self)
+
+        # Hard kill the process if it's still running
         if self.process is not None and self.process.is_running():
+            if not kill:
+                self.logger.error('Server did not close cleanly, terminating.')
+
             self.process.terminate()
-            psutil.wait_procs([self.process])
+            self.wait_for_close()
 
         self.start_time = None
         self.process = None
+
+    def wait_for_close(self, timeout=None):
+        if self.process is None:
+            return True
+
+        (gone, alive) = psutil.wait_procs([self.process], timeout)
+        return alive == 0
 
     def attach(self, root_process):
         self.process = root_process

@@ -181,7 +181,7 @@ class ServerConfig(IntervalTickPlugin):
 
         if changed:
             self.logger.info('Restarting server for config to take into affect')
-            self.server.close()
+            self.server.close(kill=True)
             with self.handler.ignore_modifications():
                 self.thrall.conan_config.save()
             self.server.start()
