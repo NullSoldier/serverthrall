@@ -35,23 +35,31 @@ function Build-App {
 	Param ($build_component)
 	if (test-path ".\bin\serverthrall\build\$build_component") {
 		write-host "Removing old build directory at [.\bin\serverthrall\build\$build_component]"
-		rm  -r -fo ".\bin\serverthrall\build\$build_component"
+		Remove-Item -Recurse -Force ".\bin\serverthrall\build\$build_component"
 	}
 	if (-not (test-path ".\bin\serverthrall") ) {
 		write-host ".\bin\serverthrall doesn't exist, creating it"
 		mkdir ".\bin\serverthrall"|out-null
 	}
-	pyinstaller main.py --name "$build_component" --workpath .\\bin\\serverthrall\\build --distpath .\\bin\\serverthrall\\dist --specpath .\\bin\\serverthrall --icon .\\serverthrall.ico --console --onedir --onefile --noconfirm --clean
+	#pyinstaller main.py --name "$build_component" --workpath ".\bin\serverthrall\build" --distpath ".\bin\serverthrall\dist" --icon ".\assets\$build_component.ico" --specpath ".\bin\serverthrall" --console --onedir --onefile --noconfirm --clean
+	pyinstaller main.py --name "$build_component" --workpath .\bin\serverthrall\build --distpath .\bin\serverthrall\dist --specpath .\bin\serverthrall --console --onedir --onefile --noconfirm --clean
+	if (-not (test-path ".\rcedit.exe") ) {
+		write-host ".\rcedit.exe doesn't exist, downloading it..."
+		Invoke-WebRequest -Uri "https://github.com/electron/rcedit/releases/download/v1.1.1/rcedit-x86.exe" -outfile ".\rcedit.exe"
+	}
+	.\rcedit.exe ".\bin\serverthrall\dist\$build_component.exe" --set-icon ".\assets\$build_component.ico"
 }
 
 function Build-Vendor-steamcmd {
 	if (test-path ".\bin\serverthrall\dist\vendor\steamcmd") {
 		write-host "Removing steamcmd vendor directory at [.\bin\serverthrall\dist\vendor\steamcmd]"
-		rm -r -fo ".\bin\serverthrall\dist\vendor\steamcmd"
+		Remove-Item -Recurse -Force ".\bin\serverthrall\dist\vendor\steamcmd"
 	}
 	write-host "Creating .\bin\serverthrall\dist\vendor\steamcmd"
 	mkdir ".\bin\serverthrall\dist\vendor\steamcmd"|out-null
-	cp .\vendor\steamcmd\steamcmd.exe .\bin\serverthrall\dist\vendor\steamcmd\steamcmd.exe
+    Invoke-WebRequest -Uri "https://steamcdn-a.akamaihd.net/client/installer/steamcmd.zip" -outfile ".\bin\serverthrall\dist\vendor\steamcmd\steamcmd.zip"
+    expand-archive -path ".\bin\serverthrall\dist\vendor\steamcmd\steamcmd.zip" -destinationpath ".\bin\serverthrall\dist\vendor\steamcmd"
+    Remove-Item -Recurse -Force ".\bin\serverthrall\dist\vendor\steamcmd\steamcmd.zip"
 }
 
 switch ( $component )
