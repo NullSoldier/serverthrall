@@ -5,5 +5,4 @@ virtualenv/
 serverthrall.config
 serverthrall.log
 *.pyc
-.idea
 rcedit.exe
