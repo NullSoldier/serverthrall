@@ -1,8 +1,8 @@
 .cache/
 bin/
-vendor/
 virtualenv/
 .virtualenv/
 serverthrall.config
 serverthrall.log
 *.pyc
+.idea
