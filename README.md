@@ -18,6 +18,16 @@ Server Thrall is a python based dedicated server toolbox. It's not a GUI to mana
  * [Change the language ServerThrall uses](https://github.com/NullSoldier/serverthrall/wiki/ConfigureLanguage)
  * [Setup two servers on the same computer](https://github.com/NullSoldier/serverthrall/wiki/Setup-two-servers-on-the-same-computer)
 
+### Building from Source (Windows Only)
+
+ 1. Create a directory where you want to clone the serverthrall source too.
+ 2. Open a powershell promt and cd to the directory you created.
+ 3. Enter or create a virtual environment for serverthrall, if you choose to use one.
+ 4. Clone the repository: `git clone https://github.com/NullSoldier/serverthrall.git ./`
+ 5. Setup build requirements: `.\setup.ps1`
+ 6. Build serverthrall: `.\build.ps1`
+ 7. Completed build is located in `.\bin\serverthrall\dist`
+
 ### Plugins
 
 Do not edit serverthrall.config while serverthrall is running. Your changes will be overwritten by serverthrall.
