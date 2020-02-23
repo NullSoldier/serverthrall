@@ -33,21 +33,33 @@ if (!$component)
 
 function Build-App {
 	Param ($build_component)
-	if (test-path ".\bin\serverthrall\build\$build_component") {
+	switch ($build_component)
+    {
+        serverthrall
+        {
+            $build_PyFile = "main.py"
+        }
+        updater
+        {
+            $build_PyFile = "updater.py"   
+        }
+    }
+    if (test-path ".\bin\serverthrall\build\$build_component") {
 		write-host "Removing old build directory at [.\bin\serverthrall\build\$build_component]"
-		Remove-Item -Recurse -Force ".\bin\serverthrall\build\$build_component"
+		#Remove-Item -Recurse -Force ".\bin\serverthrall\build\$build_component"
 	}
 	if (-not (test-path ".\bin\serverthrall") ) {
 		write-host ".\bin\serverthrall doesn't exist, creating it"
 		mkdir ".\bin\serverthrall"|out-null
 	}
-	#pyinstaller main.py --name "$build_component" --workpath ".\bin\serverthrall\build" --distpath ".\bin\serverthrall\dist" --icon ".\assets\$build_component.ico" --specpath ".\bin\serverthrall" --console --onedir --onefile --noconfirm --clean
-	pyinstaller main.py --name "$build_component" --workpath .\bin\serverthrall\build --distpath .\bin\serverthrall\dist --specpath .\bin\serverthrall --console --onedir --onefile --noconfirm --clean
-	if (-not (test-path ".\rcedit.exe") ) {
-		write-host ".\rcedit.exe doesn't exist, downloading it..."
-		Invoke-WebRequest -Uri "https://github.com/electron/rcedit/releases/download/v1.1.1/rcedit-x86.exe" -outfile ".\rcedit.exe"
-	}
-	.\rcedit.exe ".\bin\serverthrall\dist\$build_component.exe" --set-icon ".\assets\$build_component.ico"
+    
+    pyi-makespec "$build_PyFile" --name "$build_component" --specpath .\bin\serverthrall --onedir --onefile --console --hidden-import pkg_resources.py2_warn
+    $pyvenv = ((python -c "import os; print(os.environ['VIRTUAL_ENV'])"))
+    $pyvenv = "$pyvenv\Lib\site-packages"
+    $pyvenv = [regex]::escape($pyvenv)
+    (Get-Content -path .\bin\serverthrall\$build_component.spec -Raw) -replace "pathex=\['\.\\\\bin\\\\serverthrall']","pathex=['.\\bin\\serverthrall','$pyvenv']" | Set-Content -Path .\bin\serverthrall\$build_component.spec
+    (Get-Content -path .\bin\serverthrall\$build_component.spec -Raw) -replace "console=True \)","console=True, icon='C:\\Develop\\serverthrall\\assets\\$build_component.ico' )" | Set-Content -Path .\bin\serverthrall\$build_component.spec
+    pyinstaller ".\bin\serverthrall\$build_component.spec" --name "$build_component" --workpath ".\bin\serverthrall\build" --distpath ".\bin\serverthrall\dist" --console --onedir --onefile --noconfirm --clean
 }
 
 function Build-Vendor-steamcmd {
@@ -62,7 +74,7 @@ function Build-Vendor-steamcmd {
     Remove-Item -Recurse -Force ".\bin\serverthrall\dist\vendor\steamcmd\steamcmd.zip"
 }
 
-switch ( $component )
+switch ($component)
     {
         serverthrall
         {
@@ -80,3 +92,4 @@ switch ( $component )
 			Build-Vendor-steamcmd
         }
     }
+    

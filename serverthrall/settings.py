@@ -1,10 +1,16 @@
 import os.path
 import logging
+import argparse
+
+parser = argparse.ArgumentParser()
+parser.add_argument("--config", "-c", default="serverthrall.config", type=str,
+                    help="Set this to the name of the serverthrall.config file you want to use.")
+args = parser.parse_args()
 
 STEAMCMD_PATH = os.path.join(os.getcwd(), 'vendor\\steamcmd\\steamcmd.exe')
 CONAN_SERVER_APP_ID = '443030'
 CONAN_CLIENT_APP_ID = '440900'
-CONFIG_NAME = 'serverthrall.config'
+CONFIG_NAME = args.config
 CONAN_EXE_NAME = 'ConanSandboxServer-Win64-Test.exe'
 CONAN_EXE_SUBPATH = 'ConanSandbox\\Binaries\\Win64'
 
