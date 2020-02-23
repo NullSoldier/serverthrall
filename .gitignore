@@ -1,6 +1,5 @@
 .cache/
 bin/
-vendor/
 virtualenv/
 .virtualenv/
 serverthrall.config

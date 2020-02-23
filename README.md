@@ -18,6 +18,23 @@ Server Thrall is a python based dedicated server toolbox. It's not a GUI to mana
  * [Change the language ServerThrall uses](https://github.com/NullSoldier/serverthrall/wiki/ConfigureLanguage)
  * [Setup two servers on the same computer](https://github.com/NullSoldier/serverthrall/wiki/Setup-two-servers-on-the-same-computer)
 
+### Building from Source (Windows Only)
+
+Note: We used Python 3.6 to build from. You will have the best experience using the same version of python.
+
+ 1. Create a directory where you want to clone the serverthrall source too.
+ 2. Open a powershell promt and cd to the directory you created.
+ 3. Enter or create a virtual environment for serverthrall, if you choose to use one.
+ 4. Clone the repository: `git clone https://github.com/NullSoldier/serverthrall.git ./`
+ 5. Microsoft Visual C++ 14.0 is required. Get by downloading "Build Tools for Visual Studio" at https://visualstudio.microsoft.com/downloads/
+ 6. Setup build requirements: `.\setup.ps1` Note: There WILL be errors during this step. Ignore them, they get autocorrected at the end.
+ 7. Build serverthrall: `.\build.ps1`
+ 8. Completed build is located in `.\bin\serverthrall\dist`
+
+ Note: If you are building on this from a mapped drive or UNC path, or you have a restrictive execution policy on steps 5 and 6 you'll need to execute the powershell scripts with an unrestricted execution policy. Open an admin elevated powershell console:
+ - `powershell.exe -executionpolicy unrestricted -command .\setup.ps1`
+ - `powershell.exe -executionpolicy unrestricted -command .\build.ps1`
+
 ### Plugins
 
 Do not edit serverthrall.config while serverthrall is running. Your changes will be overwritten by serverthrall.
