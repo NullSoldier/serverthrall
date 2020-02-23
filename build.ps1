@@ -4,9 +4,7 @@ param(
     $component
 )
 
-Write-Output $component
-$component_check = Get-Variable -Name component -Scope Global -ErrorAction SilentlyContinue
-Write-Output $component_check
+$srcdir = ((Resolve-Path .\).Path)
 
 if (!$component)
 {
@@ -57,8 +55,9 @@ function Build-App {
     $pyvenv = ((python -c "import os; print(os.environ['VIRTUAL_ENV'])"))
     $pyvenv = "$pyvenv\Lib\site-packages"
     $pyvenv = [regex]::escape($pyvenv)
+    $srcdirex = [regex]::escape($srcdir)
     (Get-Content -path .\bin\serverthrall\$build_component.spec -Raw) -replace "pathex=\['\.\\\\bin\\\\serverthrall']","pathex=['.\\bin\\serverthrall','$pyvenv']" | Set-Content -Path .\bin\serverthrall\$build_component.spec
-    (Get-Content -path .\bin\serverthrall\$build_component.spec -Raw) -replace "console=True \)","console=True, icon='C:\\Develop\\serverthrall\\assets\\$build_component.ico' )" | Set-Content -Path .\bin\serverthrall\$build_component.spec
+    (Get-Content -path .\bin\serverthrall\$build_component.spec -Raw) -replace "console=True \)","console=True, icon='$srcdirex\\assets\\$build_component.ico' )" | Set-Content -Path .\bin\serverthrall\$build_component.spec
     pyinstaller ".\bin\serverthrall\$build_component.spec" --name "$build_component" --workpath ".\bin\serverthrall\build" --distpath ".\bin\serverthrall\dist" --console --onedir --onefile --noconfirm --clean
 }
 
