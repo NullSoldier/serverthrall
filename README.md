@@ -1,4 +1,12 @@
-This project no longer has a maintainer. I've really enjoyed working on the project but I've had to move onto other important things.
+```
+This project is no longer being maintained.
+
+I've really enjoyed working on the project but I've had to move onto other important things.
+
+May crom watch over you.
+
+ - NullSoldier
+ ```
 
 ### [Download the latest release here](https://github.com/NullSoldier/serverthrall/releases/latest) and [join discord](https://discord.gg/5dK2TdN) if you have any issues.
 
